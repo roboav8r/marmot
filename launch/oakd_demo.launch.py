@@ -8,7 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution, TextSubstitution
 from launch import LaunchDescription
-from launch_ros.actions import Node, ComposableNodeContainer
+from launch_ros.actions import Node, LoadComposableNodes, ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
@@ -33,10 +33,22 @@ def generate_launch_description():
     )
     ld.add_action(tf_node)
 
-    # Detection conversion node
-    # TODO
-
     # Sensor node
+    cam_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare('depthai_ros_driver'),
+                'launch',
+                'rgbd_pcl.launch.py'
+            ])
+        ]),
+        launch_arguments={
+            'params_file': cam_config
+        }.items()
+    )
+    ld.add_action(cam_node)
+
+    # Detection conversion node
     # TODO
 
     # Tracker node
@@ -54,7 +66,7 @@ def generate_launch_description():
     viz_node = IncludeLaunchDescription(
         XMLLaunchDescriptionSource(
             os.path.join(
-                get_package_share_directory('foxglove_bridge'),
+                get_package_share_directory('marmot'),
                 'launch/foxglove_bridge_launch.xml'))
     )
     ld.add_action(viz_node)
