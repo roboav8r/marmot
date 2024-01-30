@@ -1,350 +1,651 @@
-tracker:
+tracker_node:
   ros__parameters:
     tracker:
-      object_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
-
       frame_id: 'map'
-      asgn_thresh: 10.0
-      publishers:
-        names: ['track_pub', scene_pub]
-        track_pub: # Publisher name
-          pub_topic: 'tracks'
-          msg_type: 'Tracks3D'
-          routine: 'PublishTracks'
-        scene_pub: # Publisher name
-          pub_topic: 'scenes'
-          msg_type: 'SceneUpdate'
-          routine: 'PublishScene'
-
-      # Track management
-      trk_mgmt_method: 'count' # count or prob     
-      n_birth_min_list: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
-      n_age_max_list: [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
-      del_thresh_list: [0.] # Placeholder for prob method
-      pub_thresh_list: [0.] # Placeholder for prob method
       
+
     object_properties: # TODO - or motion/process models?
       object_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
       person:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bicycle:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       car:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       motorbike:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       aeroplane:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bus:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       train:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       truck:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       boat:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       traffic light:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       fire hydrant:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       stop sign:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       parking meter:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bench:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bird:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       cat:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       dog:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       horse:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       sheep:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       cow:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       elephant:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bear:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       zebra:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       giraffe:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       backpack:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       umbrella:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       handbag:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       tie:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       suitcase:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       frisbee:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       skis:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       snowboard:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       sports ball:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       kite:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       baseball bat:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       baseball glove:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       skateboard:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       surfboard:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       tennis racket:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bottle:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       wine glass:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       cup:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       fork:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       knife:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       spoon:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bowl:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       banana:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       apple:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       sandwich:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       orange:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       broccoli:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       carrot:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       hot dog:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       pizza:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       donut:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       cake:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       chair:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       sofa:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       pottedplant:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       bed:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       diningtable:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       toilet:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       tvmonitor:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       laptop:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       mouse:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       remote:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       keyboard:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       cell phone:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       microwave:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       oven:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       toaster:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       sink:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       refrigerator:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       book:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       clock:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       vase:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       scissors:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       teddy bear:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       hair drier:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
       toothbrush:
           model_type: 'cvcy_obj'
           proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
           init_vel_cov: [1., .25, .25]
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
 
     sensors:
       #Declare names of sensors upfront

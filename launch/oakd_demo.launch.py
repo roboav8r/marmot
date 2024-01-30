@@ -16,12 +16,12 @@ def generate_launch_description():
 
     # Config files
     cam_config = os.path.join(
-        get_package_share_directory('ros_tracking'),
+        get_package_share_directory('marmot'),
         'config',
         'oakd_cam.yaml'
     )
     tracker_config = os.path.join(
-        get_package_share_directory('ros_tracking'),
+        get_package_share_directory('marmot'),
         'config',
         'oakd_tracker.yaml'
     )
@@ -34,35 +34,16 @@ def generate_launch_description():
     ld.add_action(tf_node)
 
     # Detection conversion node
-    conv_node = Node(
-        package='ros_tracking',
-        executable='depthai_converter',
-        name='depthai_converter_node',
-        remappings=[('/depthai_detections','/oak/nn/spatial_detections')],
-        output='screen',
-        parameters=[cam_config])    
-    ld.add_action(conv_node)
+    # TODO
 
     # Sensor node
-    cam_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('depthai_ros_driver'),
-                'launch',
-                'camera.launch.py'
-            ])
-        ]),
-        launch_arguments={
-            'params_file': cam_config
-        }.items()
-    )
-    ld.add_action(cam_node)
+    # TODO
 
     # Tracker node
     trk_node = Node(
-        package='ros_tracking',
-        executable='py_tracker.py',
-        name='tracker',
+        package='marmot',
+        executable='tbd_node.py',
+        name='tracker_node',
         output='screen',
         remappings=[('/detections','/converted_detections')],
         parameters=[tracker_config]
