@@ -1,0 +1,1023 @@
+tracker:
+  ros__parameters:
+    tracker:
+      object_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+
+      frame_id: 'map'
+      asgn_thresh: 10.0
+      publishers:
+        names: ['track_pub', scene_pub]
+        track_pub: # Publisher name
+          pub_topic: 'tracks'
+          msg_type: 'Tracks3D'
+          routine: 'PublishTracks'
+        scene_pub: # Publisher name
+          pub_topic: 'scenes'
+          msg_type: 'SceneUpdate'
+          routine: 'PublishScene'
+
+      # Track management
+      trk_mgmt_method: 'count' # count or prob     
+      n_birth_min_list: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+      n_age_max_list: [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+      del_thresh_list: [0.] # Placeholder for prob method
+      pub_thresh_list: [0.] # Placeholder for prob method
+      
+    object_properties: # TODO - or motion/process models?
+      object_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+      person:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bicycle:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      car:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      motorbike:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      aeroplane:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bus:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      train:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      truck:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      boat:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      traffic light:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      fire hydrant:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      stop sign:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      parking meter:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bench:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bird:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      cat:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      dog:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      horse:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      sheep:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      cow:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      elephant:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bear:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      zebra:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      giraffe:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      backpack:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      umbrella:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      handbag:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      tie:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      suitcase:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      frisbee:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      skis:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      snowboard:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      sports ball:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      kite:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      baseball bat:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      baseball glove:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      skateboard:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      surfboard:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      tennis racket:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bottle:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      wine glass:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      cup:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      fork:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      knife:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      spoon:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bowl:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      banana:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      apple:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      sandwich:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      orange:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      broccoli:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      carrot:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      hot dog:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      pizza:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      donut:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      cake:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      chair:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      sofa:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      pottedplant:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      bed:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      diningtable:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      toilet:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      tvmonitor:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      laptop:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      mouse:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      remote:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      keyboard:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      cell phone:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      microwave:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      oven:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      toaster:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      sink:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      refrigerator:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      book:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      clock:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      vase:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      scissors:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      teddy bear:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      hair drier:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+      toothbrush:
+          model_type: 'cvcy_obj'
+          proc_var: [0., 0., 0., 1., 1., 1., 1., 1., 1., .5, .5]
+          init_vel_cov: [1., .25, .25]
+
+    sensors:
+      #Declare names of sensors upfront
+      sensor_names: ['oakd']
+
+      # For each named sensor, give sensor model information
+      oakd:
+        topic: 'converted_detections'
+        msg_type: 'Detections3D'
+        dim_classes: 80
+        dim_detections: 80
+        detection_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+
+        # Spatial sensor model
+        spatial_sensor_model: [1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # p_x
+                              0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., # p_y
+                              0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., # p_z
+                              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # heading
+                              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # length
+                              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # width
+                              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # height
+                              0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.] # class_conf
+
+        spatial_states: 11
+        spatial_meas: 8
+        sensor_variance:
+          pos: [1., 1., 1., #person
+                1., 1., 1., #bicycle
+                1., 1., 1., #car
+                1., 1., 1., #motorbike
+                1., 1., 1., #aeroplane
+                1., 1., 1., #bus
+                1., 1., 1., #train
+                1., 1., 1., #truck
+                1., 1., 1., #boat
+                1., 1., 1., #traffic light
+                1., 1., 1., #fire hydrant
+                1., 1., 1., #stop sign
+                1., 1., 1., #parking meter
+                1., 1., 1., #bench
+                1., 1., 1., #bird
+                1., 1., 1., #cat
+                1., 1., 1., #dog
+                1., 1., 1., #horse
+                1., 1., 1., #sheep
+                1., 1., 1., #cow
+                1., 1., 1., #elephant
+                1., 1., 1., #bear
+                1., 1., 1., #zebra
+                1., 1., 1., #giraffe
+                1., 1., 1., #backpack
+                1., 1., 1., #umbrella
+                1., 1., 1., #handbag
+                1., 1., 1., #tie
+                1., 1., 1., #suitcase
+                1., 1., 1., #frisbee
+                1., 1., 1., #skis
+                1., 1., 1., #snowboard
+                1., 1., 1., #sports ball
+                1., 1., 1., #kite
+                1., 1., 1., #baseball bat
+                1., 1., 1., #baseball glove
+                1., 1., 1., #skateboard
+                1., 1., 1., #surfboard
+                1., 1., 1., #tennis racket
+                1., 1., 1., #bottle
+                1., 1., 1., #wine glass
+                1., 1., 1., #cup
+                1., 1., 1., #fork
+                1., 1., 1., #knife
+                1., 1., 1., #spoon
+                1., 1., 1., #bowl
+                1., 1., 1., #banana
+                1., 1., 1., #apple
+                1., 1., 1., #sandwich
+                1., 1., 1., #orange
+                1., 1., 1., #broccoli
+                1., 1., 1., #carrot
+                1., 1., 1., #hot dog
+                1., 1., 1., #pizza
+                1., 1., 1., #donut
+                1., 1., 1., #cake
+                1., 1., 1., #chair
+                1., 1., 1., #sofa
+                1., 1., 1., #pottedplant
+                1., 1., 1., #bed
+                1., 1., 1., #diningtable
+                1., 1., 1., #toilet
+                1., 1., 1., #tvmonitor
+                1., 1., 1., #laptop
+                1., 1., 1., #mouse
+                1., 1., 1., #remote
+                1., 1., 1., #keyboard
+                1., 1., 1., #cell phone
+                1., 1., 1., #microwave
+                1., 1., 1., #oven
+                1., 1., 1., #toaster
+                1., 1., 1., #sink
+                1., 1., 1., #refrigerator
+                1., 1., 1., #book
+                1., 1., 1., #clock
+                1., 1., 1., #vase
+                1., 1., 1., #scissors
+                1., 1., 1., #teddy bear
+                1., 1., 1., #hair drier
+                1., 1., 1.] #toothbrush
+          yaw: [1., #person
+                1., #bicycle
+                1., #car
+                1., #motorbike
+                1., #aeroplane
+                1., #bus
+                1., #train
+                1., #truck
+                1., #boat
+                1., #traffic light
+                1., #fire hydrant
+                1., #stop sign
+                1., #parking meter
+                1., #bench
+                1., #bird
+                1., #cat
+                1., #dog
+                1., #horse
+                1., #sheep
+                1., #cow
+                1., #elephant
+                1., #bear
+                1., #zebra
+                1., #giraffe
+                1., #backpack
+                1., #umbrella
+                1., #handbag
+                1., #tie
+                1., #suitcase
+                1., #frisbee
+                1., #skis
+                1., #snowboard
+                1., #sports ball
+                1., #kite
+                1., #baseball bat
+                1., #baseball glove
+                1., #skateboard
+                1., #surfboard
+                1., #tennis racket
+                1., #bottle
+                1., #wine glass
+                1., #cup
+                1., #fork
+                1., #knife
+                1., #spoon
+                1., #bowl
+                1., #banana
+                1., #apple
+                1., #sandwich
+                1., #orange
+                1., #broccoli
+                1., #carrot
+                1., #hot dog
+                1., #pizza
+                1., #donut
+                1., #cake
+                1., #chair
+                1., #sofa
+                1., #pottedplant
+                1., #bed
+                1., #diningtable
+                1., #toilet
+                1., #tvmonitor
+                1., #laptop
+                1., #mouse
+                1., #remote
+                1., #keyboard
+                1., #cell phone
+                1., #microwave
+                1., #oven
+                1., #toaster
+                1., #sink
+                1., #refrigerator
+                1., #book
+                1., #clock
+                1., #vase
+                1., #scissors
+                1., #teddy bear
+                1., #hair drier
+                1.] #toothbrush
+          size: [1., 1., 1., #person
+                1., 1., 1., #bicycle
+                1., 1., 1., #car
+                1., 1., 1., #motorbike
+                1., 1., 1., #aeroplane
+                1., 1., 1., #bus
+                1., 1., 1., #train
+                1., 1., 1., #truck
+                1., 1., 1., #boat
+                1., 1., 1., #traffic light
+                1., 1., 1., #fire hydrant
+                1., 1., 1., #stop sign
+                1., 1., 1., #parking meter
+                1., 1., 1., #bench
+                1., 1., 1., #bird
+                1., 1., 1., #cat
+                1., 1., 1., #dog
+                1., 1., 1., #horse
+                1., 1., 1., #sheep
+                1., 1., 1., #cow
+                1., 1., 1., #elephant
+                1., 1., 1., #bear
+                1., 1., 1., #zebra
+                1., 1., 1., #giraffe
+                1., 1., 1., #backpack
+                1., 1., 1., #umbrella
+                1., 1., 1., #handbag
+                1., 1., 1., #tie
+                1., 1., 1., #suitcase
+                1., 1., 1., #frisbee
+                1., 1., 1., #skis
+                1., 1., 1., #snowboard
+                1., 1., 1., #sports ball
+                1., 1., 1., #kite
+                1., 1., 1., #baseball bat
+                1., 1., 1., #baseball glove
+                1., 1., 1., #skateboard
+                1., 1., 1., #surfboard
+                1., 1., 1., #tennis racket
+                1., 1., 1., #bottle
+                1., 1., 1., #wine glass
+                1., 1., 1., #cup
+                1., 1., 1., #fork
+                1., 1., 1., #knife
+                1., 1., 1., #spoon
+                1., 1., 1., #bowl
+                1., 1., 1., #banana
+                1., 1., 1., #apple
+                1., 1., 1., #sandwich
+                1., 1., 1., #orange
+                1., 1., 1., #broccoli
+                1., 1., 1., #carrot
+                1., 1., 1., #hot dog
+                1., 1., 1., #pizza
+                1., 1., 1., #donut
+                1., 1., 1., #cake
+                1., 1., 1., #chair
+                1., 1., 1., #sofa
+                1., 1., 1., #pottedplant
+                1., 1., 1., #bed
+                1., 1., 1., #diningtable
+                1., 1., 1., #toilet
+                1., 1., 1., #tvmonitor
+                1., 1., 1., #laptop
+                1., 1., 1., #mouse
+                1., 1., 1., #remote
+                1., 1., 1., #keyboard
+                1., 1., 1., #cell phone
+                1., 1., 1., #microwave
+                1., 1., 1., #oven
+                1., 1., 1., #toaster
+                1., 1., 1., #sink
+                1., 1., 1., #refrigerator
+                1., 1., 1., #book
+                1., 1., 1., #clock
+                1., 1., 1., #vase
+                1., 1., 1., #scissors
+                1., 1., 1., #teddy bear
+                1., 1., 1., #hair drier
+                1., 1., 1.] #toothbrush
+          conf: [1., #person
+                1., #bicycle
+                1., #car
+                1., #motorbike
+                1., #aeroplane
+                1., #bus
+                1., #train
+                1., #truck
+                1., #boat
+                1., #traffic light
+                1., #fire hydrant
+                1., #stop sign
+                1., #parking meter
+                1., #bench
+                1., #bird
+                1., #cat
+                1., #dog
+                1., #horse
+                1., #sheep
+                1., #cow
+                1., #elephant
+                1., #bear
+                1., #zebra
+                1., #giraffe
+                1., #backpack
+                1., #umbrella
+                1., #handbag
+                1., #tie
+                1., #suitcase
+                1., #frisbee
+                1., #skis
+                1., #snowboard
+                1., #sports ball
+                1., #kite
+                1., #baseball bat
+                1., #baseball glove
+                1., #skateboard
+                1., #surfboard
+                1., #tennis racket
+                1., #bottle
+                1., #wine glass
+                1., #cup
+                1., #fork
+                1., #knife
+                1., #spoon
+                1., #bowl
+                1., #banana
+                1., #apple
+                1., #sandwich
+                1., #orange
+                1., #broccoli
+                1., #carrot
+                1., #hot dog
+                1., #pizza
+                1., #donut
+                1., #cake
+                1., #chair
+                1., #sofa
+                1., #pottedplant
+                1., #bed
+                1., #diningtable
+                1., #toilet
+                1., #tvmonitor
+                1., #laptop
+                1., #mouse
+                1., #remote
+                1., #keyboard
+                1., #cell phone
+                1., #microwave
+                1., #oven
+                1., #toaster
+                1., #sink
+                1., #refrigerator
+                1., #book
+                1., #clock
+                1., #vase
+                1., #scissors
+                1., #teddy bear
+                1., #hair drier
+                1.] #toothbrush
+
+        # Semantic sensor model        
+        # p(Z_label|X_class): 
+        # columns are dets classes
+        semantic_sensor_model: [1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # person
+                                0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bicycle
+                                0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # car
+                                0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # motorbike
+                                0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # aeroplane
+                                0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bus
+                                0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # train
+                                0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # truck
+                                0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # boat
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # traffic light
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # fire hydrant
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # stop sign
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # parking meter
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bench
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bird
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cat
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # dog
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # horse
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sheep
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cow
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # elephant
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bear
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # zebra
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # giraffe
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # backpack
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # umbrella
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # handbag
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tie
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # suitcase
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # frisbee
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # skis
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # snowboard
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sports ball
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # kite
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # baseball bat
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # baseball glove
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # skateboard
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # surfboard
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tennis racket
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bottle
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # wine glass
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cup
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # fork
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # knife
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # spoon
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bowl
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # banana
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # apple
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sandwich
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # orange
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # broccoli
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # carrot
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # hot dog
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # pizza
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # donut
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cake
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # chair
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sofa
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # pottedplant
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bed
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # diningtable
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # toilet
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tvmonitor
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # laptop
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # mouse
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # remote
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # keyboard
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cell phone
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # microwave
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # oven
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # toaster
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.,  # sink
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.,  # refrigerator
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.,  # book
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.,  # clock
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.,  # vase
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,  # scissors
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.,  # teddy bear
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.,  # hair drier
+                                0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.]  # toothbrush
+
+        # Placeholders for prob track creation/deletion
+        # From mini_train
+        p_missed_det_list: [0.25, #person
+                            0.25, #bicycle
+                            0.25, #car
+                            0.25, #motorbike
+                            0.25, #aeroplane
+                            0.25, #bus
+                            0.25, #train
+                            0.25, #truck
+                            0.25, #boat
+                            0.25, #traffic light
+                            0.25, #fire hydrant
+                            0.25, #stop sign
+                            0.25, #parking meter
+                            0.25, #bench
+                            0.25, #bird
+                            0.25, #cat
+                            0.25, #dog
+                            0.25, #horse
+                            0.25, #sheep
+                            0.25, #cow
+                            0.25, #elephant
+                            0.25, #bear
+                            0.25, #zebra
+                            0.25, #giraffe
+                            0.25, #backpack
+                            0.25, #umbrella
+                            0.25, #handbag
+                            0.25, #tie
+                            0.25, #suitcase
+                            0.25, #frisbee
+                            0.25, #skis
+                            0.25, #snowboard
+                            0.25, #sports ball
+                            0.25, #kite
+                            0.25, #baseball bat
+                            0.25, #baseball glove
+                            0.25, #skateboard
+                            0.25, #surfboard
+                            0.25, #tennis racket
+                            0.25, #bottle
+                            0.25, #wine glass
+                            0.25, #cup
+                            0.25, #fork
+                            0.25, #knife
+                            0.25, #spoon
+                            0.25, #bowl
+                            0.25, #banana
+                            0.25, #apple
+                            0.25, #sandwich
+                            0.25, #orange
+                            0.25, #broccoli
+                            0.25, #carrot
+                            0.25, #hot dog
+                            0.25, #pizza
+                            0.25, #donut
+                            0.25, #cake
+                            0.25, #chair
+                            0.25, #sofa
+                            0.25, #pottedplant
+                            0.25, #bed
+                            0.25, #diningtable
+                            0.25, #toilet
+                            0.25, #tvmonitor
+                            0.25, #laptop
+                            0.25, #mouse
+                            0.25, #remote
+                            0.25, #keyboard
+                            0.25, #cell phone
+                            0.25, #microwave
+                            0.25, #oven
+                            0.25, #toaster
+                            0.25, #sink
+                            0.25, #refrigerator
+                            0.25, #book
+                            0.25, #clock
+                            0.25, #vase
+                            0.25, #scissors
+                            0.25, #teddy bear
+                            0.25, #hair drier
+                            0.25] #toothbrush
+
+        # From mini_train
+        hist_bins: [0., 0.5, 1. ]
+        false_pos_hist: [0.55, 0.45, #person
+                        0.55, 0.45, #bicycle
+                        0.55, 0.45, #car
+                        0.55, 0.45, #motorbike
+                        0.55, 0.45, #aeroplane
+                        0.55, 0.45, #bus
+                        0.55, 0.45, #train
+                        0.55, 0.45, #truck
+                        0.55, 0.45, #boat
+                        0.55, 0.45, #traffic light
+                        0.55, 0.45, #fire hydrant
+                        0.55, 0.45, #stop sign
+                        0.55, 0.45, #parking meter
+                        0.55, 0.45, #bench
+                        0.55, 0.45, #bird
+                        0.55, 0.45, #cat
+                        0.55, 0.45, #dog
+                        0.55, 0.45, #horse
+                        0.55, 0.45, #sheep
+                        0.55, 0.45, #cow
+                        0.55, 0.45, #elephant
+                        0.55, 0.45, #bear
+                        0.55, 0.45, #zebra
+                        0.55, 0.45, #giraffe
+                        0.55, 0.45, #backpack
+                        0.55, 0.45, #umbrella
+                        0.55, 0.45, #handbag
+                        0.55, 0.45, #tie
+                        0.55, 0.45, #suitcase
+                        0.55, 0.45, #frisbee
+                        0.55, 0.45, #skis
+                        0.55, 0.45, #snowboard
+                        0.55, 0.45, #sports ball
+                        0.55, 0.45, #kite
+                        0.55, 0.45, #baseball bat
+                        0.55, 0.45, #baseball glove
+                        0.55, 0.45, #skateboard
+                        0.55, 0.45, #surfboard
+                        0.55, 0.45, #tennis racket
+                        0.55, 0.45, #bottle
+                        0.55, 0.45, #wine glass
+                        0.55, 0.45, #cup
+                        0.55, 0.45, #fork
+                        0.55, 0.45, #knife
+                        0.55, 0.45, #spoon
+                        0.55, 0.45, #bowl
+                        0.55, 0.45, #banana
+                        0.55, 0.45, #apple
+                        0.55, 0.45, #sandwich
+                        0.55, 0.45, #orange
+                        0.55, 0.45, #broccoli
+                        0.55, 0.45, #carrot
+                        0.55, 0.45, #hot dog
+                        0.55, 0.45, #pizza
+                        0.55, 0.45, #donut
+                        0.55, 0.45, #cake
+                        0.55, 0.45, #chair
+                        0.55, 0.45, #sofa
+                        0.55, 0.45, #pottedplant
+                        0.55, 0.45, #bed
+                        0.55, 0.45, #diningtable
+                        0.55, 0.45, #toilet
+                        0.55, 0.45, #tvmonitor
+                        0.55, 0.45, #laptop
+                        0.55, 0.45, #mouse
+                        0.55, 0.45, #remote
+                        0.55, 0.45, #keyboard
+                        0.55, 0.45, #cell phone
+                        0.55, 0.45, #microwave
+                        0.55, 0.45, #oven
+                        0.55, 0.45, #toaster
+                        0.55, 0.45, #sink
+                        0.55, 0.45, #refrigerator
+                        0.55, 0.45, #book
+                        0.55, 0.45, #clock
+                        0.55, 0.45, #vase
+                        0.55, 0.45, #scissors
+                        0.55, 0.45, #teddy bear
+                        0.55, 0.45, #hair drier
+                        0.55, 0.45] #toothbrush
+        true_pos_hist: [0.45, 0.55, #person
+                        0.45, 0.55, #bicycle
+                        0.45, 0.55, #car
+                        0.45, 0.55, #motorbike
+                        0.45, 0.55, #aeroplane
+                        0.45, 0.55, #bus
+                        0.45, 0.55, #train
+                        0.45, 0.55, #truck
+                        0.45, 0.55, #boat
+                        0.45, 0.55, #traffic light
+                        0.45, 0.55, #fire hydrant
+                        0.45, 0.55, #stop sign
+                        0.45, 0.55, #parking meter
+                        0.45, 0.55, #bench
+                        0.45, 0.55, #bird
+                        0.45, 0.55, #cat
+                        0.45, 0.55, #dog
+                        0.45, 0.55, #horse
+                        0.45, 0.55, #sheep
+                        0.45, 0.55, #cow
+                        0.45, 0.55, #elephant
+                        0.45, 0.55, #bear
+                        0.45, 0.55, #zebra
+                        0.45, 0.55, #giraffe
+                        0.45, 0.55, #backpack
+                        0.45, 0.55, #umbrella
+                        0.45, 0.55, #handbag
+                        0.45, 0.55, #tie
+                        0.45, 0.55, #suitcase
+                        0.45, 0.55, #frisbee
+                        0.45, 0.55, #skis
+                        0.45, 0.55, #snowboard
+                        0.45, 0.55, #sports ball
+                        0.45, 0.55, #kite
+                        0.45, 0.55, #baseball bat
+                        0.45, 0.55, #baseball glove
+                        0.45, 0.55, #skateboard
+                        0.45, 0.55, #surfboard
+                        0.45, 0.55, #tennis racket
+                        0.45, 0.55, #bottle
+                        0.45, 0.55, #wine glass
+                        0.45, 0.55, #cup
+                        0.45, 0.55, #fork
+                        0.45, 0.55, #knife
+                        0.45, 0.55, #spoon
+                        0.45, 0.55, #bowl
+                        0.45, 0.55, #banana
+                        0.45, 0.55, #apple
+                        0.45, 0.55, #sandwich
+                        0.45, 0.55, #orange
+                        0.45, 0.55, #broccoli
+                        0.45, 0.55, #carrot
+                        0.45, 0.55, #hot dog
+                        0.45, 0.55, #pizza
+                        0.45, 0.55, #donut
+                        0.45, 0.55, #cake
+                        0.45, 0.55, #chair
+                        0.45, 0.55, #sofa
+                        0.45, 0.55, #pottedplant
+                        0.45, 0.55, #bed
+                        0.45, 0.55, #diningtable
+                        0.45, 0.55, #toilet
+                        0.45, 0.55, #tvmonitor
+                        0.45, 0.55, #laptop
+                        0.45, 0.55, #mouse
+                        0.45, 0.55, #remote
+                        0.45, 0.55, #keyboard
+                        0.45, 0.55, #cell phone
+                        0.45, 0.55, #microwave
+                        0.45, 0.55, #oven
+                        0.45, 0.55, #toaster
+                        0.45, 0.55, #sink
+                        0.45, 0.55, #refrigerator
+                        0.45, 0.55, #book
+                        0.45, 0.55, #clock
+                        0.45, 0.55, #vase
+                        0.45, 0.55, #scissors
+                        0.45, 0.55, #teddy bear
+                        0.45, 0.55, #hair drier
+                        0.45, 0.55] #toothbrush
