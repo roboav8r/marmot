@@ -60,7 +60,7 @@ def generate_launch_description():
     trk_node = Node(
         package='marmot',
         executable='tbd_node.py',
-        name='tracker_node',
+        name='tbd_tracker_node',
         output='screen',
         remappings=[('/detections','/converted_detections')],
         parameters=[tracker_config]
