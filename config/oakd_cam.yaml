@@ -13,7 +13,7 @@
     rgb:
       i_preview_size: 416
 
-depthai_converter_node:
+depthai_preproc_node:
   ros__parameters:
     tracker_frame: 'map'
     labels: ["person",

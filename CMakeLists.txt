@@ -10,10 +10,24 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(vision_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tracking_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 # Install launch and config files
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
+
+# Add and install CPP targets
+add_executable(depthai_preproc src/depthai_preproc.cpp)
+ament_target_dependencies(depthai_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
+install(TARGETS 
+  depthai_preproc
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 # Install Python
 ament_python_install_package(${PROJECT_NAME})

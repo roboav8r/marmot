@@ -42,14 +42,19 @@ def generate_launch_description():
                 'rgbd_pcl.launch.py'
             ])
         ]),
-        launch_arguments={
-            'params_file': cam_config
-        }.items()
+        launch_arguments={'params_file': cam_config }.items()
     )
     ld.add_action(cam_node)
 
-    # Detection conversion node
-    # TODO
+    # Detector preprocessing node
+    preproc_node = Node(
+        package='marmot',
+        executable='depthai_preproc',
+        name='depthai_preproc_node',
+        remappings=[('/depthai_detections','/oak/nn/spatial_detections')],
+        output='screen',
+        parameters=[cam_config])    
+    ld.add_action(preproc_node)
 
     # Tracker node
     trk_node = Node(
