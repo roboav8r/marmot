@@ -6,18 +6,8 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String
-from std_srvs.srv import Empty
 from foxglove_msgs.msg import SceneUpdate, SceneEntity
 from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D
-
-from ros_tracking.datatypes import GraphDet, GraphTrack
-from ros_tracking.assignment import ComputeAssignment
-from ros_tracking.track_management import CreateTracks, DeleteTracks
-from ros_tracking.output import PublishTracks, PublishScene
-from ros_tracking.sensors import CreateSensorModels, ReconfigureSensorModels
-from ros_tracking.tracker import InitializeTracker, ReconfigureTracker
-
 
 class TBDTracker(Node):
     def __init__(self):
@@ -54,7 +44,6 @@ class TBDTracker(Node):
 
             self.obj_properties[obj_name] = temp_dict
 
-
         # Create publishers
         self.declare_parameter('tracker.publishers.names', rclpy.Parameter.Type.STRING_ARRAY)
         self.pub_names = self.get_parameter('tracker.publishers.names').get_parameter_value().string_array_value
@@ -73,10 +62,37 @@ class TBDTracker(Node):
             self.pubs[pub] = (pub_dict)
             exec('self.%s  = self.create_publisher(%s,\'%s\',%s)' % (pub, pub_dict['msg_type'], pub_dict['topic'], pub_dict['queue_size']))
 
-        # Generate sensor models from .yaml
-        # CreateSensorModels(self)          
+        # Generate detector models from .yaml
+        self.declare_parameter('detectors.detector_names', rclpy.Parameter.Type.STRING_ARRAY)
+        detector_names = self.get_parameter('detectors.detector_names').get_parameter_value().string_array_value
+        self.detectors = dict()
+        self.subs = []
 
-        # Track and detection variables
+        for detector_idx, detector in enumerate(detector_names):
+
+            # Declare parameters for detector
+            self.declare_parameter('detectors.' + detector + '.topic', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('detectors.' + detector + '.msg_type', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('detectors.' + detector + '.detector_type',rclpy.Parameter.Type.STRING)
+            self.declare_parameter('detectors.' + detector + '.detection_classes', rclpy.Parameter.Type.STRING_ARRAY)
+
+            # Form parameter dictionary for detector
+            detector_params = dict()
+            detector_params['topic'] = self.get_parameter('detectors.' + detector + '.topic').get_parameter_value().string_value
+            detector_params['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
+            detector_params['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
+            detector_params['detection_classes'] = self.get_parameter('detectors.' + detector + '.detection_classes').get_parameter_value().string_array_value
+
+            self.detectors[detector] = detector_params # Add to tracker's detectors dictionary
+
+            # Create ROS2 subscription for this detector
+            self.subs.append(self.create_subscription(eval(detector_params['msg_type']),
+                    detector_params['topic'],
+                    lambda msg: self.det_callback(msg, detector), 
+                    1
+            ))
+
+        # Initialize tracker Track and Detection set variables
         self.dets_msg = Detections3D()
         self.trk_id_count = 0
         self.dets = []
@@ -137,8 +153,8 @@ class TBDTracker(Node):
     #                                             'init_vel_cov': tracker.get_parameter('object_properties.' + obj_name + '.init_vel_cov').get_parameter_value().double_array_value}
 
 
-    #     # Generate sensor models from .yaml
-    #     ReconfigureSensorModels(self)  
+    #     # Generate detector models from .yaml
+    #     ReconfiguredetectorModels(self)  
 
     #     return resp
 
@@ -150,13 +166,13 @@ class TBDTracker(Node):
     #     for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
     #         self.trks[trk_idx].update(self.dets[det_idx], det_params)
 
-    def det_callback(self, det_array_msg, det_params):
+    def det_callback(self, det_array_msg, detector_name):
         self.dets_msg = det_array_msg
         metadata = self.dets_msg.detections[0].metadata
         self.dets = []
        
         # POPULATE detections list from detections message
-        self.get_logger().info("DETECT: received %i detections" % (len(self.dets_msg.detections)))
+        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(self.dets_msg.detections), detector_name))
         # for det in self.dets_msg.detections:
         #     self.dets.append(GraphDet(self.dets_msg,det))
 
