@@ -29,15 +29,14 @@ class TBDTracker(Node):
         self.declare_parameter('tracker.frame_id', rclpy.Parameter.Type.STRING)
         self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
 
-        # Configure tracker object properties from .yaml
+        # Configure tracker's object properties dictionary from .yaml
         self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
         self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
         self.obj_properties = dict()
 
-        # Read parameters and assign to tracker's object properties dictionary
         for obj_name in self.obj_classes:
-            temp_dict = dict()
 
+            temp_dict = dict()
             self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.init_vel_cov', rclpy.Parameter.Type.DOUBLE_ARRAY)
@@ -57,19 +56,22 @@ class TBDTracker(Node):
 
 
         # Create publishers
-        # tracker.pub_names = tracker.get_parameter('tracker.publishers.names').get_parameter_value().string_array_value
-        # tracker.pubs = dict()
-        # for pub in tracker.pub_names:
-        #     pub_dict = dict()
-        #     tracker.declare_parameter('tracker.publishers.' + pub + '.pub_topic', rclpy.Parameter.Type.STRING)
-        #     tracker.declare_parameter('tracker.publishers.' + pub + '.msg_type', rclpy.Parameter.Type.STRING)
-        #     tracker.declare_parameter('tracker.publishers.' + pub + '.routine', rclpy.Parameter.Type.STRING)
-        #     pub_dict['topic'] = tracker.get_parameter('tracker.publishers.' + pub + '.pub_topic').get_parameter_value().string_value
-        #     pub_dict['msg_type'] = tracker.get_parameter('tracker.publishers.' + pub + '.msg_type').get_parameter_value().string_value
-        #     pub_dict['routine'] = tracker.get_parameter('tracker.publishers.' + pub + '.routine').get_parameter_value().string_value
+        self.declare_parameter('tracker.publishers.names', rclpy.Parameter.Type.STRING_ARRAY)
+        self.pub_names = self.get_parameter('tracker.publishers.names').get_parameter_value().string_array_value
+        self.pubs = dict()
+        for pub in self.pub_names:
+            pub_dict = dict()
+            self.declare_parameter('tracker.publishers.' + pub + '.pub_topic', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('tracker.publishers.' + pub + '.msg_type', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('tracker.publishers.' + pub + '.function', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('tracker.publishers.' + pub + '.queue_size', rclpy.Parameter.Type.INTEGER)
+            pub_dict['topic'] = self.get_parameter('tracker.publishers.' + pub + '.pub_topic').get_parameter_value().string_value
+            pub_dict['msg_type'] = self.get_parameter('tracker.publishers.' + pub + '.msg_type').get_parameter_value().string_value
+            pub_dict['function'] = self.get_parameter('tracker.publishers.' + pub + '.function').get_parameter_value().string_value
+            pub_dict['queue_size'] = self.get_parameter('tracker.publishers.' + pub + '.queue_size').get_parameter_value().integer_value
         
-        #     tracker.pubs[pub] = (pub_dict)
-        #     exec('tracker.%s  = tracker.create_publisher(%s,\'%s\',10)' % (pub, pub_dict['msg_type'], pub_dict['topic']))
+            self.pubs[pub] = (pub_dict)
+            exec('self.%s  = self.create_publisher(%s,\'%s\',%s)' % (pub, pub_dict['msg_type'], pub_dict['topic'], pub_dict['queue_size']))
 
         # Generate sensor models from .yaml
         # CreateSensorModels(self)          
