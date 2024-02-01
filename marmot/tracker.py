@@ -9,6 +9,9 @@ from rclpy.node import Node
 from foxglove_msgs.msg import SceneUpdate, SceneEntity
 from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D
 
+from marmot.management import create_tracks, delete_tracks
+from marmot.datatypes import Detection
+
 class TBDTracker(Node):
     def __init__(self):
 
@@ -22,7 +25,7 @@ class TBDTracker(Node):
         # Configure tracker's object properties dictionary from .yaml
         self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
         self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
-        self.obj_properties = dict()
+        self.obj_props = dict()
 
         for obj_name in self.obj_classes:
 
@@ -42,7 +45,7 @@ class TBDTracker(Node):
             temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
             temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
 
-            self.obj_properties[obj_name] = temp_dict
+            self.obj_props[obj_name] = temp_dict
 
         # Create publishers
         self.declare_parameter('tracker.publishers.names', rclpy.Parameter.Type.STRING_ARRAY)
@@ -82,6 +85,17 @@ class TBDTracker(Node):
             detector_params['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
             detector_params['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
             detector_params['detection_classes'] = self.get_parameter('detectors.' + detector + '.detection_classes').get_parameter_value().string_array_value
+
+            detector_params['detection_params'] = dict()
+            for det_cls in detector_params['detection_classes']:
+                detector_params['detection_params'][det_cls] = dict()
+
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)
+                
+                detector_params['detection_params'][det_cls]['pos_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_var').get_parameter_value().double_array_value
+                detector_params['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
+                
 
             self.detectors[detector] = detector_params # Add to tracker's detectors dictionary
 
@@ -167,14 +181,16 @@ class TBDTracker(Node):
     #         self.trks[trk_idx].update(self.dets[det_idx], det_params)
 
     def det_callback(self, det_array_msg, detector_name):
-        self.dets_msg = det_array_msg
-        metadata = self.dets_msg.detections[0].metadata
-        self.dets = []
        
         # POPULATE detections list from detections message
-        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(self.dets_msg.detections), detector_name))
-        # for det in self.dets_msg.detections:
-        #     self.dets.append(GraphDet(self.dets_msg,det))
+        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(det_array_msg.detections), detector_name))
+        self.dets = []
+        for det in det_array_msg.detections:
+            self.dets.append(Detection(det_array_msg,det))
+
+        # Manage unmatched tracks and detections
+        delete_tracks(self)
+        create_tracks(self, detector_name)
 
         # # PROPAGATE existing tracks
         # self.propagate_tracks()
@@ -199,11 +215,6 @@ class TBDTracker(Node):
         #         trk.metadata = metadata
         #         trk.n_missed += 1
         #         trk.n_matched = 0
-
-        # DeleteTracks(self)
-
-        # # CREATE tracks from unmatched detections, as appropriate
-        # # CreateTracks(self, det_params)
 
         # # OUTPUT tracker results
         # self.get_logger().info("PUBLISH: have %i tracks, %i detections \n" % (len(self.trks), len(self.dets)))

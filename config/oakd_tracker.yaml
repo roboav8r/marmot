@@ -671,244 +671,244 @@ tbd_tracker_node:
         detection_properties:
             person:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'person'
+                object_class: 'person'
             bicycle:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bicycle'
+                object_class: 'bicycle'
             car:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'car'
+                object_class: 'car'
             motorbike:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'motorbike'
+                object_class: 'motorbike'
             aeroplane:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'aeroplane'
+                object_class: 'aeroplane'
             bus:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bus'
+                object_class: 'bus'
             train:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'train'
+                object_class: 'train'
             truck:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'truck'
+                object_class: 'truck'
             boat:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'boat'
+                object_class: 'boat'
             traffic light:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'traffic light'
+                object_class: 'traffic light'
             fire hydrant:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'fire hydrant'
+                object_class: 'fire hydrant'
             stop sign:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'stop sign'
+                object_class: 'stop sign'
             parking meter:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'parking meter'
+                object_class: 'parking meter'
             bench:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bench'
+                object_class: 'bench'
             bird:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bird'
+                object_class: 'bird'
             cat:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'cat'
+                object_class: 'cat'
             dog:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'dog'
+                object_class: 'dog'
             horse:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'horse'
+                object_class: 'horse'
             sheep:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'sheep'
+                object_class: 'sheep'
             cow:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'cow'
+                object_class: 'cow'
             elephant:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'elephant'
+                object_class: 'elephant'
             bear:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bear'
+                object_class: 'bear'
             zebra:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'zebra'
+                object_class: 'zebra'
             giraffe:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'giraffe'
+                object_class: 'giraffe'
             backpack:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'backpack'
+                object_class: 'backpack'
             umbrella:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'umbrella'
+                object_class: 'umbrella'
             handbag:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'handbag'
+                object_class: 'handbag'
             tie:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'tie'
+                object_class: 'tie'
             suitcase:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'suitcase'
+                object_class: 'suitcase'
             frisbee:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'frisbee'
+                object_class: 'frisbee'
             skis:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'skis'
+                object_class: 'skis'
             snowboard:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'snowboard'
+                object_class: 'snowboard'
             sports ball:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'sports ball'
+                object_class: 'sports ball'
             kite:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'kite'
+                object_class: 'kite'
             baseball bat:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'baseball bat'
+                object_class: 'baseball bat'
             baseball glove:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'baseball glove'
+                object_class: 'baseball glove'
             skateboard:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'skateboard'
+                object_class: 'skateboard'
             surfboard:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'surfboard'
+                object_class: 'surfboard'
             tennis racket:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'tennis racket'
+                object_class: 'tennis racket'
             bottle:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bottle'
+                object_class: 'bottle'
             wine glass:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'wine glass'
+                object_class: 'wine glass'
             cup:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'cup'
+                object_class: 'cup'
             fork:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'fork'
+                object_class: 'fork'
             knife:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'knife'
+                object_class: 'knife'
             spoon:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'spoon'
+                object_class: 'spoon'
             bowl:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bowl'
+                object_class: 'bowl'
             banana:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'banana'
+                object_class: 'banana'
             apple:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'apple'
+                object_class: 'apple'
             sandwich:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'sandwich'
+                object_class: 'sandwich'
             orange:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'orange'
+                object_class: 'orange'
             broccoli:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'broccoli'
+                object_class: 'broccoli'
             carrot:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'carrot'
+                object_class: 'carrot'
             hot dog:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'hot dog'
+                object_class: 'hot dog'
             pizza:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'pizza'
+                object_class: 'pizza'
             donut:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'donut'
+                object_class: 'donut'
             cake:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'cake'
+                object_class: 'cake'
             chair:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'chair'
+                object_class: 'chair'
             sofa:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'sofa'
+                object_class: 'sofa'
             pottedplant:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'pottedplant'
+                object_class: 'pottedplant'
             bed:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'bed'
+                object_class: 'bed'
             diningtable:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'diningtable'
+                object_class: 'diningtable'
             toilet:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'toilet'
+                object_class: 'toilet'
             tvmonitor:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'tvmonitor'
+                object_class: 'tvmonitor'
             laptop:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'laptop'
+                object_class: 'laptop'
             mouse:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'mouse'
+                object_class: 'mouse'
             remote:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'remote'
+                object_class: 'remote'
             keyboard:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'keyboard'
+                object_class: 'keyboard'
             cell phone:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'cell phone'
+                object_class: 'cell phone'
             microwave:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'microwave'
+                object_class: 'microwave'
             oven:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'oven'
+                object_class: 'oven'
             toaster:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'toaster'
+                object_class: 'toaster'
             sink:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'sink'
+                object_class: 'sink'
             refrigerator:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'refrigerator'
+                object_class: 'refrigerator'
             book:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'book'
+                object_class: 'book'
             clock:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'clock'
+                object_class: 'clock'
             vase:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'vase'
+                object_class: 'vase'
             scissors:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'scissors'
+                object_class: 'scissors'
             teddy bear:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'teddy bear'
+                object_class: 'teddy bear'
             hair drier:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'hair drier'
+                object_class: 'hair drier'
             toothbrush:
                 pos_var: [1., 1., 1.]
-                tracker_class: 'toothbrush'
+                object_class: 'toothbrush'
 
 
         # # Spatial detector model - TODO generate this from process models, detector model name
