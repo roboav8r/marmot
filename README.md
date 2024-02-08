@@ -26,6 +26,9 @@ mamba env create -f marmot_env.yml
 mamba activate marmot
 ```
 
+## Building the package
+
+
 ## Download nuScenes data (Optional)
 If you want to evaluate MaRMOT on nuScenes OR use the nuScenes dataset for tracking development & evaluation, follow these steps to download and extract the dataset.
 
@@ -94,16 +97,30 @@ Upon completion, the directory should have the following structure:
 ```
 At this point, you can remove the .zip and .tgz files if you'd like.
 # Usage
+
 ## Running nuScenes experiments
 If you wish to run the nuScenes experiments OR use the nuScenes dataset for tracker development, complete the following steps:
 
-1) Convert nuscenes detection and data to ROS2 .mcap files. In the `MaRMOT` directory:
+1) Source the workspace. At a terminal:
+```
+mamba activate marmot
+cd ~/tracking_ws
+source install/setup.bash
+```
+
+2) Convert nuscenes detection and data to ROS2 .mcap files. In the `MaRMOT` directory:
 ```
 python3 scripts/nuscenes_to_mcap.py # Converts mini_train by default
 python3 scripts/nuscenes_to_mcap.py -s mini_val # Converts the mini_val split
 python3 scripts/nuscenes_to_mcap.py -d v1.0-trainval -s train # Converts the training split from the main dataset
 python3 scripts/nuscenes_to_mcap.py -d v1.0-trainval -s val # Converts the validation split from the main dataset
 python3 scripts/nuscenes_to_mcap.py -d v1.0-test -s test # Converts the test split from the main dataset
+```
+
+3) Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
+```
+ros2 launch marmot run_nuscenes_exp_minival.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
+ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set
 ```
 
 # Acknowledgements
