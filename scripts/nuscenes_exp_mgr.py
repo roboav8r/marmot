@@ -45,7 +45,7 @@ class NuscenesExpManager(Node):
         self.lidar_detector = self.get_parameter('lidar_detector').get_parameter_value().string_value
 
         # Non-ros parameters
-        self.package_dir = get_package_share_directory('ros_tracking')
+        self.package_dir = get_package_share_directory('marmot')
         self.split = eval('nuscenes_splits.' + self.val_split)
         self.lidar_det_string = "-" + self.lidar_detector if self.lidar_detector else ""
 
