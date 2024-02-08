@@ -114,3 +114,85 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 3
           n_delete_max: 2 
+
+    detectors:
+      #Declare names of detectors upfront
+      detector_names: ['megvii']
+
+      # For each named detector, give detector model information
+      megvii:
+        topic: 'converted_detections'
+        msg_type: 'Detections3D'
+        detector_type: 'bbox_3d'
+        detection_classes: ['barrier',
+              'bicycle',
+              'bus',
+              'car',
+              'construction_vehicle',
+              'motorcycle',
+              'pedestrian',
+              'traffic_cone',
+              'trailer',
+              'truck']
+        
+        detection_properties:
+            barrier:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: True
+                object_class: '' # Empty object class since this does not map to tracked object
+            bicycle:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'bicycle'
+            bus:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'bus'
+            car:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'car'
+            construction_vehicle:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: True
+                object_class: ''
+            motorcycle:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'motorcycle'
+            pedestrian:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'pedestrian'
+            traffic_cone:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: True
+                object_class: ''
+            trailer:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'trailer'
+            truck:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                ignore: False
+                object_class: 'truck'

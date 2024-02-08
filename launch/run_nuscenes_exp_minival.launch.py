@@ -13,11 +13,11 @@ def generate_launch_description():
         'config',
         'exp_minival.yaml'
         )
-    # def_config = os.path.join(
-    #     get_package_share_directory('marmot'),
-    #     'config',
-    #     'default_nuscenes.yaml'
-    # )
+    def_config = os.path.join(
+        get_package_share_directory('marmot'),
+        'config',
+        'nusc_baseline.yaml'
+    )
 
     # Manager node
     comp_node = Node(
@@ -39,14 +39,14 @@ def generate_launch_description():
     ld.add_action(det_node)
 
     # Tracker node
-    # trk_node = Node(
-    #     package='marmot',
-    #     executable='py_tracker.py',
-    #     name='tracker',
-    #     output='screen',
-    #     remappings=[('/detections','/converted_detections')],
-    #     parameters=[def_config]
-    # )
-    # ld.add_action(trk_node)
+    trk_node = Node(
+        package='marmot',
+        executable='tbd_node.py',
+        name='tbd_tracker_node',
+        output='screen',
+        remappings=[('/detections','/converted_detections')],
+        parameters=[def_config]
+    )
+    ld.add_action(trk_node)
 
     return ld
