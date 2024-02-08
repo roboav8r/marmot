@@ -19,6 +19,7 @@
 
   <depend> rclcpp </depend>
   <depend> rclpy </depend>
+  <depend> rosbag2_py </depend>
 
   <exec_depend>ros2launch</exec_depend>
 
