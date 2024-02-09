@@ -8,9 +8,11 @@ from rclpy.node import Node
 
 from foxglove_msgs.msg import SceneUpdate, SceneEntity
 from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D
+from std_srvs.srv import Empty
 
 from marmot.management import create_tracks, delete_tracks
 from marmot.datatypes import Detection
+from marmot.output import publish_tracks, publish_scene
 
 class TBDTracker(Node):
     def __init__(self):
@@ -24,28 +26,8 @@ class TBDTracker(Node):
 
         # Configure tracker's object properties dictionary from .yaml
         self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
-        self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
-        self.obj_props = dict()
-
-        for obj_name in self.obj_classes:
-
-            temp_dict = dict()
-            self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            self.declare_parameter('object_properties.' + obj_name + '.init_vel_cov', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
-            self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
-            temp_dict['model_type'] = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
-            temp_dict['proc_var'] = self.get_parameter('object_properties.' + obj_name + '.proc_var').get_parameter_value().double_array_value
-            temp_dict['init_vel_cov'] = self.get_parameter('object_properties.' + obj_name + '.init_vel_cov').get_parameter_value().double_array_value
-            temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
-            temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
-            temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
-            temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
-
-            self.obj_props[obj_name] = temp_dict
+        self.declare_obj_params()
+        self.set_obj_properties()
 
         # Create publishers
         self.declare_parameter('tracker.publishers.names', rclpy.Parameter.Type.STRING_ARRAY)
@@ -90,10 +72,16 @@ class TBDTracker(Node):
             for det_cls in detector_params['detection_classes']:
                 detector_params['detection_params'][det_cls] = dict()
 
-                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore',rclpy.Parameter.Type.BOOL)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)
                 
-                detector_params['detection_params'][det_cls]['pos_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_var').get_parameter_value().double_array_value
+                detector_params['detection_params'][det_cls]['pos_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var').get_parameter_value().double_array_value
+                detector_params['detection_params'][det_cls]['yaw_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var').get_parameter_value().double_array_value
+                detector_params['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
+                detector_params['detection_params'][det_cls]['ignore'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore').get_parameter_value().bool_value
                 detector_params['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
                 
 
@@ -122,55 +110,98 @@ class TBDTracker(Node):
         self.scene_msg = SceneUpdate()
 
         # Declare services
-        # self.reset_srv = self.create_service(Empty, 'reset_tracker', self.reset_tracker)
-        # self.reconfigure_srv = self.create_service(Empty, 'reconfigure_tracker', self.reconfigure_tracker)
+        self.reset_srv = self.create_service(Empty, 'reset_tracker', self.reset_tracker)
+        self.reconfigure_srv = self.create_service(Empty, 'reconfigure_tracker', self.reconfigure_tracker)
 
-    # def reset_tracker(self, req, resp):
+    def declare_obj_params(self):
 
-    #     self.get_logger().info("Resetting tracker")
+        self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
 
-    #     # Clear track, detection, and assignment variables
-    #     self.dets = []
-    #     self.trks = []
+        for obj_name in self.obj_classes:
 
-    #     self.cost_matrix = np.empty(0)
-    #     self.det_asgn_idx = [] 
-    #     self.trk_asgn_idx = []       
+            self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('object_properties.' + obj_name + '.length', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.width', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.height', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
+            self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
+            model_type = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
 
-    #     return resp
+            # Add model-specific parameters
+            if model_type in ['cp']:
+                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('object_properties.' + obj_name + '.pos_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            elif model_type in ['cvcy', 'cvcy_obj']:
+                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+                self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            else:
+                raise TypeError('No process model for type: %s' % model_type)
 
-    # def reconfigure_tracker(self, req, resp):
+    def set_obj_properties(self):
 
-    #     self.get_logger().info("Reconfiguring tracker")
+        self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
 
-    #     # Configure tracker from .yaml
-    #     tracker.object_classes = tracker.get_parameter('tracker.object_classes').get_parameter_value().string_array_value
-    #     tracker.frame_id = tracker.get_parameter('tracker.frame_id').get_parameter_value().string_value
-    #     tracker.asgn_thresh = tracker.get_parameter('tracker.asgn_thresh').get_parameter_value().double_value
-    #     tracker.del_thresh_list = tracker.get_parameter('tracker.del_thresh_list').get_parameter_value().double_array_value
-    #     tracker.pub_thresh_list = tracker.get_parameter('tracker.pub_thresh_list').get_parameter_value().double_array_value
-    #     tracker.n_age_max_list = tracker.get_parameter('tracker.n_age_max_list').get_parameter_value().integer_array_value
-    #     tracker.n_birth_min_list= tracker.get_parameter('tracker.n_birth_min_list').get_parameter_value().integer_array_value
-    #     tracker.trk_mgmt_method = tracker.get_parameter('tracker.trk_mgmt_method').get_parameter_value().string_value
-    #     tracker.obj_prop_classes = tracker.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
+        self.obj_props = dict()
+        
+        for obj_name in self.obj_classes:
 
-    #     tracker.class_idx_map = dict()
-    #     for idx, class_name in enumerate(tracker.object_classes):
-    #         tracker.class_idx_map[class_name] = idx
+            temp_dict = dict()
+            temp_dict['model_type'] = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
+            temp_dict['length'] = self.get_parameter('object_properties.' + obj_name + '.length').get_parameter_value().double_value
+            temp_dict['width'] = self.get_parameter('object_properties.' + obj_name + '.width').get_parameter_value().double_value
+            temp_dict['height'] = self.get_parameter('object_properties.' + obj_name + '.height').get_parameter_value().double_value
+            temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
+            temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
+            temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
+            temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
 
-    #     tracker.object_properties = dict()
+            # Add model-specific parameters
+            if temp_dict['model_type'] in ['cp']:
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_value
+                temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
+                temp_dict['pos_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.pos_proc_var').get_parameter_value().double_array_value
+            elif temp_dict['model_type'] in ['cvcy', 'cvcy_obj']:
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_value
+                temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
+                temp_dict['vel_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.vel_proc_var').get_parameter_value().double_array_value
+            else:
+                raise TypeError('No process model for type: %s' % temp_dict['model_type'])
 
-    #     for obj_name in tracker.obj_prop_classes:
+            self.obj_props[obj_name] = temp_dict
 
-    #         tracker.object_properties[obj_name] = {'model_type': tracker.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value, 
-    #                                             'proc_var': tracker.get_parameter('object_properties.' + obj_name + '.proc_var').get_parameter_value().double_array_value,
-    #                                             'init_vel_cov': tracker.get_parameter('object_properties.' + obj_name + '.init_vel_cov').get_parameter_value().double_array_value}
+    def reset_tracker(self, _, resp):
 
+        self.get_logger().info("Resetting tracker")
 
-    #     # Generate detector models from .yaml
-    #     ReconfiguredetectorModels(self)  
+        # Clear track, detection, and assignment variables
+        self.dets = []
+        self.trks = []
 
-    #     return resp
+        self.cost_matrix = np.empty(0)
+        self.det_asgn_idx = [] 
+        self.trk_asgn_idx = []       
+
+        return resp
+
+    def reconfigure_tracker(self, _, resp):
+
+        self.get_logger().info("Reconfiguring tracker")
+
+        # Configure tracker from .yaml
+        self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
+        self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
+
+        # Reconfigure objects
+        self.set_obj_properties()
+
+        # Generate detector models from .yaml
+        # TODO 
+
+        return resp
 
     # def propagate_tracks(self):
     #     for trk in self.trks:
@@ -186,7 +217,7 @@ class TBDTracker(Node):
         self.get_logger().info("DETECT: received %i detections from %s detector" % (len(det_array_msg.detections), detector_name))
         self.dets = []
         for det in det_array_msg.detections:
-            self.dets.append(Detection(det_array_msg,det))
+            self.dets.append(Detection(self, det_array_msg, det, detector_name))
 
         # Manage unmatched tracks and detections
         delete_tracks(self)
@@ -213,10 +244,10 @@ class TBDTracker(Node):
         #         trk.track_conf = gtsam.DiscreteDistribution([gtsam.symbol('e',trk.trk_id),2],[(1-p_missed)*trk.track_conf(0),p_missed*trk.track_conf(1)])
 
         #         trk.metadata = metadata
-        #         trk.n_missed += 1
-        #         trk.n_matched = 0
+        #         trk.n_cons_misses += 1
+        #         trk.n_cons_matches = 0
 
-        # # OUTPUT tracker results
-        # self.get_logger().info("PUBLISH: have %i tracks, %i detections \n" % (len(self.trks), len(self.dets)))
-        # for pub_name in self.pubs:
-        #     exec('%s(self,\'%s\')' % (self.pubs[pub_name]['routine'],pub_name))
+        # OUTPUT tracker results
+        self.get_logger().info("PUBLISH: have %i tracks, %i detections \n" % (len(self.trks), len(self.dets)))
+        for pub_name in self.pub_names:
+            exec('%s(self,\'%s\')' % (self.pubs[pub_name]['function'],pub_name))

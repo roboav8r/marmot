@@ -7,12 +7,12 @@ tbd_tracker_node:
           track_pub: # Publisher name
             pub_topic: 'tracks'
             msg_type: 'Tracks3D'
-            function: 'PublishTracks'
+            function: 'publish_tracks'
             queue_size: 10
           scene_pub: # Publisher name
             pub_topic: 'scenes'
             msg_type: 'SceneUpdate'
-            function: 'PublishScene'
+            function: 'publish_scene'
             queue_size: 10
 
     object_properties: 
@@ -123,7 +123,7 @@ tbd_tracker_node:
       megvii:
         topic: 'converted_detections'
         msg_type: 'Detections3D'
-        detector_type: 'bbox_3d'
+        detector_type: 'pos_bbox_3d'
         detection_classes: ['barrier',
               'bicycle',
               'bus',

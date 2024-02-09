@@ -113,7 +113,7 @@ class NuscenesExpManager(Node):
             exp_path = os.path.join(self.package_dir,exp)
             exp_name = os.path.splitext(os.path.split(exp_path)[-1])[0]
             self.get_logger().info("Loading tracker experiment configuration: %s" % (exp_name))
-            subprocess.run(["ros2","param", "load", "/tracker", os.path.join(self.package_dir,exp_path)])
+            subprocess.run(["ros2", "param", "load", "/tbd_tracker_node", os.path.join(self.package_dir,exp_path)])
             
             # Reset & reconfigure tracker
             self.future = self.reconf_tracker_client.call_async(self.empty_req)
