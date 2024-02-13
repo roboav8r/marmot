@@ -15,7 +15,8 @@ Note: Make sure that you deactivate any virtual environments before installing R
 ```
 cd ~
 mkdir -p tracking_ws/src && cd tracking_ws/src
-git clone https://github.com/roboav8r/MaRMOT.git
+git clone https://github.com/roboav8r/marmot.git
+git clone https://github.com/roboav8r/tracking_msgs.git
 cd tracking_ws
 rosdep install -i --from-path src --rosdistro iron -y
 ```
@@ -27,7 +28,13 @@ mamba activate marmot
 ```
 
 ## Building the package
-
+```
+cd ~/tracking_ws
+source /opt/ros/${YOUR_ROS2_DISTRO}/setup.bash
+colcon build --packages-select tracking_msgs
+source install/setup.bash
+colcon build
+```
 
 ## Download nuScenes data (Optional)
 If you want to evaluate MaRMOT on nuScenes OR use the nuScenes dataset for tracking development & evaluation, follow these steps to download and extract the dataset.

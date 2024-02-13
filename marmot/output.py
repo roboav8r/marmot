@@ -153,7 +153,7 @@ def publish_scene(tracker, pub_name):
         # Add metadata
         name_md = KeyValuePair()
         name_md.key = 'class_name'
-        name_md.value = tracker.object_classes[trk.class_dist.argmax()]
+        name_md.value = trk.obj_class_str
         entity_msg.metadata.append(name_md)
 
         score_md = KeyValuePair()
@@ -165,8 +165,6 @@ def publish_scene(tracker, pub_name):
         att_md.key = 'attribute'
         att_md.value = '' 
         entity_msg.metadata.append(att_md)
-
-        tracker.get_logger().info("Metadata: %s" % str(trk.metadata))
 
         sample_md = KeyValuePair()
         sample_md.key = trk.metadata[0].key

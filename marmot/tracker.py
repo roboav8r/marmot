@@ -214,10 +214,11 @@ class TBDTracker(Node):
     def det_callback(self, det_array_msg, detector_name):
        
         # POPULATE detections list from detections message
-        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(det_array_msg.detections), detector_name))
+        self.dets_msg = det_array_msg
+        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(self.dets_msg.detections), detector_name))
         self.dets = []
-        for det in det_array_msg.detections:
-            self.dets.append(Detection(self, det_array_msg, det, detector_name))
+        for det in self.dets_msg.detections:
+            self.dets.append(Detection(self, self.dets_msg, det, detector_name))
 
         # Manage unmatched tracks and detections
         delete_tracks(self)

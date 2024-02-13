@@ -49,10 +49,12 @@ class DetConverter : public rclcpp::Node
               this->det_msg_.bbox.center = it->cubes[0].pose;
               this->det_msg_.bbox.size = it->cubes[0].size;
 
+              // Add metadata to detection/detections messages
               diagnostic_msgs::msg::KeyValue kv;
               kv.key = it->metadata[3].key;
               kv.value = it->metadata[3].value;
               this->det_msg_.metadata.emplace_back(kv);
+              this->dets_msg_.metadata.emplace_back(kv);
 
               // Add detection to Detections3d
               this->dets_msg_.detections.emplace_back(det_msg_);
@@ -62,7 +64,6 @@ class DetConverter : public rclcpp::Node
 
       } else { // Don't publish a message
         return;
-
       }
            
     }
