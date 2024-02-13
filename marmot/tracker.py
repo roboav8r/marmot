@@ -12,6 +12,7 @@ from std_srvs.srv import Empty
 
 from marmot.management import create_tracks, delete_tracks
 from marmot.datatypes import Detection
+from marmot.assignment import compute_assignment
 from marmot.output import publish_tracks, publish_scene
 
 class TBDTracker(Node):
@@ -23,6 +24,10 @@ class TBDTracker(Node):
         # Configure tracker params from .yaml
         self.declare_parameter('tracker.frame_id', rclpy.Parameter.Type.STRING)
         self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
+        self.declare_parameter('tracker.mismatch_penalty', rclpy.Parameter.Type.DOUBLE)
+        self.mismatch_penalty = self.get_parameter('tracker.mismatch_penalty').get_parameter_value().double_value    
+        self.declare_parameter('tracker.assignment_algo', rclpy.Parameter.Type.STRING)
+        self.assignment_algo = self.get_parameter('tracker.assignment_algo').get_parameter_value().string_value    
 
         # Configure tracker's object properties dictionary from .yaml
         self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
@@ -125,8 +130,11 @@ class TBDTracker(Node):
             self.declare_parameter('object_properties.' + obj_name + '.height', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
+            # TODO add multiple cases based on create/delete method
             self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
             self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
+            self.declare_parameter('object_properties.' + obj_name + '.sim_metric', rclpy.Parameter.Type.STRING)
+            self.declare_parameter('object_properties.' + obj_name + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
             model_type = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
 
             # Add model-specific parameters
@@ -156,8 +164,11 @@ class TBDTracker(Node):
             temp_dict['height'] = self.get_parameter('object_properties.' + obj_name + '.height').get_parameter_value().double_value
             temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
             temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
+            # TODO add multiple cases based on create/delete method
             temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
             temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
+            temp_dict['sim_metric'] = self.get_parameter('object_properties.' + obj_name + '.sim_metric').get_parameter_value().string_value
+            temp_dict['match_thresh'] = self.get_parameter('object_properties.' + obj_name + '.match_thresh').get_parameter_value().double_value
 
             # Add model-specific parameters
             if temp_dict['model_type'] in ['cp']:
@@ -220,33 +231,30 @@ class TBDTracker(Node):
         for det in self.dets_msg.detections:
             self.dets.append(Detection(self, self.dets_msg, det, detector_name))
 
-        # Manage unmatched tracks and detections
-        delete_tracks(self)
-        create_tracks(self, detector_name)
-
         # # PROPAGATE existing tracks
         # self.propagate_tracks()
 
-        # # ASSIGN detections to tracks
-        # ComputeAssignment(self, det_params['p_class_label'], det_params)
-        # self.get_logger().info("ASSIGN: cost matrix has shape %lix%li \n" % (self.cost_matrix.shape[0],self.cost_matrix.shape[1]))
-        # self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
-        # self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
+        # ASSIGN detections to tracks
+        compute_assignment(self)
+        self.get_logger().info("ASSIGN: cost matrix has shape %lix%li \n" % (self.cost_matrix.shape[0],self.cost_matrix.shape[1]))
+        self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
+        self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
 
         # # UPDATE tracks with assigned detections
         # self.update_tracks(det_params)
 
-        # # UPDATE unmatched tracks (missed detections)
-        # for i, trk in enumerate(self.trks):
-        #     if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection
+        # UPDATE unmatched tracks (missed detections)
+        for i, trk in enumerate(self.trks):
+            if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection
+                
+                if self.obj_props[trk.obj_class_str]['create_method']=='count' or self.obj_props[trk.obj_class_str]['delete_method']=='count':
+                    trk.metadata = det_array_msg.metadata
+                    trk.n_cons_misses += 1
+                    trk.n_cons_matches = 0
 
-        #         p_missed = det_params['p_missed_det'][trk.class_dist.argmax()]
-
-        #         trk.track_conf = gtsam.DiscreteDistribution([gtsam.symbol('e',trk.trk_id),2],[(1-p_missed)*trk.track_conf(0),p_missed*trk.track_conf(1)])
-
-        #         trk.metadata = metadata
-        #         trk.n_cons_misses += 1
-        #         trk.n_cons_matches = 0
+        # Manage unmatched tracks and detections
+        delete_tracks(self)
+        create_tracks(self, detector_name)
 
         # OUTPUT tracker results
         self.get_logger().info("PUBLISH: have %i tracks, %i detections \n" % (len(self.trks), len(self.dets)))
