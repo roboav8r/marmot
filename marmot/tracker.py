@@ -21,6 +21,10 @@ class TBDTracker(Node):
         super().__init__('tbd_tracker_node')
         self.get_logger().info("Creating tracking-by-detection tracker node")
 
+        # Declare known process/observation models
+        self.supported_proc_models = ['cp','cvcy','cvcy_obj']
+        self.supported_obs_models = ['pos_3d','pos_bbox_3d']
+
         # Configure tracker params from .yaml
         self.declare_parameter('tracker.frame_id', rclpy.Parameter.Type.STRING)
         self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
@@ -102,7 +106,31 @@ class TBDTracker(Node):
                                                                                                                                   0, 0, 0)))
                 else:
                     raise TypeError('No observation model for detector type: %s' % detector_params['detector_type'])
+            
+            # Add observation models for each process/sensor model combination
+            detector_params['obs_model'] = dict()
+            for proc_model in self.supported_proc_models:
 
+                if proc_model in ['cp']:
+                    dim_states = 7
+                elif proc_model in ['cvcy', 'cvcy_obj']:
+                    dim_states = 10
+
+                if detector_params['detector_type'] == 'pos_3d':
+                    dim_obs = 7
+                    detector_params['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
+                    detector_params['obs_model'][proc_model][0,0], detector_params['obs_model'][proc_model][1,1], detector_params['obs_model'][proc_model][2,2], detector_params['obs_model'][proc_model][3,3] = 1,1,1,1
+
+                elif detector_params['detector_type'] == 'pos_bbox_3d':
+                    dim_obs = 7
+                    detector_params['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
+                    detector_params['obs_model'][proc_model][0,0] = 1
+                    detector_params['obs_model'][proc_model][1,1] = 1
+                    detector_params['obs_model'][proc_model][2,2] = 1
+                    detector_params['obs_model'][proc_model][3,3] = 1
+                    detector_params['obs_model'][proc_model][4,4] = 1
+                    detector_params['obs_model'][proc_model][5,5] = 1
+                    detector_params['obs_model'][proc_model][6,6] = 1
 
             self.detectors[detector] = detector_params # Add to tracker's detectors dictionary
 

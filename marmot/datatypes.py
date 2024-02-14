@@ -95,8 +95,10 @@ class Track():
             if abs(det_yaw - self.spatial_state.mean()[3]) > np.pi*3/2:
                 self.spatial_state.mean()[3] += np.pi*2*np.sign(det_yaw)
 
-        # TODO
-        # self.spatial_state = self.kf.update(self.spatial_state, trkr.obs_models, np.vstack((det.pos, det_yaw, det.size, det.class_conf)), obs_var)
+        self.spatial_state = self.kf.update(self.spatial_state, # current state
+                                            trkr.detectors[det.det_name]['obs_model'][trkr.obj_props[self.obj_class_str]['model_type']], # observation model for this object type
+                                            np.vstack((det.pos, det_yaw, det.size)), # stacked detection vector
+                                            trkr.detectors[det.det_name]['detection_params'][det.det_class_str]['obs_var']) # detector variance for this detection type
 
         # Update semantic state
         self.class_conf = det.class_conf*self.class_conf / (det.class_conf*self.class_conf + (1 - det.class_conf)*(1 - self.class_conf))

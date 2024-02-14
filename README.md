@@ -138,4 +138,9 @@ The nuScenes `.mcap` conversion script is a modified version of the original fro
 The [tracking evaluation script](scripts/evaluate.py) is copied from Nutonomy's nuScenes devkit repo [here](https://github.com/nutonomy/nuscenes-devkit/tree/master/python-sdk/nuscenes/eval/tracking) for convenience.
 
 # Potential Improvements
+## Usability
 - Docker/containerized version
+## Readability
+- Move detector initialization to separate class
+- Move process models to separate class
+- Move yaw correction to separate utility class
