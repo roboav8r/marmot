@@ -71,3 +71,32 @@ class Track():
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
         else:
             raise TypeError('No process model for type: %s' % trkr.obj_props[self.obj_class_str]['model_type'])
+        
+    def update(self, det, trkr):
+        # Admin
+        self.metadata = det.metadata
+        self.n_cons_misses = 0
+        self.n_cons_matches += 1
+
+        # Update spatial state
+        rot = gtsam.Rot3(det.pose.orientation.w,det.pose.orientation.x, det.pose.orientation.y, det.pose.orientation.z)
+        det_yaw = rot.rpy()[2]
+
+        # Correct yaw per https://github.com/xinshuoweng/AB3DMOT/blob/61f3bd72574093e367916c757b4747ca445f978c/AB3DMOT_libs/model.py
+        if trkr.yaw_corr:
+            # Convert detection and track yaw to range [-pi, pi]
+            if abs(det_yaw)>=np.pi: det_yaw -= 2*np.pi*np.sign(det_yaw)
+            if abs(self.spatial_state.mean()[3])>=np.pi: self.spatial_state.mean()[3] -= 2*np.pi*np.sign(self.spatial_state.mean()[3])
+
+            # Ensure delta_yaw is acute angle
+            if abs(det_yaw - self.spatial_state.mean()[3])>np.pi/2 and abs(det_yaw - self.spatial_state.mean()[3]) < np.pi*3/2:
+                det_yaw += np.pi
+                if abs(det_yaw)>=np.pi: det_yaw -= 2*np.pi*np.sign(det_yaw)
+            if abs(det_yaw - self.spatial_state.mean()[3]) > np.pi*3/2:
+                self.spatial_state.mean()[3] += np.pi*2*np.sign(det_yaw)
+
+        # TODO
+        # self.spatial_state = self.kf.update(self.spatial_state, trkr.obs_models, np.vstack((det.pos, det_yaw, det.size, det.class_conf)), obs_var)
+
+        # Update semantic state
+        self.class_conf = det.class_conf*self.class_conf / (det.class_conf*self.class_conf + (1 - det.class_conf)*(1 - self.class_conf))

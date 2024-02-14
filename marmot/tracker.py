@@ -27,7 +27,9 @@ class TBDTracker(Node):
         self.declare_parameter('tracker.mismatch_penalty', rclpy.Parameter.Type.DOUBLE)
         self.mismatch_penalty = self.get_parameter('tracker.mismatch_penalty').get_parameter_value().double_value    
         self.declare_parameter('tracker.assignment_algo', rclpy.Parameter.Type.STRING)
-        self.assignment_algo = self.get_parameter('tracker.assignment_algo').get_parameter_value().string_value    
+        self.assignment_algo = self.get_parameter('tracker.assignment_algo').get_parameter_value().string_value
+        self.declare_parameter('tracker.yaw_corr', rclpy.Parameter.Type.BOOL)
+        self.yaw_corr = self.get_parameter('tracker.yaw_corr').get_parameter_value().bool_value
 
         # Configure tracker's object properties dictionary from .yaml
         self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
@@ -218,9 +220,9 @@ class TBDTracker(Node):
     #     for trk in self.trks:
     #         trk.propagate(self.dets_msg.header.stamp)
 
-    # def update_tracks(self, det_params):
-    #     for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
-    #         self.trks[trk_idx].update(self.dets[det_idx], det_params)
+    def update_tracks(self):
+        for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
+            self.trks[trk_idx].update(self.dets[det_idx],self)
 
     def det_callback(self, det_array_msg, detector_name):
        
@@ -240,17 +242,15 @@ class TBDTracker(Node):
         self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
         self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
 
-        # # UPDATE tracks with assigned detections
-        # self.update_tracks(det_params)
+        # UPDATE tracks with assigned detections
+        self.update_tracks(det_pa)
 
         # UPDATE unmatched tracks (missed detections)
         for i, trk in enumerate(self.trks):
-            if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection
-                
-                if self.obj_props[trk.obj_class_str]['create_method']=='count' or self.obj_props[trk.obj_class_str]['delete_method']=='count':
-                    trk.metadata = det_array_msg.metadata
-                    trk.n_cons_misses += 1
-                    trk.n_cons_matches = 0
+            if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection                
+                trk.metadata = det_array_msg.metadata
+                trk.n_cons_misses += 1
+                trk.n_cons_matches = 0
 
         # Manage unmatched tracks and detections
         delete_tracks(self)

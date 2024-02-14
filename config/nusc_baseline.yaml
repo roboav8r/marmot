@@ -4,6 +4,7 @@ tbd_tracker_node:
       frame_id: 'map'
       mismatch_penalty: 100.
       assignment_algo: 'hungarian'
+      yaw_corr: True
       publishers:
           names: ['track_pub']
           track_pub: # Publisher name
