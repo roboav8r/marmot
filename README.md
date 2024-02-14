@@ -111,8 +111,10 @@ If you wish to run the nuScenes experiments OR use the nuScenes dataset for trac
 1) Source the workspace. At a terminal:
 ```
 mamba activate marmot
+source /opt/ros/${YOUR_ROS2_DISTRO}/setup.bash
 cd ~/tracking_ws
 source install/setup.bash
+
 ```
 
 2) Convert nuscenes detection and data to ROS2 .mcap files. In the `MaRMOT` directory:

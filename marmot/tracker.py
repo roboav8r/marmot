@@ -81,16 +81,28 @@ class TBDTracker(Node):
 
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore',rclpy.Parameter.Type.BOOL)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)
                 
                 detector_params['detection_params'][det_cls]['pos_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var').get_parameter_value().double_array_value
                 detector_params['detection_params'][det_cls]['yaw_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var').get_parameter_value().double_array_value
-                detector_params['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
                 detector_params['detection_params'][det_cls]['ignore'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore').get_parameter_value().bool_value
                 detector_params['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
-                
+
+                # Create observation variance model based on detector type
+                if detector_params['detector_type'] == 'pos_bbox_3d':
+                    self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
+                    detector_params['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
+                    detector_params['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((detector_params['detection_params'][det_cls]['pos_obs_var'], 
+                                                                                                                                  detector_params['detection_params'][det_cls]['yaw_obs_var'], 
+                                                                                                                                  detector_params['detection_params'][det_cls]['size_obs_var'])))
+                elif detector_params['detector_type'] == 'pos_3d':
+                    detector_params['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((detector_params['detection_params'][det_cls]['pos_obs_var'], 
+                                                                                                                                  detector_params['detection_params'][det_cls]['yaw_obs_var'], 
+                                                                                                                                  0, 0, 0)))
+                else:
+                    raise TypeError('No observation model for detector type: %s' % detector_params['detector_type'])
+
 
             self.detectors[detector] = detector_params # Add to tracker's detectors dictionary
 
@@ -243,7 +255,7 @@ class TBDTracker(Node):
         self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
 
         # UPDATE tracks with assigned detections
-        self.update_tracks(det_pa)
+        self.update_tracks()
 
         # UPDATE unmatched tracks (missed detections)
         for i, trk in enumerate(self.trks):
