@@ -133,10 +133,13 @@ ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuSce
 ```
 
 ## Evaluating nuScenes results
+Run the evaluation script, which recursively calls the nuScenes `evaluate.py` for all computed results.
 ```
 cd ~/tracking_ws/src/marmot
 mamba activate marmot_eval
+python3 scripts/eval_exp_results.py
 ```
+Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
 
 # Acknowledgements
 The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
