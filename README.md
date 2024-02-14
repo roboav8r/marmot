@@ -20,11 +20,11 @@ git clone https://github.com/roboav8r/tracking_msgs.git
 cd tracking_ws
 rosdep install -i --from-path src --rosdistro iron -y
 ```
-## Setting up the Conda environment
+## Setting up the Conda environments
 Note: I use [`mamba`](https://github.com/conda-forge/miniforge) as a personal preference, but it is a drop-in replacement to `conda`; either `mamba` or `conda` will work for these commands.
 ```
 mamba env create -f marmot_env.yml
-mamba activate marmot
+mamba env create -f marmot_eval.yml
 ```
 
 ## Building the package
@@ -130,6 +130,12 @@ python3 scripts/nuscenes_to_mcap.py -d v1.0-test -s test # Converts the test spl
 ```
 ros2 launch marmot run_nuscenes_exp_minival.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
 ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set
+```
+
+## Evaluating nuScenes results
+```
+cd ~/tracking_ws/src/marmot
+mamba activate marmot_eval
 ```
 
 # Acknowledgements
