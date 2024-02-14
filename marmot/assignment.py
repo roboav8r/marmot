@@ -7,7 +7,7 @@ def dist_3d(det, track):
     # Euclidean distance between positions
     return np.linalg.norm(det.pos[:,0] - track.spatial_state.mean()[0:3])
 
-# def iou3d(det,track):
+# def iou3d(det, track):
     # TODO - compute
 
 def compute_cost_matrix(tracker):
@@ -18,7 +18,8 @@ def compute_cost_matrix(tracker):
         for jj,trk in enumerate(tracker.trks):
 
             # If classes don't match, add mismatch penalty
-            # TODO
+            if trk.obj_class_str != det.obj_class_str:
+                tracker.cost_matrix[ii,jj] += tracker.mismatch_penalty
 
             # If classes do match, compute cost/affinity as appropriate and assign to cost matrix
             if tracker.obj_props[trk.obj_class_str]['sim_metric']=='dist_3d':
@@ -27,6 +28,7 @@ def compute_cost_matrix(tracker):
                 raise TypeError('Invalid similarity metric: %s' % tracker.obj_props[trk.obj_class_str]['sim_metric'])
        
 def solve_cost_matrix(tracker):
+    
     # Compute assignment vectors: each vector contains indices of matched detections and matched tracks
     if tracker.assignment_algo=='hungarian':
         tracker.det_asgn_idx, tracker.trk_asgn_idx = linear_sum_assignment(tracker.cost_matrix)

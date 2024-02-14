@@ -34,6 +34,7 @@ class Track():
     def __init__(self, trkr, det):
 
         # Admin
+        self.timestamp = det.timestamp
         self.trk_id = trkr.trk_id_count
         self.n_cons_matches = 1
         self.n_cons_misses = 0
@@ -50,7 +51,7 @@ class Track():
         self.yaw = det.yaw
         self.size = det.size
 
-        # Initialize state depending on process model type
+        # Initialize state and process model
         if trkr.obj_props[self.obj_class_str]['model_type'] in ['cp']:
 
             # Kalman filter & state
@@ -59,6 +60,12 @@ class Track():
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'])))**2 
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size)), self.cov)
+
+            # Build initial process model and noise
+            self.proc_model = np.diag(np.ones(7))
+            self.proc_noise = gtsam.noiseModel.Diagonal.Sigmas(np.concatenate((trkr.obj_props[self.obj_class_str]['pos_proc_var'], 
+                                                               trkr.obj_props[self.obj_class_str]['yaw_proc_var'],
+                                                               trkr.obj_props[self.obj_class_str]['size_proc_var'])))
 
         elif trkr.obj_props[self.obj_class_str]['model_type'] in ['cvcy','cvcy_obj']:
 
@@ -69,9 +76,42 @@ class Track():
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'])))**2
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
+
+            # Build initial process model and noise
+            self.proc_model = np.diag(np.ones(10))
+            self.proc_noise = gtsam.noiseModel.Diagonal.Sigmas(np.concatenate(([0,0,0],
+                                                               trkr.obj_props[self.obj_class_str]['yaw_proc_var'],
+                                                               trkr.obj_props[self.obj_class_str]['size_proc_var'],
+                                                               trkr.obj_props[self.obj_class_str]['vel_proc_var'])))
+
         else:
             raise TypeError('No process model for type: %s' % trkr.obj_props[self.obj_class_str]['model_type'])
-        
+
+    def compute_proc_model(self,trkr):
+
+        if trkr.obj_props[self.obj_class_str]['model_type'] in ['cvcy']:
+            self.proc_model[0,7], self.proc_model[1,8], self.proc_model[2,9]  = self.dt, self.dt, self.dt
+
+        elif trkr.obj_props[self.obj_class_str]['model_type'] in ['cvcy_obj']:
+            self.proc_model[0,7] = np.cos(self.spatial_state.mean()[3])*self.dt
+            self.proc_model[0,8] = -np.sin(self.spatial_state.mean()[3])*self.dt
+            self.proc_model[1,7] = np.sin(self.spatial_state.mean()[3])*self.dt
+            self.proc_model[1,8] = np.cos(self.spatial_state.mean()[3])*self.dt
+            self.proc_model[2,9] = self.dt
+
+        else:
+            raise AttributeError('Invalid process model type.')
+    
+    def predict(self, trkr, stamp):
+        self.dt = (Time.from_msg(stamp) - self.timestamp).nanoseconds/10**9
+        self.timestamp = Time.from_msg(stamp)
+        # TODO - update process noise with dt
+        if trkr.obj_props[self.obj_class_str]['model_type'] in ['cp']:
+            self.spatial_state = self.kf.predict(self.spatial_state,self.proc_model,np.zeros((7,7)),np.zeros((7,1)),self.proc_noise)
+        elif trkr.obj_props[self.obj_class_str]['model_type'] in ['cvcy','cvcy_obj']:
+            self.compute_proc_model(trkr)
+            self.spatial_state = self.kf.predict(self.spatial_state,self.proc_model,np.zeros((10,10)),np.zeros((10,1)),self.proc_noise)
+
     def update(self, det, trkr):
         # Admin
         self.metadata = det.metadata

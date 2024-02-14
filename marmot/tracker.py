@@ -181,11 +181,11 @@ class TBDTracker(Node):
 
             # Add model-specific parameters
             if model_type in ['cp']:
-                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('object_properties.' + obj_name + '.pos_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             elif model_type in ['cvcy', 'cvcy_obj']:
-                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             else:
@@ -214,11 +214,11 @@ class TBDTracker(Node):
 
             # Add model-specific parameters
             if temp_dict['model_type'] in ['cp']:
-                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_value
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
                 temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
                 temp_dict['pos_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.pos_proc_var').get_parameter_value().double_array_value
             elif temp_dict['model_type'] in ['cvcy', 'cvcy_obj']:
-                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_value
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
                 temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
                 temp_dict['vel_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.vel_proc_var').get_parameter_value().double_array_value
             else:
@@ -256,9 +256,9 @@ class TBDTracker(Node):
 
         return resp
 
-    # def propagate_tracks(self):
-    #     for trk in self.trks:
-    #         trk.propagate(self.dets_msg.header.stamp)
+    def predict_tracks(self):
+        for trk in self.trks:
+            trk.predict(self, self.dets_msg.header.stamp)
 
     def update_tracks(self):
         for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
@@ -273,8 +273,8 @@ class TBDTracker(Node):
         for det in self.dets_msg.detections:
             self.dets.append(Detection(self, self.dets_msg, det, detector_name))
 
-        # # PROPAGATE existing tracks
-        # self.propagate_tracks()
+        # PREDICT existing tracks
+        self.predict_tracks()
 
         # ASSIGN detections to tracks
         compute_assignment(self)
