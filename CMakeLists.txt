@@ -37,7 +37,7 @@ install(TARGETS
 ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/tbd_node.py
-  scripts/nuscenes_exp_mgr.py
+  scripts/nuscenes/nuscenes_exp_mgr.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

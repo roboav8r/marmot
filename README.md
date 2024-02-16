@@ -119,11 +119,11 @@ source install/setup.bash
 
 2) Convert nuscenes detection and data to ROS2 .mcap files. In the `MaRMOT` directory:
 ```
-python3 scripts/nuscenes_to_mcap.py # Converts mini_train by default
-python3 scripts/nuscenes_to_mcap.py -s mini_val # Converts the mini_val split
-python3 scripts/nuscenes_to_mcap.py -d v1.0-trainval -s train # Converts the training split from the main dataset
-python3 scripts/nuscenes_to_mcap.py -d v1.0-trainval -s val # Converts the validation split from the main dataset
-python3 scripts/nuscenes_to_mcap.py -d v1.0-test -s test # Converts the test split from the main dataset
+python3 scripts/nuscenes/nuscenes_to_mcap.py # Converts mini_train by default
+python3 scripts/nuscenes/nuscenes_to_mcap.py -s mini_val # Converts the mini_val split
+python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-trainval -s train # Converts the training split from the main dataset
+python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-trainval -s val # Converts the validation split from the main dataset
+python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-test -s test # Converts the test split from the main dataset
 ```
 
 3) Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
@@ -142,7 +142,7 @@ python3 scripts/eval_exp_results.py
 Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
 
 # Acknowledgements
-The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
+The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
 
 The [tracking evaluation script](scripts/evaluate.py) is copied from Nutonomy's nuScenes devkit repo [here](https://github.com/nutonomy/nuscenes-devkit/tree/master/python-sdk/nuscenes/eval/tracking) for convenience.
 
