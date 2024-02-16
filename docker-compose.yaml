@@ -21,11 +21,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       # disable qt-X11 memory sharing for RViz
       - QT_X11_NO_MITSHM=1
-      - ROS_IP=192.168.131.113
+      - ROS_IP=192.168.131.114
       - ROS_MASTER_URI=http://192.168.131.1:11311
-    env_file:
-      # set environment variables via a file
-      - philbart.env
     security_opt:
     # this is set bc of errors with RViz being denied dbus comm w/ host
       - apparmor:unconfined

@@ -6,6 +6,8 @@ echo "ROS1 bridge entrypoint"
 # Source ROS2 and bridge environments
 source /opt/ros/$ROS1_DISTRO/setup.bash
 source /opt/ros/$ROS2_DISTRO/setup.bash
+ros2 daemon stop
+ros2 daemon start
 cd /bridge_ws
 source install/setup.bash
 
