@@ -1,6 +1,22 @@
 nusc_exp_mgr_node:
   ros__parameters:
-    exp_configs: ['config/nusc_baseline.yaml']
+    exp_configs: ['config/nusc_baseline.yaml',
+                  'config/nusc_cb_mult_05.yaml',
+                  'config/nusc_cb_mult_10.yaml',
+                  'config/nusc_cb_mult_15.yaml',
+                  'config/nusc_cb_mult_20.yaml',
+                  'config/nusc_cb_mult_25.yaml',
+                  'config/nusc_cb_mult_30.yaml',
+                  'config/nusc_cb_mult_40.yaml',
+                  'config/nusc_cb_mult_50.yaml',
+                  'config/nusc_cb_padd_05.yaml',
+                  'config/nusc_cb_padd_10.yaml',
+                  'config/nusc_cb_padd_15.yaml',
+                  'config/nusc_cb_padd_20.yaml',
+                  'config/nusc_cb_padd_25.yaml',
+                  'config/nusc_cb_padd_30.yaml',
+                  'config/nusc_cb_padd_40.yaml',
+                  'config/nusc_cb_padd_50.yaml']
                   
     val_dataset: 'v1.0-mini'
     val_split: 'mini_val'

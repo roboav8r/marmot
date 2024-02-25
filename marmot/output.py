@@ -15,6 +15,9 @@ def publish_tracks(tracker, pub_name):
         if tracker.obj_props[trk.obj_class_str]['create_method']=="count":
             if trk.n_cons_matches < tracker.obj_props[trk.obj_class_str]['n_create_min']:
                 continue
+        elif tracker.obj_props[trk.obj_class_str]['create_method']=="conf":
+            if trk.track_conf < tracker.obj_props[trk.obj_class_str]['active_thresh']:        
+                continue
         else:
             raise TypeError('Invalid track creation method: %s' % tracker.obj_props[trk.obj_class_str]['create_method'])
         
@@ -23,11 +26,7 @@ def publish_tracks(tracker, pub_name):
 
         # Add track information to message
         trk_msg.track_id = trk.trk_id
-
-        if tracker.obj_props[trk.obj_class_str]['create_method']=="count":
-            trk_msg.track_confidence = trk.class_conf
-        else:
-            raise TypeError('Invalid track creation method: %s' % tracker.obj_props[trk.obj_class_str]['create_method'])    
+        trk_msg.track_confidence = trk.track_conf
 
         # Populate track message for publication
         trk_msg.pose.pose.position.x = trk.spatial_state.mean()[0]
@@ -74,7 +73,7 @@ def publish_tracks(tracker, pub_name):
             raise AttributeError('Invalid process model type.')
     
         # Add semantic information to message
-        trk_msg.track_confidence = float(trk.class_conf)
+        trk_msg.track_confidence = float(trk.track_conf)
         trk_msg.class_confidence = float(trk.class_conf)
         trk_msg.class_string = trk.obj_class_str
 
@@ -173,7 +172,7 @@ def publish_scene(tracker, pub_name):
 
         trk_md = KeyValuePair()
         trk_md.key = 'track_score'
-        trk_md.value = str(trk.class_conf)
+        trk_md.value = str(trk.track_conf)
         entity_msg.metadata.append(trk_md)
 
         tracker.scene_msg.entities.append(entity_msg)

@@ -43,7 +43,7 @@ class EvalExpResults():
                 print("Evaluating experiment case: " + os.path.splitext(file)[0])
                 file_object.write("EXPERIMENT CASE: " + os.path.splitext(file)[0] + "; EVAL SPLIT: " + parent_dir + "\n")
 
-                proc = subprocess.run(["python3","scripts/evaluate.py", 
+                proc = subprocess.run(["python3","scripts/nuscenes/evaluate.py", 
                     "--eval_set", parent_dir,
                     "--version", dataset,
                     "--dataroot", self.nuscenes_dir,
@@ -77,8 +77,8 @@ def main(args=None):
     parser.add_argument(
         "--results-dir",
         "-r",
-        default= "results",
-        help="Relative path from ros_tracking to results.json files",
+        default= "../results",
+        help="Relative path from ros_tracking/scripts to results.json files",
     )
 
     parser.add_argument(

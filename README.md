@@ -137,7 +137,7 @@ Run the evaluation script, which recursively calls the nuScenes `evaluate.py` fo
 ```
 cd ~/tracking_ws/src/marmot
 mamba activate marmot_eval
-python3 scripts/eval_exp_results.py
+python3 scripts/nuscenes/eval_exp_results.py
 ```
 Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
 

@@ -166,30 +166,47 @@ class TBDTracker(Node):
 
         for obj_name in self.obj_classes:
 
-            self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.length', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.width', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.height', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
-            # TODO add multiple cases based on create/delete method
-            self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
-            self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
+            self.declare_parameter('object_properties.' + obj_name + '.height', rclpy.Parameter.Type.DOUBLE)       
             self.declare_parameter('object_properties.' + obj_name + '.sim_metric', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
-            model_type = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
+            
+            # Declare management-specific parameters
+            self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
+            # create_method = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
+            # if create_method == 'conf':
+            self.declare_parameter('object_properties.' + obj_name + '.active_thresh', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.detect_thresh', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.score_decay', rclpy.Parameter.Type.DOUBLE)
+            self.declare_parameter('object_properties.' + obj_name + '.score_update_function', rclpy.Parameter.Type.STRING)
+            # elif create_method == 'count':
+            self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
+            # else:
+            #     raise TypeError('No track creation method: %s' % create_method)
 
-            # Add model-specific parameters
-            if model_type in ['cp']:
-                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('object_properties.' + obj_name + '.pos_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            elif model_type in ['cvcy', 'cvcy_obj']:
-                self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            else:
-                raise TypeError('No process model for type: %s' % model_type)
+            self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
+            # delete_method = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
+            # if delete_method == 'conf':
+            self.declare_parameter('object_properties.' + obj_name + '.delete_thresh', rclpy.Parameter.Type.DOUBLE)
+            # elif delete_method == 'count':
+            self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
+            # else:
+            #     raise TypeError('No track deletion method: %s' % delete_method)
+
+            # Declare process model-specific parameters
+            self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
+            # model_type = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
+            # if model_type in ['cp']:
+            self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            self.declare_parameter('object_properties.' + obj_name + '.pos_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            # elif model_type in ['cvcy', 'cvcy_obj']:
+            #     self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            #     self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            # else:
+            #     raise TypeError('No process model for type: %s' % model_type)
 
     def set_obj_properties(self):
 
@@ -204,15 +221,31 @@ class TBDTracker(Node):
             temp_dict['length'] = self.get_parameter('object_properties.' + obj_name + '.length').get_parameter_value().double_value
             temp_dict['width'] = self.get_parameter('object_properties.' + obj_name + '.width').get_parameter_value().double_value
             temp_dict['height'] = self.get_parameter('object_properties.' + obj_name + '.height').get_parameter_value().double_value
-            temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
-            temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
-            # TODO add multiple cases based on create/delete method
-            temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
-            temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
             temp_dict['sim_metric'] = self.get_parameter('object_properties.' + obj_name + '.sim_metric').get_parameter_value().string_value
             temp_dict['match_thresh'] = self.get_parameter('object_properties.' + obj_name + '.match_thresh').get_parameter_value().double_value
 
-            # Add model-specific parameters
+            # Set management-specific parameters
+            temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
+            if temp_dict['create_method'] == 'conf':
+                temp_dict['active_thresh'] = self.get_parameter('object_properties.' + obj_name + '.active_thresh').get_parameter_value().double_value
+                temp_dict['detect_thresh'] = self.get_parameter('object_properties.' + obj_name + '.detect_thresh').get_parameter_value().double_value
+                temp_dict['score_decay'] = self.get_parameter('object_properties.' + obj_name + '.score_decay').get_parameter_value().double_value
+                temp_dict['score_update_function'] = self.get_parameter('object_properties.' + obj_name + '.score_update_function').get_parameter_value().string_value
+            elif temp_dict['create_method'] == 'count':
+                temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
+            else:
+                raise TypeError('No track creation method: %s' % temp_dict['create_method'])
+
+            temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
+            if temp_dict['delete_method'] == 'conf':
+                temp_dict['delete_thresh'] = self.get_parameter('object_properties.' + obj_name + '.delete_thresh').get_parameter_value().double_value
+            elif temp_dict['delete_method'] == 'count':
+                temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
+            else:
+                raise TypeError('No track deletion method: %s' % temp_dict['delete_method'] )
+
+
+            # Add process model-specific parameters
             if temp_dict['model_type'] in ['cp']:
                 temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
                 temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
@@ -289,8 +322,13 @@ class TBDTracker(Node):
         for i, trk in enumerate(self.trks):
             if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection                
                 trk.metadata = det_array_msg.metadata
-                trk.n_cons_misses += 1
-                trk.n_cons_matches = 0
+                if self.obj_props[trk.obj_class_str]['create_method'] == 'count':
+                    trk.n_cons_misses += 1
+                    trk.n_cons_matches = 0
+                elif self.obj_props[trk.obj_class_str]['create_method'] == 'conf':
+                    trk.track_conf -= self.obj_props[trk.obj_class_str]['score_decay']
+                else:
+                    raise TypeError('Invalid track creation method: %s' % self.obj_props[trk.obj_class_str]['create_method'])                    
 
         # Manage unmatched tracks and detections
         delete_tracks(self)

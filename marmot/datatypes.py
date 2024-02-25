@@ -44,6 +44,7 @@ class Track():
         self.det_class_str = det.det_class_str # TODO - remove this if it isn't needed later on
         self.obj_class_str = det.obj_class_str
         self.class_conf = det.class_conf
+        self.track_conf = det.class_conf
 
         # Spatial
         self.pose = det.pose
@@ -141,4 +142,13 @@ class Track():
                                             trkr.detectors[det.det_name]['detection_params'][det.det_class_str]['obs_var']) # detector variance for this detection type
 
         # Update semantic state
-        self.class_conf = det.class_conf*self.class_conf / (det.class_conf*self.class_conf + (1 - det.class_conf)*(1 - self.class_conf))
+        # self.class_conf = det.class_conf*self.class_conf / (det.class_conf*self.class_conf + (1 - det.class_conf)*(1 - self.class_conf))
+        if trkr.obj_props[self.obj_class_str]['create_method']=='count':
+            self.track_conf = det.class_conf
+        elif trkr.obj_props[self.obj_class_str]['create_method']=='conf':
+            if trkr.obj_props[self.obj_class_str]['score_update_function']=='multiply':
+                self.track_conf = 1 - ((1 - det.class_conf)*(1 - self.track_conf))
+            elif trkr.obj_props[self.obj_class_str]['score_update_function']=='parallel_add':
+                self.track_conf = 1 - ((1 - det.class_conf)*(1 - self.track_conf))/((1 - det.class_conf)+(1 - self.track_conf))
+            else:
+                raise AttributeError('Invalid score update function.')
