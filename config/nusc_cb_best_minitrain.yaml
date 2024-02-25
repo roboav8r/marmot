@@ -37,7 +37,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .25
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .05
@@ -55,7 +55,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .50
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .50
@@ -73,7 +73,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .50
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .50
@@ -91,7 +91,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .625
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .05
@@ -109,7 +109,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .25
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .15
@@ -127,7 +127,7 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .25
           delete_thresh: .15
           detect_thresh: .15
           score_decay: .05
