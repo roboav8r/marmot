@@ -68,7 +68,12 @@ def publish_tracks(tracker, pub_name):
             trk_msg.twist.twist.linear.z = trk.spatial_state.mean()[9]
             trk_msg.twist.twist.linear.x = trk.spatial_state.mean()[7]*cy - trk.spatial_state.mean()[8]*sy
             trk_msg.twist.twist.linear.y = trk.spatial_state.mean()[7]*sy + trk.spatial_state.mean()[8]*cy 
-
+        elif tracker.obj_props[trk.obj_class_str]['model_type'] in ['ctra']:
+            # Add spatial information to message
+            trk_msg.twist.twist.linear.z = 0.
+            trk_msg.twist.twist.angular.z = trk.spatial_state.mean()[9]
+            trk_msg.twist.twist.linear.x = trk.spatial_state.mean()[7]*cy
+            trk_msg.twist.twist.linear.y = trk.spatial_state.mean()[7]*sy
         else:
             raise AttributeError('Invalid process model type.')
     

@@ -22,7 +22,7 @@ class TBDTracker(Node):
         self.get_logger().info("Creating tracking-by-detection tracker node")
 
         # Declare known process/observation models
-        self.supported_proc_models = ['cp','cvcy','cvcy_obj']
+        self.supported_proc_models = ['cp','cvcy','cvcy_obj','ctra']
         self.supported_obs_models = ['pos_3d','pos_bbox_3d']
 
         # Declare and set params
@@ -104,7 +104,7 @@ class TBDTracker(Node):
 
                 if proc_model in ['cp']:
                     dim_states = 7
-                elif proc_model in ['cvcy', 'cvcy_obj']:
+                elif proc_model in ['cvcy', 'cvcy_obj','ctra']:
                     dim_states = 10
 
                 if detector_params['detector_type'] == 'pos_3d':
@@ -177,41 +177,23 @@ class TBDTracker(Node):
             self.declare_parameter('object_properties.' + obj_name + '.sim_metric', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
             
-            # Declare management-specific parameters
             self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
-            # create_method = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
-            # if create_method == 'conf':
             self.declare_parameter('object_properties.' + obj_name + '.active_thresh', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.detect_thresh', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.score_decay', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.score_update_function', rclpy.Parameter.Type.STRING)
-            # elif create_method == 'count':
             self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
-            # else:
-            #     raise TypeError('No track creation method: %s' % create_method)
-
             self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
-            # delete_method = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
-            # if delete_method == 'conf':
             self.declare_parameter('object_properties.' + obj_name + '.delete_thresh', rclpy.Parameter.Type.DOUBLE)
-            # elif delete_method == 'count':
             self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
-            # else:
-            #     raise TypeError('No track deletion method: %s' % delete_method)
 
-            # Declare process model-specific parameters
             self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
-            # model_type = self.get_parameter('object_properties.' + obj_name + '.model_type').get_parameter_value().string_value
-            # if model_type in ['cp']:
             self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.pos_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            # elif model_type in ['cvcy', 'cvcy_obj']:
-            #     self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            #     self.declare_parameter('object_properties.' + obj_name + '.size_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
-            # else:
-            #     raise TypeError('No process model for type: %s' % model_type)
+            self.declare_parameter('object_properties.' + obj_name + '.acc_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            self.declare_parameter('object_properties.' + obj_name + '.omega_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
 
     def set_obj_properties(self):
 
@@ -259,6 +241,11 @@ class TBDTracker(Node):
                 temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
                 temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
                 temp_dict['vel_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.vel_proc_var').get_parameter_value().double_array_value
+            elif temp_dict['model_type'] in ['ctra']:
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
+                temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
+                temp_dict['acc_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.acc_proc_var').get_parameter_value().double_array_value   
+                temp_dict['omega_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.omega_proc_var').get_parameter_value().double_array_value                
             else:
                 raise TypeError('No process model for type: %s' % temp_dict['model_type'])
 
