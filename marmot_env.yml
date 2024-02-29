@@ -1,14 +1,17 @@
 name: marmot
 channels:
   - conda-forge
+  - pytorch3d
 dependencies:
 - python==3.10
 - pyyaml
 - pip
 - lark
+- pytorch3d
 - pip:
     - pyquaternion==0.9.9
     - nuscenes-devkit==1.1.11
     - empy==3.3.4
     - catkin_pkg
     - gtsam==4.2.0
+    - numba

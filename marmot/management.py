@@ -18,7 +18,8 @@ def create_tracks(trkr, det_name):
 
         det = trkr.dets.pop()
         
-        if (len(trkr.dets)) in trkr.det_asgn_idx: # If detection at end of list is matched, move on
+        # if (len(trkr.dets)) in trkr.det_asgn_idx: # If detection at end of list is matched, move on
+        if (len(trkr.dets)) in trkr.matches[:,0]: # If detection at end of list is matched, move on
             continue
 
         else:
@@ -27,7 +28,7 @@ def create_tracks(trkr, det_name):
             if trkr.detectors[det.det_name]['detection_params'][det.det_class_str]['ignore']:
                 continue
             
-            # If using confidence based method, do not create tracks with confidence below 
+            # If using confidence based method, do not create tracks with confidence below threshold
             elif trkr.obj_props[det.obj_class_str]['create_method']=='conf' and det.class_conf < trkr.obj_props[det.obj_class_str]['detect_thresh']:
                 continue
             

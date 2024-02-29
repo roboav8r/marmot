@@ -5,6 +5,8 @@ import gtsam
 
 from rclpy.time import Time
 
+from marmot.utils import roty
+
 class Detection():
     def __init__(self, trkr, dets_msg, det_msg, det_name):
         # Admin
@@ -19,16 +21,16 @@ class Detection():
        
         # Spatial properties
         self.pose = det_msg.pose
-        self.pos = np.array([[det_msg.pose.position.x], [det_msg.pose.position.y], [det_msg.pose.position.z]])
-        self.yaw = np.array([[np.arctan2(2*det_msg.pose.orientation.w*det_msg.pose.orientation.z, 1-2*det_msg.pose.orientation.z**2)]])
+        self.pos = np.array([[det_msg.pose.position.x], [det_msg.pose.position.y], [det_msg.pose.position.z]],dtype=np.float64)
+        self.yaw = np.array([[np.arctan2(2*det_msg.pose.orientation.w*det_msg.pose.orientation.z, 1-2*det_msg.pose.orientation.z**2)]],dtype=np.float64)
 
         # If bbox info available, use it. Otherwise use default values from yaml
         if trkr.detectors[det_name]['detector_type'] in ['pos_bbox_3d']:
-            self.size = np.array([[det_msg.bbox.size.x], [det_msg.bbox.size.y], [det_msg.bbox.size.z]])
+            self.size = np.array([[det_msg.bbox.size.x], [det_msg.bbox.size.y], [det_msg.bbox.size.z]],dtype=np.float64)
         else:           
             self.size = np.array([[trkr.obj_props[self.obj_class_str]['length']], 
                                   [trkr.obj_props[self.obj_class_str]['width']], 
-                                  [trkr.obj_props[self.obj_class_str]['height']]])
+                                  [trkr.obj_props[self.obj_class_str]['height']]],dtype=np.float64)
 
 class Track():
     def __init__(self, trkr, det):

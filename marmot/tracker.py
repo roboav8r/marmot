@@ -25,18 +25,9 @@ class TBDTracker(Node):
         self.supported_proc_models = ['cp','cvcy','cvcy_obj']
         self.supported_obs_models = ['pos_3d','pos_bbox_3d']
 
-        # Configure tracker params from .yaml
-        self.declare_parameter('tracker.frame_id', rclpy.Parameter.Type.STRING)
-        self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
-        self.declare_parameter('tracker.mismatch_penalty', rclpy.Parameter.Type.DOUBLE)
-        self.mismatch_penalty = self.get_parameter('tracker.mismatch_penalty').get_parameter_value().double_value    
-        self.declare_parameter('tracker.assignment_algo', rclpy.Parameter.Type.STRING)
-        self.assignment_algo = self.get_parameter('tracker.assignment_algo').get_parameter_value().string_value
-        self.declare_parameter('tracker.yaw_corr', rclpy.Parameter.Type.BOOL)
-        self.yaw_corr = self.get_parameter('tracker.yaw_corr').get_parameter_value().bool_value
-
-        # Configure tracker's object properties dictionary from .yaml
-        self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
+        # Declare and set params
+        self.declare_tracker_params()
+        self.set_tracker_params()
         self.declare_obj_params()
         self.set_obj_properties()
 
@@ -149,8 +140,8 @@ class TBDTracker(Node):
 
         # Assignment variables
         self.cost_matrix = np.empty(0)
-        self.det_asgn_idx = [] 
-        self.trk_asgn_idx = []
+        # self.det_asgn_idx = [] 
+        # self.trk_asgn_idx = []
 
         # Create publisher objects and empty messages
         self.trks_msg = Tracks3D()
@@ -159,6 +150,20 @@ class TBDTracker(Node):
         # Declare services
         self.reset_srv = self.create_service(Empty, 'reset_tracker', self.reset_tracker)
         self.reconfigure_srv = self.create_service(Empty, 'reconfigure_tracker', self.reconfigure_tracker)
+
+    def declare_tracker_params(self):
+        # Configure tracker params from .yaml
+        self.declare_parameter('tracker.frame_id', rclpy.Parameter.Type.STRING)
+        self.declare_parameter('tracker.mismatch_penalty', rclpy.Parameter.Type.DOUBLE)
+        self.declare_parameter('tracker.assignment_algo', rclpy.Parameter.Type.STRING)
+        self.declare_parameter('tracker.yaw_corr', rclpy.Parameter.Type.BOOL)
+        self.declare_parameter('object_properties.object_classes', rclpy.Parameter.Type.STRING_ARRAY)
+
+    def set_tracker_params(self):
+        self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
+        self.mismatch_penalty = self.get_parameter('tracker.mismatch_penalty').get_parameter_value().double_value 
+        self.assignment_algo = self.get_parameter('tracker.assignment_algo').get_parameter_value().string_value
+        self.yaw_corr = self.get_parameter('tracker.yaw_corr').get_parameter_value().bool_value
 
     def declare_obj_params(self):
 
@@ -268,8 +273,9 @@ class TBDTracker(Node):
         self.trks = []
 
         self.cost_matrix = np.empty(0)
-        self.det_asgn_idx = [] 
-        self.trk_asgn_idx = []       
+        self.matches = np.empty(0)
+        # self.det_asgn_idx = [] 
+        # self.trk_asgn_idx = []
 
         return resp
 
@@ -281,7 +287,8 @@ class TBDTracker(Node):
         self.obj_classes = self.get_parameter('object_properties.object_classes').get_parameter_value().string_array_value
         self.frame_id = self.get_parameter('tracker.frame_id').get_parameter_value().string_value
 
-        # Reconfigure objects
+        # Reconfigure tracker and object properties
+        self.set_tracker_params()
         self.set_obj_properties()
 
         # Generate detector models from .yaml
@@ -294,8 +301,11 @@ class TBDTracker(Node):
             trk.predict(self, self.dets_msg.header.stamp)
 
     def update_tracks(self):
-        for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
-            self.trks[trk_idx].update(self.dets[det_idx],self)
+        # for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
+        #    self.trks[trk_idx].update(self.dets[det_idx],self)
+
+        for match in self.matches:
+            self.trks[match[1]].update(self.dets[match[0]],self)
 
     def det_callback(self, det_array_msg, detector_name):
        
@@ -312,15 +322,17 @@ class TBDTracker(Node):
         # ASSIGN detections to tracks
         compute_assignment(self)
         self.get_logger().info("ASSIGN: cost matrix has shape %lix%li \n" % (self.cost_matrix.shape[0],self.cost_matrix.shape[1]))
-        self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
-        self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
+        # self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
+        # self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
+        self.get_logger().info("ASSIGN: assignment matrix has shape %lix%li \n" % (self.matches.shape[0],self.matches.shape[1]))
 
         # UPDATE tracks with assigned detections
         self.update_tracks()
 
         # UPDATE unmatched tracks (missed detections)
         for i, trk in enumerate(self.trks):
-            if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection                
+            # if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection   
+            if i not in self.matches[:,1]: # If track is unmatched, handle it as a missed detection   
                 trk.metadata = det_array_msg.metadata
                 if self.obj_props[trk.obj_class_str]['create_method'] == 'count':
                     trk.n_cons_misses += 1

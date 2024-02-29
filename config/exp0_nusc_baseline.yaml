@@ -3,7 +3,7 @@ tbd_tracker_node:
     tracker:
       frame_id: 'map'
       mismatch_penalty: 100.
-      assignment_algo: 'hungarian'
+      assignment_algo: 'greedy'
       yaw_corr: True
       publishers:
           names: ['track_pub']
@@ -39,8 +39,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 3
           n_delete_max: 2 
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.6
       
       bus:
           model_type: 'cvcy'
@@ -54,8 +54,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 1
           n_delete_max: 2
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.2
 
       car:
           model_type: 'cvcy'
@@ -69,8 +69,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 1
           n_delete_max: 2 
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.5
 
       motorcycle:
           model_type: 'cvcy'
@@ -84,8 +84,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 3
           n_delete_max: 2 
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.8
 
       pedestrian:
           model_type: 'cvcy'
@@ -114,8 +114,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 3
           n_delete_max: 2 
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.2
 
       truck:
           model_type: 'cvcy'
@@ -129,8 +129,8 @@ tbd_tracker_node:
           delete_method: 'count'
           n_create_min: 3
           n_delete_max: 2 
-          sim_metric: 'dist_3d'
-          match_thresh: 2.
+          sim_metric: 'giou_3d'
+          match_thresh: 0.2
 
     detectors:
       #Declare names of detectors upfront
