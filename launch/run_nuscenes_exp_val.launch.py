@@ -11,12 +11,12 @@ def generate_launch_description():
     exp_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'experiments_val.yaml'
+        'exp_val.yaml'
         )
     def_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'default_nuscenes.yaml'
+        'nusc_baseline.yaml'
     )
 
     # Manager node
@@ -32,21 +32,21 @@ def generate_launch_description():
     # Detection conversion node
     det_node = Node(
         package='marmot',
-        executable='nuscenes_converter',
-        name='nuscenes_converter',
+        executable='nuscenes_preproc',
+        name='nuscenes_preproc',
         remappings=[('/nuscenes_detections','/detections' )]
     )
     ld.add_action(det_node)
 
     # Tracker node
-    # trk_node = Node(
-    #     package='marmot',
-    #     executable='py_tracker.py',
-    #     name='tracker',
-    #     output='screen',
-    #     remappings=[('/detections','/converted_detections')],
-    #     parameters=[def_config]
-    # )
-    # ld.add_action(trk_node)
+    trk_node = Node(
+        package='marmot',
+        executable='tbd_node.py',
+        name='tbd_tracker_node',
+        output='screen',
+        remappings=[('/detections','/converted_detections')],
+        parameters=[def_config]
+    )
+    ld.add_action(trk_node)
 
     return ld

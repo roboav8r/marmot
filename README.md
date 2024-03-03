@@ -141,6 +141,14 @@ python3 scripts/nuscenes/eval_exp_results.py
 ```
 Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
 
+# Development
+## Adding new process models
+To add a new process model, 
+
+- In `datatypes.py`: Add an appropriate entry eithin the `Track.__init__`, `Track.predict`, and `Track.compute_proc_model` definitions. 
+- In `output.py`:
+- In `tracker.py`: Update `supported_proc_models`; add a `['obs_model']['proc_model']` entry for the process model; ensure `declare_obj_params` and `set_obj_properties` have entries for the necessary parameters;
+
 # Acknowledgements
 The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
 

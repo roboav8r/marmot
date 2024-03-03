@@ -74,6 +74,16 @@ class NuscenesExpManager(Node):
             if kv.key == "sample_token":
                 if (kv.value) not in self.results_dict["results"].keys():
                     self.results_dict["results"][kv.value] = []
+            elif kv.key == 'num_dets_rcvd':
+                n_dets = int(kv.value)
+            elif kv.key == 'num_tracks_published':
+                n_trks = int(kv.value)
+            elif kv.key =='time_det_rcvd':
+                t_start = int(kv.value)
+            elif kv.key == 'time_tracks_published':
+                t_end = int(kv.value)
+
+        self.times += "%s,%s,%s,%s\n" % (self.exp_name, n_dets, n_trks, (t_end-t_start))
 
         # Populate dictionary entry
         for track in msg.tracks:
@@ -104,15 +114,15 @@ class NuscenesExpManager(Node):
         self.results_dict["results"] = dict()
 
     def run_experiments(self):
-        times = ''
+        self.times = "config,n_dets,n_trks,time_ns\n"
 
         # Reconfigure tracker
         for exp in self.exp_configs:
 
             # Load the experimental configuration for the tracker
             exp_path = os.path.join(self.package_dir,exp)
-            exp_name = os.path.splitext(os.path.split(exp_path)[-1])[0]
-            self.get_logger().info("Loading tracker experiment configuration: %s" % (exp_name))
+            self.exp_name = os.path.splitext(os.path.split(exp_path)[-1])[0]
+            self.get_logger().info("Loading tracker experiment configuration: %s" % (self.exp_name))
             subprocess.run(["ros2", "param", "load", "/tbd_tracker_node", os.path.join(self.package_dir,exp_path)])
             
             # Reset & reconfigure tracker
@@ -162,26 +172,26 @@ class NuscenesExpManager(Node):
                         msg = deserialize_message(data, msg_type)
 
                         # Send the detection message, start clock
-                        t_start = time.time()
+                        # t_start = time.time()
                         self.publisher.publish(msg)
 
                         # wait for the track response from the tracker
                         ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic)
-                        t_end = time.time()
+                        # t_end = time.time()
                         if ret:
                             self.tracker_callback(trk_msg)
 
-                            dt = time.time() - t_start
+                            # dt = time.time() - t_start
                             self.get_logger().info("Processed msg #%d" % self.msg_count)
 
-                        times += "%s,%s,%s\n" % (exp_name, len(trk_msg.tracks), dt)
+                        # times += "%s,%s,%s\n" % (exp_name, len(trk_msg.tracks), dt)
 
             # Write results to json file
-            with open(os.path.join(self.results_dir, self.val_split, exp_name + "_results.json"), "w") as outfile:
+            with open(os.path.join(self.results_dir, self.val_split, self.exp_name + "_results.json"), "w") as outfile:
                 json.dump(self.results_dict, outfile, indent=2)
             
         with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "w") as outfile:
-            outfile.write(times)
+            outfile.write(self.times)
 
 
 def main(args=None):

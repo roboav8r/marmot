@@ -22,9 +22,11 @@ class EvalExpResults():
     def evaluate_results(self):
 
         file_object = open(os.path.join(self.results_dir, "evaluated_results.txt"), "w")
+        acc_file_object = open(os.path.join(self.results_dir, "accuracy.csv"), "w")
+        acc_file_object.write('exp_config,split,amota,bicycle_amota,bus_amota,car_amota,moto_amota,ped_amota,trailer_amota,truck_amota\n')
 
         # Iterate through all .json files in results directory
-        for (dirpath, dirname, filenames) in os.walk(self.results_dir,topdown=True):
+        for (dirpath, _, filenames) in os.walk(self.results_dir,topdown=True):
 
             for file in filenames:
                 # Ignore non-result files
@@ -50,19 +52,16 @@ class EvalExpResults():
                     os.path.join(dirpath,file)], capture_output=True, text=True)
 
                 # Capture the relevant parts of stdout and write to a text file
-                final_results = re.search("(### Final results ###\n)(.*)(Per-class results:\n)(.*)(Aggregated results:\n)(.*)(Eval time:)(.*)(Rendering curves)",proc.stdout,re.MULTILINE|re.DOTALL)
-                file_object.write(final_results.group(1))
-                file_object.write(final_results.group(2))
-                file_object.write(final_results.group(3))
-                file_object.write(final_results.group(4))
-                file_object.write(final_results.group(5))
-                file_object.write(final_results.group(6))
+                final_results = re.search("(### Final results ###\n)(.*)(Per-class results:\n)(.*)(bicycle)(\s*)([\w\.\w]*)(.*)(bus)(\s*)([\w\.\w]*)(.*)(car)(\s*)([\w\.\w]*)(.*)(motorcy)(\s*)([\w\.\w]*)(.*)(pedestr)(\s*)([\w\.\w]*)(.*)(trailer)(\s*)([\w\.\w]*)(.*)(truck)(\s*)([\w\.\w]*)(.*)(Aggregated results:\n)(AMOTA)(\s*)([\w\.\w]*)(.*)(AMOTP.*)(Eval time:)(.*)(Rendering curves)",proc.stdout,re.MULTILINE|re.DOTALL)
+                file_object.write(final_results.group())             
                 file_object.write("\n\n")
 
+                # Write to accuracy results .CSV
+                acc_file_object.write(os.path.splitext(file)[0]+ ',' + parent_dir + ',' + final_results.group(36) +',' + final_results.group(7) + ',' + final_results.group(11) + ',' + final_results.group(15) + ',' + final_results.group(19) + ',' + final_results.group(23) + ',' + final_results.group(27) + ',' + final_results.group(31) + '\n')
                 print("Complete. \n")
 
         file_object.close()
-
+        acc_file_object.close()
 
 def main(args=None):
     parser = argparse.ArgumentParser()

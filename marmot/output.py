@@ -1,5 +1,6 @@
 import numpy as np
 
+from diagnostic_msgs.msg import KeyValue
 from tracking_msgs.msg import Track3D, Tracks3D
 from foxglove_msgs.msg import SceneEntity, SceneUpdate, ArrowPrimitive, CubePrimitive, TextPrimitive, KeyValuePair
 
@@ -74,6 +75,12 @@ def publish_tracks(tracker, pub_name):
             trk_msg.twist.twist.angular.z = trk.spatial_state.mean()[9]
             trk_msg.twist.twist.linear.x = trk.spatial_state.mean()[7]*cy
             trk_msg.twist.twist.linear.y = trk.spatial_state.mean()[7]*sy
+        elif tracker.obj_props[trk.obj_class_str]['model_type'] in ['ack']:
+            # Add spatial information to message
+            trk_msg.twist.twist.linear.z = 0.
+            trk_msg.twist.twist.angular.z = trk.spatial_state.mean()[7]*trk.spatial_state.mean()[8]
+            trk_msg.twist.twist.linear.x = trk.spatial_state.mean()[7]*cy
+            trk_msg.twist.twist.linear.y = trk.spatial_state.mean()[7]*sy
         else:
             raise AttributeError('Invalid process model type.')
     
@@ -84,6 +91,9 @@ def publish_tracks(tracker, pub_name):
 
         tracker.trks_msg.tracks.append(trk_msg)
 
+    tracker.trks_msg.metadata.append(KeyValue(key='time_tracks_published', value=str(tracker.get_clock().now().nanoseconds)))
+    tracker.trks_msg.metadata.append(KeyValue(key='num_tracks_published', value=str(len(tracker.trks))))
+    
     # Publish populated message
     exec('tracker.%s.publish(tracker.trks_msg)' % pub_name)
 

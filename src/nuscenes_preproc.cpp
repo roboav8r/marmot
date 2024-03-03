@@ -29,6 +29,9 @@ class DetConverter : public rclcpp::Node
   private:
     void topic_callback(const foxglove_msgs::msg::SceneUpdate::SharedPtr msg)
     {
+
+      rclcpp::Time time_det_rcvd = this->get_clock()->now();
+      diagnostic_msgs::msg::KeyValue kv;
      
       if (msg->entities.size() > 0) // If there are messages to be published
       {
@@ -36,6 +39,17 @@ class DetConverter : public rclcpp::Node
         this->dets_msg_.header.stamp = msg->entities[0].timestamp;
         this->dets_msg_.header.frame_id = msg->entities[0].frame_id;
         this->dets_msg_.detections.reserve(this->max_dets_);
+
+        // Add metadata for later analysis
+        kv.key = msg->entities[0].metadata[3].key;
+        kv.value = msg->entities[0].metadata[3].value;
+        this->dets_msg_.metadata.emplace_back(kv);
+        kv.key = "time_det_rcvd";
+        kv.value = std::to_string(time_det_rcvd.nanoseconds());
+        this->dets_msg_.metadata.emplace_back(kv);
+        kv.key = "num_dets_rcvd";
+        kv.value = std::to_string(msg->entities.size());
+        this->dets_msg_.metadata.emplace_back(kv);
 
         for (auto it = msg->entities.begin(); it != msg->entities.end(); it++)
         {
@@ -49,12 +63,10 @@ class DetConverter : public rclcpp::Node
               this->det_msg_.bbox.center = it->cubes[0].pose;
               this->det_msg_.bbox.size = it->cubes[0].size;
 
-              // Add metadata to detection/detections messages
-              diagnostic_msgs::msg::KeyValue kv;
+              // Add metadata
               kv.key = it->metadata[3].key;
               kv.value = it->metadata[3].value;
               this->det_msg_.metadata.emplace_back(kv);
-              this->dets_msg_.metadata.emplace_back(kv);
 
               // Add detection to Detections3d
               this->dets_msg_.detections.emplace_back(det_msg_);

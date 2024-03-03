@@ -22,7 +22,7 @@ class TBDTracker(Node):
         self.get_logger().info("Creating tracking-by-detection tracker node")
 
         # Declare known process/observation models
-        self.supported_proc_models = ['cp','cvcy','cvcy_obj','ctra']
+        self.supported_proc_models = ['cp','cvcy','cvcy_obj','ctra','ack']
         self.supported_obs_models = ['pos_3d','pos_bbox_3d']
 
         # Declare and set params
@@ -104,13 +104,15 @@ class TBDTracker(Node):
 
                 if proc_model in ['cp']:
                     dim_states = 7
+                if proc_model in ['ack']:
+                    dim_states = 9
                 elif proc_model in ['cvcy', 'cvcy_obj','ctra']:
                     dim_states = 10
 
                 if detector_params['detector_type'] == 'pos_3d':
                     dim_obs = 7
                     detector_params['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
-                    detector_params['obs_model'][proc_model][0,0], detector_params['obs_model'][proc_model][1,1], detector_params['obs_model'][proc_model][2,2], detector_params['obs_model'][proc_model][3,3] = 1,1,1,1
+                    detector_params['obs_model'][proc_model][0,0], detector_params['obs_model'][proc_model][1,1], detector_params['obs_model'][proc_model][2,2] = 1,1,1
 
                 elif detector_params['detector_type'] == 'pos_bbox_3d':
                     dim_obs = 7
@@ -194,6 +196,7 @@ class TBDTracker(Node):
             self.declare_parameter('object_properties.' + obj_name + '.vel_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.acc_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
             self.declare_parameter('object_properties.' + obj_name + '.omega_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
+            self.declare_parameter('object_properties.' + obj_name + '.curv_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
 
     def set_obj_properties(self):
 
@@ -246,6 +249,11 @@ class TBDTracker(Node):
                 temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
                 temp_dict['acc_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.acc_proc_var').get_parameter_value().double_array_value   
                 temp_dict['omega_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.omega_proc_var').get_parameter_value().double_array_value                
+            elif temp_dict['model_type'] in ['ack']:
+                temp_dict['yaw_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.yaw_proc_var').get_parameter_value().double_array_value
+                temp_dict['size_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.size_proc_var').get_parameter_value().double_array_value
+                temp_dict['vel_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.vel_proc_var').get_parameter_value().double_array_value
+                temp_dict['curv_proc_var'] = self.get_parameter('object_properties.' + obj_name + '.curv_proc_var').get_parameter_value().double_array_value 
             else:
                 raise TypeError('No process model for type: %s' % temp_dict['model_type'])
 
@@ -323,7 +331,7 @@ class TBDTracker(Node):
                 trk.metadata = det_array_msg.metadata
                 if self.obj_props[trk.obj_class_str]['create_method'] == 'count':
                     trk.n_cons_misses += 1
-                    trk.n_cons_matches = 0
+                    # trk.n_cons_matches = 0
                 elif self.obj_props[trk.obj_class_str]['create_method'] == 'conf':
                     trk.track_conf -= self.obj_props[trk.obj_class_str]['score_decay']
                 else:
