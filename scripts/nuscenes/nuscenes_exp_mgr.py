@@ -114,7 +114,10 @@ class NuscenesExpManager(Node):
         self.results_dict["results"] = dict()
 
     def run_experiments(self):
-        self.times = "config,n_dets,n_trks,time_ns\n"
+        # Add column headers to times.csv
+        with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "a") as outfile:
+            outfile.write("config,n_dets,n_trks,time_ns\n")
+        outfile.close()
 
         # Reconfigure tracker
         for exp in self.exp_configs:
@@ -141,6 +144,7 @@ class NuscenesExpManager(Node):
 
             for scene in self.split:
                 self.get_logger().info("Computing tracking results for scene %s" % (scene))
+                self.times=''
 
                 # Load .mcap file for this scene
                 storage_options = rosbag2_py.StorageOptions(
@@ -189,9 +193,11 @@ class NuscenesExpManager(Node):
             # Write results to json file
             with open(os.path.join(self.results_dir, self.val_split, self.exp_name + "_results.json"), "w") as outfile:
                 json.dump(self.results_dict, outfile, indent=2)
+            outfile.close()
             
-        with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "w") as outfile:
-            outfile.write(self.times)
+            with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "a") as outfile:
+                outfile.write(self.times)
+            outfile.close()
 
 
 def main(args=None):
