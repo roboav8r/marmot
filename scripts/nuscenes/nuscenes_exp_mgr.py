@@ -115,7 +115,7 @@ class NuscenesExpManager(Node):
 
     def run_experiments(self):
         # Add column headers to times.csv
-        with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "a") as outfile:
+        with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "w") as outfile:
             outfile.write("config,n_dets,n_trks,time_ns\n")
         outfile.close()
 
@@ -133,7 +133,7 @@ class NuscenesExpManager(Node):
             rclpy.spin_until_future_complete(self, self.future)
 
             # Setup subscriber
-            ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic,1)
+            ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 10)
 
             # Initialize variables
             self.msg_count=0
@@ -141,10 +141,9 @@ class NuscenesExpManager(Node):
             self.add_result_metadata()
 
             # Iterate through scene, messages
-
+            self.times=''
             for scene in self.split:
                 self.get_logger().info("Computing tracking results for scene %s" % (scene))
-                self.times=''
 
                 # Load .mcap file for this scene
                 storage_options = rosbag2_py.StorageOptions(
@@ -180,7 +179,7 @@ class NuscenesExpManager(Node):
                         self.publisher.publish(msg)
 
                         # wait for the track response from the tracker
-                        ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic)
+                        ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 10)
                         # t_end = time.time()
                         if ret:
                             self.tracker_callback(trk_msg)
