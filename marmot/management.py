@@ -12,7 +12,6 @@ def valid_track(trk, trkr):
         return True
 
 def create_tracks(trkr, det_name):
-    trkr.get_logger().info("Create tracks")
 
     while trkr.dets:
 
@@ -38,5 +37,4 @@ def create_tracks(trkr, det_name):
                 trkr.trk_id_count += 1
 
 def delete_tracks(trkr):
-    trkr.get_logger().info("Delete tracks")
     trkr.trks = [track for track in trkr.trks if valid_track(track, trkr)]

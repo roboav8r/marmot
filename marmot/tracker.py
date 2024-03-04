@@ -306,7 +306,6 @@ class TBDTracker(Node):
        
         # POPULATE detections list from detections message
         self.dets_msg = det_array_msg
-        self.get_logger().info("DETECT: received %i detections from %s detector" % (len(self.dets_msg.detections), detector_name))
         self.dets = []
         for det in self.dets_msg.detections:
             self.dets.append(Detection(self, self.dets_msg, det, detector_name))
@@ -316,10 +315,6 @@ class TBDTracker(Node):
 
         # ASSIGN detections to tracks
         compute_assignment(self)
-        self.get_logger().info("ASSIGN: cost matrix has shape %lix%li \n" % (self.cost_matrix.shape[0],self.cost_matrix.shape[1]))
-        # self.get_logger().info("ASSIGN: det assignment vector has length %li \n" % (len(self.det_asgn_idx)))
-        # self.get_logger().info("ASSIGN: trk assignment vector has length %li \n" % (len(self.trk_asgn_idx)))
-        self.get_logger().info("ASSIGN: assignment matrix has shape %lix%li \n" % (self.matches.shape[0],self.matches.shape[1]))
 
         # UPDATE tracks with assigned detections
         self.update_tracks()
@@ -342,6 +337,5 @@ class TBDTracker(Node):
         create_tracks(self, detector_name)
 
         # OUTPUT tracker results
-        self.get_logger().info("PUBLISH: have %i tracks, %i detections \n" % (len(self.trks), len(self.dets)))
         for pub_name in self.pub_names:
             exec('%s(self,\'%s\')' % (self.pubs[pub_name]['function'],pub_name))
