@@ -175,19 +175,12 @@ class NuscenesExpManager(Node):
                         msg = deserialize_message(data, msg_type)
 
                         # Send the detection message, start clock
-                        # t_start = time.time()
                         self.publisher.publish(msg)
 
                         # wait for the track response from the tracker
                         ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 10)
-                        # t_end = time.time()
                         if ret:
                             self.tracker_callback(trk_msg)
-
-                            # dt = time.time() - t_start
-                            self.get_logger().info("Processed msg #%d" % self.msg_count)
-
-                        # times += "%s,%s,%s\n" % (exp_name, len(trk_msg.tracks), dt)
 
             # Write results to json file
             with open(os.path.join(self.results_dir, self.val_split, self.exp_name + "_results.json"), "w") as outfile:
