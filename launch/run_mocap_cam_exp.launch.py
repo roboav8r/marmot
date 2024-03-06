@@ -16,7 +16,7 @@ def generate_launch_description():
     def_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'nusc_baseline.yaml'
+        'mocap_cam_exp.yaml'
     )
 
     # Manager node
@@ -34,7 +34,7 @@ def generate_launch_description():
         package='marmot',
         executable='depthai_preproc',
         name='depthai_l_preproc_node',
-        remappings=[('/nuscenes_detections','/detections' )],
+        remappings=[('/depthai_detections','/oak_d_left/nn/spatial_detections'), ('/converted_detections','/converted_detections_left')],
         parameters=[exp_config]
     )
     ld.add_action(det_l_node)
@@ -42,21 +42,20 @@ def generate_launch_description():
         package='marmot',
         executable='depthai_preproc',
         name='depthai_r_preproc_node',
-        remappings=[('/nuscenes_detections','/detections' )],
+        remappings=[('/depthai_detections','/oak_d_right/nn/spatial_detections'), ('/converted_detections','/converted_detections_right')],
         parameters=[exp_config]
     )
     ld.add_action(det_r_node)
 
-
-    # # Tracker node
-    # trk_node = Node(
-    #     package='marmot',
-    #     executable='tbd_node.py',
-    #     name='tbd_tracker_node',
-    #     output='screen',
-    #     remappings=[('/detections','/converted_detections')],
-    #     parameters=[def_config]
-    # )
-    # ld.add_action(trk_node)
+    # Tracker node
+    trk_node = Node(
+        package='marmot',
+        executable='tbd_node.py',
+        name='tbd_tracker_node',
+        output='screen',
+        # remappings=[('/detections','/converted_detections')],
+        parameters=[def_config]
+    )
+    ld.add_action(trk_node)
 
     return ld
