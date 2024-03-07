@@ -92,9 +92,10 @@ class TBDTracker(Node):
                                                                                                                                   detector_params['detection_params'][det_cls]['yaw_obs_var'], 
                                                                                                                                   detector_params['detection_params'][det_cls]['size_obs_var'])))
                 elif detector_params['detector_type'] == 'pos_3d':
+                    detector_params['detection_params'][det_cls]['size_obs_var'] = np.array([1., 1., 1.])
                     detector_params['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((detector_params['detection_params'][det_cls]['pos_obs_var'], 
                                                                                                                                   detector_params['detection_params'][det_cls]['yaw_obs_var'], 
-                                                                                                                                  0, 0, 0)))
+                                                                                                                                  detector_params['detection_params'][det_cls]['size_obs_var'])))
                 else:
                     raise TypeError('No observation model for detector type: %s' % detector_params['detector_type'])
             
@@ -264,13 +265,13 @@ class TBDTracker(Node):
         self.get_logger().info("Resetting tracker")
 
         # Clear track, detection, and assignment variables
+        self.dets_msg = Detections3D()
+        self.trk_id_count = 0
         self.dets = []
         self.trks = []
 
         self.cost_matrix = np.empty(0)
         self.matches = np.empty(0)
-        # self.det_asgn_idx = [] 
-        # self.trk_asgn_idx = []
 
         return resp
 
@@ -308,6 +309,8 @@ class TBDTracker(Node):
         self.dets_msg = det_array_msg
         self.dets = []
         for det in self.dets_msg.detections:
+            if self.detectors[detector_name]['detection_params'][det.class_string]['ignore']:
+                continue
             self.dets.append(Detection(self, self.dets_msg, det, detector_name))
 
         # PREDICT existing tracks

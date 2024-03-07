@@ -107,6 +107,9 @@ def publish_scene(tracker, pub_name):
         if tracker.obj_props[trk.obj_class_str]['create_method']=="count":
             if trk.n_cons_matches < tracker.obj_props[trk.obj_class_str]['n_create_min']:
                 continue
+        elif tracker.obj_props[trk.obj_class_str]['create_method']=="conf":
+            if trk.track_conf < tracker.obj_props[trk.obj_class_str]['active_thresh']:        
+                continue
         else:
             raise TypeError('Invalid track creation method: %s' % tracker.obj_props[trk.obj_class_str]['create_method'])
 

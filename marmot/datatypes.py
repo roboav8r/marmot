@@ -78,6 +78,8 @@ class Track():
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'])))**2
+            # trkr.get_logger().info(str(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]])))))
+            # trkr.get_logger().info(self.cov)
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
 
             # Build initial process model and noise
