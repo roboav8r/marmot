@@ -133,7 +133,7 @@ class NuscenesExpManager(Node):
             rclpy.spin_until_future_complete(self, self.future)
 
             # Setup subscriber
-            ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 10)
+            ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 1)
 
             # Initialize variables
             self.msg_count=0
@@ -178,7 +178,7 @@ class NuscenesExpManager(Node):
                         self.publisher.publish(msg)
 
                         # wait for the track response from the tracker
-                        ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 10)
+                        ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic)
                         if ret:
                             self.tracker_callback(trk_msg)
 
