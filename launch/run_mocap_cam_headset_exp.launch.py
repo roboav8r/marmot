@@ -11,12 +11,12 @@ def generate_launch_description():
     exp_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'mocap_cam_exp.yaml'
+        'mocap_cam_headset_exp.yaml'
         )
     def_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'mocap_cam_exp.yaml'
+        'mocap_cam_headset_exp.yaml'
     )
 
     # Manager node
@@ -46,14 +46,29 @@ def generate_launch_description():
         parameters=[exp_config]
     )
     ld.add_action(det_r_node)
-
+    headset_1_node = Node(
+        package='marmot',
+        executable='pose_preproc',
+        name='headset_1_preproc_node',
+        remappings=[('/pose_detections','/vrpn_client_node/headset_1/pose'), ('/converted_detections','/converted_detections_headset_1')],
+        parameters=[exp_config]
+    )
+    ld.add_action(headset_1_node)
+    headset_2_node = Node(
+        package='marmot',
+        executable='pose_preproc',
+        name='headset_2_preproc_node',
+        remappings=[('/pose_detections','/vrpn_client_node/headset_2/pose'), ('/converted_detections','/converted_detections_headset_2')],
+        parameters=[exp_config]
+    )
+    ld.add_action(headset_2_node)
+    
     # Tracker node
     trk_node = Node(
         package='marmot',
         executable='tbd_node.py',
         name='tbd_tracker_node',
         output='screen',
-        # remappings=[('/detections','/converted_detections')],
         parameters=[def_config]
     )
     ld.add_action(trk_node)
