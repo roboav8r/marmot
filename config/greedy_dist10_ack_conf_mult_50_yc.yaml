@@ -141,7 +141,7 @@ tbd_tracker_node:
             yaw_obs_var: [1.]
             size_obs_var: [1., 1., 1.]
             ignore: True
-            object_class: 
+            object_class: ''
           bicycle:
             pos_obs_var: [1., 1., 1.]
             yaw_obs_var: [1.]
@@ -165,7 +165,7 @@ tbd_tracker_node:
             yaw_obs_var: [1.]
             size_obs_var: [1., 1., 1.]
             ignore: True
-            object_class: 
+            object_class: ''
           motorcycle:
             pos_obs_var: [1., 1., 1.]
             yaw_obs_var: [1.]
@@ -183,7 +183,7 @@ tbd_tracker_node:
             yaw_obs_var: [1.]
             size_obs_var: [1., 1., 1.]
             ignore: True
-            object_class: 
+            object_class: ''
           trailer:
             pos_obs_var: [1., 1., 1.]
             yaw_obs_var: [1.]
