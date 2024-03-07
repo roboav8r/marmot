@@ -83,7 +83,9 @@ class NuscenesExpManager(Node):
             elif kv.key == 'time_tracks_published':
                 t_end = int(kv.value)
 
-        self.times += "%s,%s,%s,%s\n" % (self.exp_name, n_dets, n_trks, (t_end-t_start))
+        with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "a") as outfile:
+            outfile.write("%s,%s,%s,%s\n" % (self.exp_name, n_dets, n_trks, (t_end-t_start)))
+        outfile.close()
 
         # Populate dictionary entry
         for track in msg.tracks:
@@ -128,9 +130,13 @@ class NuscenesExpManager(Node):
             self.get_logger().info("Loading tracker experiment configuration: %s" % (self.exp_name))
             subprocess.run(["ros2", "param", "load", "/tbd_tracker_node", os.path.join(self.package_dir,exp_path)])
             
-            # Reset & reconfigure tracker
+            # Reconfigure tracker
             self.future = self.reconf_tracker_client.call_async(self.empty_req)
-            rclpy.spin_until_future_complete(self, self.future)
+            rclpy.spin_until_future_complete(self, self.future,timeout_sec=5)
+            while self.future.done() is False:
+                self.get_logger().info("Could not reconfigure, retrying")
+                self.future = self.reconf_tracker_client.call_async(self.empty_req)
+                rclpy.spin_until_future_complete(self, self.future,timeout_sec=5)
 
             # Setup subscriber
             ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic, 1)
@@ -141,9 +147,10 @@ class NuscenesExpManager(Node):
             self.add_result_metadata()
 
             # Iterate through scene, messages
-            self.times=''
+            scene_count = 1
+            
             for scene in self.split:
-                self.get_logger().info("Computing tracking results for scene %s" % (scene))
+                self.get_logger().info("Computing tracking results for scene %s (%s/%s)" % (scene, scene_count, len(self.split)))
 
                 # Load .mcap file for this scene
                 storage_options = rosbag2_py.StorageOptions(
@@ -163,7 +170,11 @@ class NuscenesExpManager(Node):
 
                 # Reset tracker
                 self.future = self.reset_tracker_client.call_async(self.empty_req)
-                rclpy.spin_until_future_complete(self, self.future)
+                rclpy.spin_until_future_complete(self, self.future,timeout_sec=5)
+                while self.future.done() is False:
+                    self.get_logger().info("Could not reset, retrying")
+                    self.future = self.reset_tracker_client.call_async(self.empty_req)
+                    rclpy.spin_until_future_complete(self, self.future,timeout_sec=5)
 
                 # Process detection messages and format tracking results
                 while self.reader.has_next():
@@ -179,17 +190,24 @@ class NuscenesExpManager(Node):
 
                         # wait for the track response from the tracker
                         ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic)
-                        if ret:
-                            self.tracker_callback(trk_msg)
+
+                        # Ensure you get a response!
+                        while ret is None:
+                            self.get_logger().info('No response received')
+                            self.publisher.publish(msg)
+                            ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic,1)
+
+                        # self.get_logger().info("exp mgr d")
+                        self.tracker_callback(trk_msg)
+
+                scene_count+=1
+                
 
             # Write results to json file
             with open(os.path.join(self.results_dir, self.val_split, self.exp_name + "_results.json"), "w") as outfile:
                 json.dump(self.results_dict, outfile, indent=2)
             outfile.close()
             
-            with open(os.path.join(self.results_dir, self.val_split, "times.csv"), "a") as outfile:
-                outfile.write(self.times)
-            outfile.close()
 
 
 def main(args=None):
