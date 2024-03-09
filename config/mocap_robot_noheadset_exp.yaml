@@ -1,0 +1,633 @@
+# PREPROCESSING PARAMETERS
+depthai_preproc_node:
+  ros__parameters:
+    tracker_frame: 'world'
+    labels: ["person",
+            "bicycle",
+            "car",
+            "motorbike",
+            "aeroplane",
+            "bus",
+            "train",
+            "truck",
+            "boat",
+            "traffic light",
+            "fire hydrant",
+            "stop sign",
+            "parking meter",
+            "bench",
+            "bird",
+            "cat",
+            "dog",
+            "horse",
+            "sheep",
+            "cow",
+            "elephant",
+            "bear",
+            "zebra",
+            "giraffe",
+            "backpack",
+            "umbrella",
+            "handbag",
+            "tie",
+            "suitcase",
+            "frisbee",
+            "skis",
+            "snowboard",
+            "sports ball",
+            "kite",
+            "baseball bat",
+            "baseball glove",
+            "skateboard",
+            "surfboard",
+            "tennis racket",
+            "bottle",
+            "wine glass",
+            "cup",
+            "fork",
+            "knife",
+            "spoon",
+            "bowl",
+            "banana",
+            "apple",
+            "sandwich",
+            "orange",
+            "broccoli",
+            "carrot",
+            "hot dog",
+            "pizza",
+            "donut",
+            "cake",
+            "chair",
+            "sofa",
+            "pottedplant",
+            "bed",
+            "diningtable",
+            "toilet",
+            "tvmonitor",
+            "laptop",
+            "mouse",
+            "remote",
+            "keyboard",
+            "cell phone",
+            "microwave",
+            "oven",
+            "toaster",
+            "sink",
+            "refrigerator",
+            "book",
+            "clock",
+            "vase",
+            "scissors",
+            "teddy bear",
+            "hair drier",
+            "toothbrush"]
+
+
+# MANAGER NODE PARAMETERS
+mocap_robot_exp_mgr_node:
+  ros__parameters:
+    mcap_files: ['mocap_robot_static_1/rosbag2_2024_02_19-12_23_16_0.mcap',
+                 'mocap_robot_static_2/rosbag2_2024_02_19-12_24_18_0.mcap',
+                 'mocap_robot_static_3/rosbag2_2024_02_19-12_28_10_0.mcap',
+                 'mocap_robot_static_4/rosbag2_2024_02_19-12_32_15_0.mcap',
+                 'mocap_robot_moving_1/rosbag2_2024_02_19-12_35_10_0.mcap',
+                 'mocap_robot_moving_2/rosbag2_2024_02_19-12_37_20_0.mcap',
+                 'mocap_robot_moving_3/rosbag2_2024_02_19-12_38_59_0.mcap',
+                 'mocap_robot_moving_4/rosbag2_2024_02_19-12_41_24_0.mcap']
+    data_dir: 'tracking_ws/src/marmot/data' # relative to home directory
+    results_dir: 'tracking_ws/src/marmot/results/mocap_robot/no_headset' # relative to home directory
+    oakd_det_topic: '/oak/nn/spatial_detections'
+    headset_1_topic: '/vrpn_client_node/headset_1/pose'
+    headset_2_topic: '/vrpn_client_node/headset_2/pose'
+    pc_topic: '/philbart/lidar_points'
+    odom_topic: '/vrpn_client_node/robot_vicon/pose'
+    track_topic: '/tracks'
+
+# TRACKER PARAMETERS
+tbd_tracker_node:
+  ros__parameters:
+    tracker:
+      frame_id: 'world'
+      mismatch_penalty: 100.
+      assignment_algo: 'greedy'
+      yaw_corr: False
+      publishers:
+          names: ['track_pub']
+          track_pub: # Publisher name
+            pub_topic: 'tracks'
+            msg_type: 'Tracks3D'
+            function: 'publish_tracks'
+            queue_size: 10
+
+    object_properties:
+      object_classes: ["person"]
+      person:
+        model_type: 'cvcy'
+        yaw_proc_var: [1.]
+        size_proc_var: [1., 1., 1.]
+        vel_proc_var: [1., 1., 1.]
+        create_method: 'conf'
+        delete_method: 'conf'
+        active_thresh: .25
+        delete_thresh: .15
+        detect_thresh: .15
+        score_update_function: 'multiply'
+        score_decay: .05
+        sim_metric: 'dist_3d'
+        match_thresh: 2.0
+        length: 0.25
+        width: 0.25
+        height: 1.75
+
+    detectors:
+      #Declare names of detectors upfront
+      detector_names: ['oakd']
+
+      # For each named detector, give detector model information
+      oakd:
+        topic: 'converted_detections_oakd'
+        msg_type: 'Detections3D'
+        detector_type: 'pos_3d'
+        detection_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+        detection_properties:
+          person:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: False
+            object_class: 'person'
+          bicycle:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          car:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          motorbike:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          aeroplane:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bus:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          train:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          truck:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          boat:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          traffic light:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          fire hydrant:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          stop sign:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          parking meter:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bench:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bird:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          cat:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          dog:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          horse:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          sheep:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          cow:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          elephant:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bear:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          zebra:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          giraffe:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          backpack:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          umbrella:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          handbag:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          tie:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          suitcase:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          frisbee:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          skis:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          snowboard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          sports ball:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          kite:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          baseball bat:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          baseball glove:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          skateboard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          surfboard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          tennis racket:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bottle:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          wine glass:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          cup:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          fork:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          knife:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          spoon:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bowl:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          banana:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          apple:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          sandwich:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          orange:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          broccoli:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          carrot:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          hot dog:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          pizza:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          donut:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          cake:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          chair:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          sofa:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          pottedplant:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          bed:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          diningtable:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          toilet:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          tvmonitor:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          laptop:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          mouse:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          remote:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          keyboard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          cell phone:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          microwave:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          oven:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          toaster:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          sink:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          refrigerator:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          book:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          clock:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          vase:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          scissors:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          teddy bear:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          hair drier:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          toothbrush:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''           

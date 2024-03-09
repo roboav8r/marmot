@@ -53,6 +53,7 @@ class DepthAIPreProc : public rclcpp::Node
             // Convert spatial information
             this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
             this->obj_pose_det_frame_.header = msg->header;
+            this->obj_pose_det_frame_.header.stamp = rclcpp::Time(0);
             this->obj_pose_det_frame_.pose = it->results[0].pose.pose;
             this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
             this->det_msg_.pose = obj_pose_trk_frame_.pose;

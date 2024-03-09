@@ -42,6 +42,7 @@ install(PROGRAMS
   scripts/tbd_node.py
   scripts/nuscenes/nuscenes_exp_mgr.py
   scripts/mocap/mocap_cam_exp_mgr.py
+  scripts/mocap/mocap_robot_exp_mgr.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
