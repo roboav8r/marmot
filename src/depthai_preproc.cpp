@@ -10,7 +10,7 @@
 #include "tracking_msgs/msg/detections3_d.hpp"
 #include "tracking_msgs/msg/detection3_d.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
-
+#include "diagnostic_msgs/msg/key_value.hpp"
 
 using std::placeholders::_1;
 
@@ -41,10 +41,20 @@ class DepthAIPreProc : public rclcpp::Node
   private:
     void topic_callback(const vision_msgs::msg::Detection3DArray::SharedPtr msg)
     {
-     
+      rclcpp::Time time_det_rcvd = this->get_clock()->now();
+      diagnostic_msgs::msg::KeyValue kv;     
+
       this->dets_msg_ = tracking_msgs::msg::Detections3D();
       this->dets_msg_.header.stamp = msg->header.stamp;     
       this->dets_msg_.header.frame_id = this->tracker_frame_;
+
+      // Add metadata for later analysis
+      kv.key = "time_det_rcvd";
+      kv.value = std::to_string(time_det_rcvd.nanoseconds());
+      this->dets_msg_.metadata.emplace_back(kv);
+      kv.key = "num_dets_rcvd";
+      kv.value = std::to_string(msg->detections.size());
+      this->dets_msg_.metadata.emplace_back(kv);
 
       for (auto it = msg->detections.begin(); it != msg->detections.end(); it++)
       {

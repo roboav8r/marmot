@@ -22,8 +22,8 @@ def generate_launch_description():
     # Manager node
     comp_node = Node(
         package='marmot',
-        executable='mocap_cam_exp_mgr.py',
-        name='mocap_cam_exp_mgr_node',
+        executable='mocap_robot_exp_mgr.py',
+        name='mocap_robot_exp_mgr_node',
         output="screen",
         parameters=[exp_config]
     )
@@ -34,7 +34,7 @@ def generate_launch_description():
         package='marmot',
         executable='depthai_preproc',
         name='depthai_preproc_node',
-        remappings=[('/depthai_detections','/oak/nn/spatial_detections')],
+        remappings=[('/depthai_detections','/oak/nn/spatial_detections'), ('/converted_detections','/converted_detections_oakd')],
         parameters=[exp_config]
     )
     ld.add_action(oakd_preproc_node)

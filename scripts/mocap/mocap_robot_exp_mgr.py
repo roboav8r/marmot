@@ -21,6 +21,7 @@ from foxglove_msgs.msg import SceneUpdate
 from tracking_msgs.msg import Tracks3D
 from vision_msgs.msg import Detection3DArray
 from geometry_msgs.msg import PoseStamped
+from sensor_msgs.msg import PointCloud2
 from tf2_msgs.msg import TFMessage
 from std_srvs.srv import Empty
 
@@ -62,14 +63,12 @@ class MoCapRobotExpManager(Node):
         self.oakd_publisher = self.create_publisher(Detection3DArray,self.oakd_det_topic,10)
         self.headset_1_publisher = self.create_publisher(PoseStamped,self.headset_1_topic,10)
         self.headset_2_publisher = self.create_publisher(PoseStamped,self.headset_2_topic,10)
+        self.pc_publisher = self.create_publisher(PointCloud2,self.pc_topic,10)
         self.headset_1_interval = 10 # only send one of every 10 messages to simulate 10Hz sensor
         self.headset_2_interval = 10 # only send one of every 10 messages to simulate 10Hz sensor
-        self.headset_1_count = 0
-        self.headset_2_count = 0
-        self.headset_count_thresh = 15 # Delay headset publishing until ground truth messages published
-
-        # Create member variables
-        self.results_str = "experiment,gt1_x,gt1_y,gt1_z,track1_x,track1_y,track1_z,track1_id,track1_conf,gt2_x,gt2_y,gt2_z,track2_x,track2_y,track2_z,track2_id,track2_conf,unmatched_trks\n"
+        self.gt_1_rcvd = False
+        self.gt_1_rcvd = False
+        self.odom_rcvd = False
 
         # If results directory doesn't exist, create it
         if not os.path.exists(self.results_dir):
@@ -81,8 +80,19 @@ class MoCapRobotExpManager(Node):
     def tracker_callback(self, msg):
         self.results_str=''
 
+        # Compute timing information from metadata
+        for kv in msg.metadata:
+            if kv.key == 'num_dets_rcvd':
+                n_dets = int(kv.value)
+            elif kv.key == 'num_tracks_published':
+                n_trks = int(kv.value)
+            elif kv.key =='time_det_rcvd':
+                t_start = int(kv.value)
+            elif kv.key == 'time_tracks_published':
+                t_end = int(kv.value)
+
         # Compute actual-estimated track matches. Use euclidean norm and hungarian algo to assign.
-        match_thresh = 1.5
+        match_thresh = 1.0
         cost_matrix = np.zeros((2,len(msg.tracks)))
 
         for idx, est_trk in enumerate(msg.tracks):
@@ -95,13 +105,16 @@ class MoCapRobotExpManager(Node):
         match_1_str = ',,,,,'
         match_2_str = ',,,,,'
 
+        self.n_true_matches=0
         for ii,idx in enumerate(est_idx):
             if cost_matrix[gt_idx[ii],idx]>match_thresh:
                 continue
 
             if gt_idx[ii] == 0:
+                self.n_true_matches +=1
                 match_1_str = "%s,%s,%s,%s,%s," % (msg.tracks[idx].pose.pose.position.x,msg.tracks[idx].pose.pose.position.y,msg.tracks[idx].pose.pose.position.z,msg.tracks[idx].track_id,msg.tracks[idx].track_confidence)
             elif gt_idx[ii] == 1:
+                self.n_true_matches +=1
                 match_2_str = "%s,%s,%s,%s,%s," % (msg.tracks[idx].pose.pose.position.x,msg.tracks[idx].pose.pose.position.y,msg.tracks[idx].pose.pose.position.z,msg.tracks[idx].track_id,msg.tracks[idx].track_confidence)
 
         self.results_str += "%s,%s,%s,%s," % (self.config, self.odom_msg.pose.position.x, self.odom_msg.pose.position.y, self.odom_msg.pose.position.z)
@@ -109,30 +122,12 @@ class MoCapRobotExpManager(Node):
         self.results_str += match_1_str
         self.results_str += "%s,%s,%s," % (self.gt2_msg.pose.position.x, self.gt2_msg.pose.position.y, self.gt2_msg.pose.position.z)
         self.results_str += match_2_str
-        self.results_str += str(len(msg.tracks)-len(est_idx))
-        self.results_str += "\n"
+        self.results_str += str(len(msg.tracks)-self.n_true_matches)
+        self.results_str += ",%s,%s,%s\n" % (n_dets, n_trks, (t_end-t_start))
 
         with open(os.path.join(self.results_dir, self.config + "_results.csv"), "a") as outfile:
             outfile.write(self.results_str)
         outfile.close()
-
-        # for kv in msg.metadata:
-        #     if kv.key == "sample_token":
-        #         if (kv.value) not in self.results_dict["results"].keys():
-        #             self.results_dict["results"][kv.value] = []
-        #     elif kv.key == 'num_dets_rcvd':
-        #         n_dets = int(kv.value)
-        #     elif kv.key == 'num_tracks_published':
-        #         n_trks = int(kv.value)
-        #     elif kv.key =='time_det_rcvd':
-        #         t_start = int(kv.value)
-        #     elif kv.key == 'time_tracks_published':
-        #         t_end = int(kv.value)
-
-        # self.times += "%s,%s,%s,%s\n" % (self.exp_name, n_dets, n_trks, (t_end-t_start))
-
-        # TODO - WHAT I WANT - ground truth 1 xyz, match 1 xyz + id, ground truth 2 xyz, match 2 xyz, n objects tracked total
-
 
 
     def run_experiments(self):
@@ -144,7 +139,7 @@ class MoCapRobotExpManager(Node):
             self.get_logger().info("Loading %s/%s" % (self.data_dir, mcap_file))
 
             with open(os.path.join(self.results_dir, self.config + "_results.csv"), "w") as outfile:
-                outfile.write("experiment,robot_x,robot_y,robot_z,gt1_x,gt1_y,gt1_z,track1_x,track1_y,track1_z,track1_id,track1_conf,gt2_x,gt2_y,gt2_z,track2_x,track2_y,track2_z,track2_id,track2_conf,unmatched_trks\n")
+                outfile.write("experiment,robot_x,robot_y,robot_z,gt1_x,gt1_y,gt1_z,track1_x,track1_y,track1_z,track1_id,track1_conf,gt2_x,gt2_y,gt2_z,track2_x,track2_y,track2_z,track2_id,track2_conf,unmatched_trks,n_dets,n_trks,delta_t\n")
             outfile.close()
 
             # Load .mcap file for this scene
@@ -167,8 +162,11 @@ class MoCapRobotExpManager(Node):
             self.future = self.reset_tracker_client.call_async(self.empty_req)
             rclpy.spin_until_future_complete(self, self.future, timeout_sec=1.)
 
-            self.headset_1_count = 0 # arbitrary offset so that the ground truth messages are received first
+            self.headset_1_count = 0 
             self.headset_2_count = 0
+            self.gt_1_rcvd = False
+            self.gt_2_rcvd = False
+            self.odom_rcvd = False
 
             # Publish all the TF messages first for the buffer
             while self.reader.has_next():
@@ -189,10 +187,6 @@ class MoCapRobotExpManager(Node):
                     msg = deserialize_message(data, msg_type)
 
                     for tf in msg.transforms:
-                        # print(tf.header.frame_id)
-                        # print(tf.child_frame_id)
-                        # print()
-
                         # Fix disconnected trees created during .mcap recording
                         # do not publish robot odom/map transforms, use mocap for odom instead
                         if tf.header.frame_id in ['philbart/odom', 'philbart/map']:
@@ -202,23 +196,29 @@ class MoCapRobotExpManager(Node):
                           
                     self.tf_pub.publish(new_tf_msg)
 
+                elif topic=='/tf_static':
+                    msg_type = get_message(typename(topic))
+                    msg = deserialize_message(data, msg_type)
+                    self.tf_static_pub.publish(msg)
+
                 elif topic in self.oakd_det_topic:
                     msg_type = get_message(typename(topic))
                     msg = deserialize_message(data, msg_type)
 
-                    # Send the detection if not empty 
-                    self.oakd_publisher.publish(msg)
+                    if self.odom_rcvd:
+                        # Send the detection if not empty 
+                        self.oakd_publisher.publish(msg)
 
-                    # wait for the track response from the tracker
-                    ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic,1)
-                    if ret:
-                        self.tracker_callback(trk_msg)
+                        # wait for the track response from the tracker
+                        ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic,1)
+                        if ret:
+                            self.tracker_callback(trk_msg)
 
                 elif topic in self.headset_1_topic:
                     msg_type = get_message(typename(topic))
                     msg = deserialize_message(data, msg_type)
 
-                    if self.headset_1_count%self.headset_1_interval==0 and self.headset_2_count>self.headset_count_thresh:
+                    if self.headset_1_count%self.headset_1_interval==0 and self.gt_1_rcvd and self.gt_2_rcvd:
                         # Send the detection if not empty 
                         self.headset_1_publisher.publish(msg)
 
@@ -234,7 +234,7 @@ class MoCapRobotExpManager(Node):
                     msg_type = get_message(typename(topic))
                     msg = deserialize_message(data, msg_type)
 
-                    if self.headset_1_count%self.headset_1_interval==0 and self.headset_1_count>self.headset_count_thresh:
+                    if self.headset_2_count%self.headset_2_interval==0 and self.gt_1_rcvd and self.gt_2_rcvd:
                         # Send the detection if not empty 
                         self.headset_2_publisher.publish(msg)
 
@@ -245,17 +245,34 @@ class MoCapRobotExpManager(Node):
 
                     self.headset_2_count +=1
 
+                elif topic in self.pc_topic:
+
+                    msg_type = get_message(typename(topic))
+                    msg = deserialize_message(data, msg_type)
+
+                    # Send the detection if not empty 
+                    # if self.odom_rcvd:
+                    self.pc_publisher.publish(msg)
+
+                    # wait for the track response from the tracker
+                    ret, trk_msg = wait_for_message(Tracks3D, self, self.track_topic,1)
+                    if ret:
+                        self.tracker_callback(trk_msg)
+
                 elif topic=='/vrpn_client_node/groundtruth_1/pose':
                     msg_type = get_message(typename(topic))
                     self.gt1_msg = deserialize_message(data, msg_type)
+                    self.gt_1_rcvd = True
 
                 elif topic=='/vrpn_client_node/groundtruth_2/pose':
                     msg_type = get_message(typename(topic))
                     self.gt2_msg = deserialize_message(data, msg_type)
+                    self.gt_2_rcvd = True
 
                 elif topic=='/vrpn_client_node/robot_vicon/pose':
                     msg_type = get_message(typename(topic))
                     self.odom_msg = deserialize_message(data, msg_type)
+                    self.odom_rcvd = True
 
 def main(args=None):
     rclpy.init(args=args)

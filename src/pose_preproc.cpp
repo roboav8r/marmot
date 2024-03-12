@@ -9,7 +9,7 @@
 #include "tracking_msgs/msg/detections3_d.hpp"
 #include "tracking_msgs/msg/detection3_d.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
-
+#include "diagnostic_msgs/msg/key_value.hpp"
 
 using std::placeholders::_1;
 
@@ -41,11 +41,22 @@ class PosePreProc : public rclcpp::Node
     void topic_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
     {
      
+        rclcpp::Time time_det_rcvd = this->get_clock()->now();
+        diagnostic_msgs::msg::KeyValue kv;
+
         this->dets_msg_ = tracking_msgs::msg::Detections3D();
         this->dets_msg_.header.stamp = msg->header.stamp;     
         this->dets_msg_.header.frame_id = this->tracker_frame_;
 
         this->det_msg_ = tracking_msgs::msg::Detection3D();
+
+        // Add metadata for later analysis
+        kv.key = "time_det_rcvd";
+        kv.value = std::to_string(time_det_rcvd.nanoseconds());
+        this->dets_msg_.metadata.emplace_back(kv);
+        kv.key = "num_dets_rcvd";
+        kv.value = std::to_string(1);
+        this->dets_msg_.metadata.emplace_back(kv);
 
         // Convert spatial information
         this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();

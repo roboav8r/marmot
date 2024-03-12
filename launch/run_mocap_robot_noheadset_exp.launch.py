@@ -39,6 +39,15 @@ def generate_launch_description():
     )
     ld.add_action(oakd_preproc_node)
 
+    lidar_preproc_node = Node(
+        package='marmot',
+        executable='coda_preproc',
+        name='coda_preproc_node',
+        remappings=[('/coda_detections','/coda/dets_3d'), ('/converted_detections','/converted_detections_coda')],
+        parameters=[exp_config]
+    )
+    ld.add_action(lidar_preproc_node)
+
     # Tracker node
     trk_node = Node(
         package='marmot',

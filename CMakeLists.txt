@@ -29,10 +29,14 @@ add_executable(pose_preproc src/pose_preproc.cpp)
 ament_target_dependencies(pose_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 add_executable(nuscenes_preproc src/nuscenes_preproc.cpp)
 ament_target_dependencies(nuscenes_preproc rclcpp vision_msgs geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
+add_executable(coda_preproc src/coda_preproc.cpp)
+ament_target_dependencies(coda_preproc rclcpp vision_msgs geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
+
 install(TARGETS 
   depthai_preproc
   nuscenes_preproc
   pose_preproc
+  coda_preproc
   DESTINATION lib/${PROJECT_NAME}
 )
 
