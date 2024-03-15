@@ -29,11 +29,10 @@ tbd_tracker_node:
         match_thresh: 2.0
 
       bus:
-        model_type: 'ack'
+        model_type: 'cvcy'
         yaw_proc_var: [1.]
         size_proc_var: [1., 1., 1.]
-        vel_proc_var: [.1]
-        curv_proc_var: [.1]
+        vel_proc_var: [1., 1., 1.]
         create_method: 'count'
         delete_method: 'count'
         n_create_min: 1
@@ -54,11 +53,10 @@ tbd_tracker_node:
         match_thresh: 2.0
 
       motorcycle:
-        model_type: 'ack'
+        model_type: 'cvcy'
         yaw_proc_var: [1.]
         size_proc_var: [1., 1., 1.]
-        vel_proc_var: [.1]
-        curv_proc_var: [.1]
+        vel_proc_var: [1., 1., 1.]
         create_method: 'count'
         delete_method: 'count'
         n_create_min: 3
