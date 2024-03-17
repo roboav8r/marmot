@@ -20,6 +20,7 @@ rosdep install -i --from-path src --rosdistro iron -y
 ## Setting up the Conda environments
 Note: either `mamba` or `conda` will work for these commands.
 ```
+cd ~/tracking_ws/src/marmot
 mamba env create -f marmot_env.yml
 mamba env create -f marmot_eval.yml
 ```
