@@ -16,25 +16,25 @@ MaRMOT is an open-source ROS2 implementation of the Tracking-by-Detection paradi
 To install MaRMOT, follow the [installation instructions](docs/INSTALL.md).
 
 ## Running nuScenes experiments
-During development, I used the nuScenes tracking development kit for tuning and evaluation, which were reported in our 2024 RO-MAN paper.
+During development, we used the nuScenes tracking development kit for tuning and evaluation. The results are reported in our 2024 RO-MAN paper.
 
 If interested in using nuScenes for tracker development, see the [nuScenes instructions](docs/NUSCENES.md).
 
 ## Running MoCap experiments
+If interested in recreating the MoCap experiment results from the 2024 RO-MAN paper, see the [MoCap instructions](docs/MOCAP.md).
+
+## Running the OAK-D demo
 
 # Development
-## Adding new process models
-To add a new process model, 
-
-- In `datatypes.py`: Add an appropriate entry eithin the `Track.__init__`, `Track.predict`, and `Track.compute_proc_model` definitions. 
-- In `output.py`:
-- In `tracker.py`: Update `supported_proc_models`; add a `['obs_model']['proc_model']` entry for the process model; ensure `declare_obj_params` and `set_obj_properties` have entries for the necessary parameters;
+If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md),raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu?Subject=New MaRMOT Feature).
 
 # Acknowledgements
 The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
 
 The [tracking evaluation script](scripts/evaluate.py) is copied from Nutonomy's nuScenes devkit repo [here](https://github.com/nutonomy/nuscenes-devkit/tree/master/python-sdk/nuscenes/eval/tracking) for convenience.
 
+MaRMOT uses a modified version of Weng et al's AB3DMOT greedy matching algorithm, found [here](https://github.com/xinshuoweng/AB3DMOT/blob/master/AB3DMOT_libs/matching.py).
+MaRMOT uses [PyTorch3D](https://pytorch3d.org/docs/iou3d) to compute 3D Intersection-over-Union (IoU).
 # Potential Improvements
 ## Usability
 - Docker/containerized version
