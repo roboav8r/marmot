@@ -1,0 +1,4 @@
+exp_config,split,amota,bicycle_amota,bus_amota,car_amota,moto_amota,ped_amota,trailer_amota,truck_amota
+greedy_dist2_cvcy_count_yc_results,mini_train,0.447,0.092,0.513,0.210,0.208,0.814,0.767,0.524
+greedy_iou3d_cvcy_count_yc_results,mini_train,0.503,0.126,0.724,0.441,0.192,0.638,0.766,0.637
+greedy_giou3d_cvcy_count_yc_results,mini_train,0.455,0.113,0.734,0.354,0.194,0.405,0.766,0.620

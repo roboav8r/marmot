@@ -1,0 +1,1567 @@
+tbd_tracker_node:
+  ros__parameters:
+    tracker:
+      frame_id: 'map'
+      publishers:
+          names: ['track_pub', scene_pub]
+          track_pub: # Publisher name
+            pub_topic: 'tracks'
+            msg_type: 'Tracks3D'
+            function: 'PublishTracks'
+            queue_size: 10
+          scene_pub: # Publisher name
+            pub_topic: 'scenes'
+            msg_type: 'SceneUpdate'
+            function: 'PublishScene'
+            queue_size: 10
+
+    object_properties: # TODO - or motion/process models?
+      object_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+      person:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bicycle:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      car:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      motorbike:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      aeroplane:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bus:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      train:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      truck:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      boat:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      traffic light:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      fire hydrant:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      stop sign:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      parking meter:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bench:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bird:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      cat:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      dog:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      horse:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      sheep:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      cow:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      elephant:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bear:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      zebra:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      giraffe:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      backpack:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      umbrella:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      handbag:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      tie:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      suitcase:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      frisbee:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      skis:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      snowboard:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      sports ball:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      kite:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      baseball bat:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      baseball glove:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      skateboard:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      surfboard:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      tennis racket:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bottle:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      wine glass:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      cup:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      fork:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      knife:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      spoon:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bowl:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      banana:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      apple:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      sandwich:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      orange:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      broccoli:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      carrot:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      hot dog:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      pizza:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      donut:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      cake:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      chair:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      sofa:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      pottedplant:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      bed:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      diningtable:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      toilet:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      tvmonitor:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      laptop:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      mouse:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      remote:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      keyboard:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      cell phone:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      microwave:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      oven:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      toaster:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      sink:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      refrigerator:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      book:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      clock:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      vase:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      scissors:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      teddy bear:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      hair drier:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+      toothbrush:
+          model_type: 'cvcy_obj'
+          yaw_proc_var: 1.
+          size_proc_var: [1., 1., 1.]
+          vel_proc_var: [1., .5, .5]
+          
+          length: 0.25
+          width: 0.25
+          height: 0.5
+          create_method: 'count'
+          delete_method: 'count'
+          n_create_min: 3
+          n_delete_max: 30
+
+    detectors:
+      #Declare names of detectors upfront
+      detector_names: ['oakd']
+
+      # For each named detector, give detector model information
+      oakd:
+        topic: 'converted_detections'
+        msg_type: 'Detections3D'
+        detector_type: 'pos_3d'
+        detection_classes: ["person", "bicycle","car","motorbike","aeroplane","bus","train","truck","boat","traffic light","fire hydrant","stop sign","parking meter","bench","bird","cat","dog","horse","sheep","cow","elephant","bear","zebra","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite","baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife","spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza","donut","cake","chair","sofa","pottedplant","bed","diningtable","toilet","tvmonitor","laptop","mouse","remote","keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book","clock","vase","scissors","teddy bear","hair drier","toothbrush"]
+        detection_properties:
+            person:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'person'
+            bicycle:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bicycle'
+            car:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'car'
+            motorbike:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'motorbike'
+            aeroplane:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'aeroplane'
+            bus:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bus'
+            train:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'train'
+            truck:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'truck'
+            boat:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'boat'
+            traffic light:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'traffic light'
+            fire hydrant:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'fire hydrant'
+            stop sign:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'stop sign'
+            parking meter:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'parking meter'
+            bench:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bench'
+            bird:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bird'
+            cat:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'cat'
+            dog:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'dog'
+            horse:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'horse'
+            sheep:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'sheep'
+            cow:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'cow'
+            elephant:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'elephant'
+            bear:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bear'
+            zebra:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'zebra'
+            giraffe:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'giraffe'
+            backpack:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'backpack'
+            umbrella:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'umbrella'
+            handbag:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'handbag'
+            tie:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'tie'
+            suitcase:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'suitcase'
+            frisbee:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'frisbee'
+            skis:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'skis'
+            snowboard:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'snowboard'
+            sports ball:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'sports ball'
+            kite:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'kite'
+            baseball bat:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'baseball bat'
+            baseball glove:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'baseball glove'
+            skateboard:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'skateboard'
+            surfboard:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'surfboard'
+            tennis racket:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'tennis racket'
+            bottle:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bottle'
+            wine glass:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'wine glass'
+            cup:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'cup'
+            fork:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'fork'
+            knife:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'knife'
+            spoon:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'spoon'
+            bowl:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bowl'
+            banana:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'banana'
+            apple:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'apple'
+            sandwich:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'sandwich'
+            orange:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'orange'
+            broccoli:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'broccoli'
+            carrot:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'carrot'
+            hot dog:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'hot dog'
+            pizza:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'pizza'
+            donut:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'donut'
+            cake:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'cake'
+            chair:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'chair'
+            sofa:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'sofa'
+            pottedplant:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'pottedplant'
+            bed:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'bed'
+            diningtable:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'diningtable'
+            toilet:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'toilet'
+            tvmonitor:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'tvmonitor'
+            laptop:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'laptop'
+            mouse:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'mouse'
+            remote:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'remote'
+            keyboard:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'keyboard'
+            cell phone:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'cell phone'
+            microwave:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'microwave'
+            oven:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'oven'
+            toaster:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'toaster'
+            sink:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'sink'
+            refrigerator:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'refrigerator'
+            book:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'book'
+            clock:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'clock'
+            vase:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'vase'
+            scissors:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'scissors'
+            teddy bear:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'teddy bear'
+            hair drier:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'hair drier'
+            toothbrush:
+                pos_obs_var: [1., 1., 1.]
+                yaw_obs_var: [1.]
+                size_obs_var: [1., 1., 1.]
+                object_class: 'toothbrush'
+
+
+        # # Spatial detector model - TODO generate this from process models, detector model name
+        # spatial_detector_model: [1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # p_x
+        #                       0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., # p_y
+        #                       0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., # p_z
+        #                       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # heading
+        #                       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # length
+        #                       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # width
+        #                       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., # height
+        #                       0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.] # class_conf
+
+
+        # # Semantic detector model        
+        # # p(Z_label|X_class): 
+        # # columns are dets classes
+        # semantic_detector_model: [1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # person
+        #                         0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bicycle
+        #                         0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # car
+        #                         0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # motorbike
+        #                         0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # aeroplane
+        #                         0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bus
+        #                         0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # train
+        #                         0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # truck
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # boat
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # traffic light
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # fire hydrant
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # stop sign
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # parking meter
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bench
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bird
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cat
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # dog
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # horse
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sheep
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cow
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # elephant
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bear
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # zebra
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # giraffe
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # backpack
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # umbrella
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # handbag
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tie
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # suitcase
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # frisbee
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # skis
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # snowboard
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sports ball
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # kite
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # baseball bat
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # baseball glove
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # skateboard
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # surfboard
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tennis racket
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bottle
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # wine glass
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cup
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # fork
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # knife
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # spoon
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bowl
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # banana
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # apple
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sandwich
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # orange
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # broccoli
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # carrot
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # hot dog
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # pizza
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # donut
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cake
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # chair
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # sofa
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # pottedplant
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # bed
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # diningtable
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # toilet
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # tvmonitor
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # laptop
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # mouse
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # remote
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # keyboard
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # cell phone
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # microwave
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # oven
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.,  # toaster
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.,  # sink
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.,  # refrigerator
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.,  # book
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.,  # clock
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.,  # vase
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,  # scissors
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.,  # teddy bear
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.,  # hair drier
+        #                         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.]  # toothbrush

@@ -1,0 +1,12 @@
+nusc_exp_mgr_node:
+  ros__parameters:
+    exp_configs: ['config/greedy_dist5_bestmodel_conf_padd_15_yc.yaml',
+                  'config/greedy_giou_bestmodel_conf_padd_15_yc.yaml']
+
+    val_dataset: 'v1.0-test'
+    val_split: 'test'
+    mcap_dir: 'nuscenes/mcap' # relative to home directory
+    results_dir: 'tracking_ws/src/marmot/results' # relative to home directory
+    det_topic: '/detections'
+    track_topic: '/tracks'
+    lidar_detector: 'megvii'
