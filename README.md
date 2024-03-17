@@ -8,7 +8,18 @@ This package is under active development as part of my Ph.D. in robotics at UT A
 ![](media/MaRMOT.png)
 
 # About
-MaRMOT is an open-source ROS2 implementation of the Tracking-by-Detection paradigm, used by many common trackers with deep learning-based LiDAR and vision detectors. However, MaRMOT can be extended for an arbitrary detector type.
+![](media/marmot_flow.png)
+
+MaRMOT is an open-source ROS2 implementation of the Tracking-by-Detection paradigm, used by many common trackers with deep learning-based LiDAR and vision detectors. However, MaRMOT can be extended for an arbitrary detector type. 
+
+There are a few key components to know:
+- Track and Detection objects, implemented in `marmot/datatypes.py`
+- Detection pre-processing, implemented in the `/src/*_preproc.cpp` files. This converts an arbitrary detectionfrom one ROS2 message type into the MaRMOT `tracking_msgs/Detections3D.msg` format for processing by the tracker node.
+- The tracker node, implemented in `marmot/tracker.py`. It inherits the `marmot/assignment.py` and `marmot/management.py` modules, and publishes `tracking_msgs/Tracks3D.msg` objects for general tracking use and Foxglove `foxglove_msgs/SceneUpdate.msg` messages for visualization in Foxglove Studio.
+
+Supporting file types include:
+- ROS2 `/launch` files, which start the nodes, specify configuration files, and play back data as needed.
+- `/config` files, which specify the tracker parameters, detector parameters, and object parameters.
 
 # Usage
 
@@ -16,12 +27,12 @@ MaRMOT is an open-source ROS2 implementation of the Tracking-by-Detection paradi
 To install MaRMOT, follow the [installation instructions](docs/INSTALL.md).
 
 ## Running nuScenes experiments
-During development, we used the nuScenes tracking development kit for tuning and evaluation. The results are reported in our 2024 RO-MAN paper.
+During development, we used the nuScenes tracking development kit for tuning and evaluation. The results are reported in our 2024 paper.
 
 If interested in using nuScenes for tracker development, see the [nuScenes instructions](docs/NUSCENES.md).
 
 ## Running MoCap experiments
-If interested in recreating the MoCap experiment results from the 2024 RO-MAN paper, see the [MoCap instructions](docs/MOCAP.md).
+If interested in recreating the MoCap experiment results from the 2024 paper, see the [MoCap instructions](docs/MOCAP.md).
 
 ## Running the OAK-D demo
 
@@ -34,6 +45,7 @@ The nuScenes `.mcap` conversion script is a modified version of the original fro
 The [tracking evaluation script](scripts/evaluate.py) is copied from Nutonomy's nuScenes devkit repo [here](https://github.com/nutonomy/nuscenes-devkit/tree/master/python-sdk/nuscenes/eval/tracking) for convenience.
 
 MaRMOT uses a modified version of Weng et al's AB3DMOT greedy matching algorithm, found [here](https://github.com/xinshuoweng/AB3DMOT/blob/master/AB3DMOT_libs/matching.py).
+
 MaRMOT uses [PyTorch3D](https://pytorch3d.org/docs/iou3d) to compute 3D Intersection-over-Union (IoU).
 # Potential Improvements
 ## Usability
