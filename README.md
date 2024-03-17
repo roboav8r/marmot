@@ -1,40 +1,19 @@
 # MaRMOT
-Modular and Reconfigurable Multiple Object Tracking (MaRMOT) framework for robots and intelligent systems in ROS2. MaRMOT is designed to be fast and accurate enough for real-time applications, modular, reconfigurable, and capable of running on embedded hardware. 
+Modular and Reconfigurable Multiple Object Tracking (MaRMOT) framework for robots and intelligent systems in ROS2. MaRMOT is designed to be fast and accurate enough for real-time applications, modular, reconfigurable, and capable of running on embedded hardware.
+
+MaRMOT was submitted to the 33rd IEEE International Conference on Robot and Human Interactive Communication (IEEE RO-MAN 2024).
 
 This package is under active development as part of my Ph.D. in robotics at UT Austin--if there is a feature you would like to see, please contact me or raise an issue!
 
 ![](media/MaRMOT.png)
 
-# Prerequisites
-This assumes you are using Ubuntu 22.04 with ROS2 and `conda` installed. This was developed using ROS2 Iron, installed from binary using the instructions [here](https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html#). 
+# About
+MaRMOT is an open-source ROS2 implementation of the Tracking-by-Detection paradigm, used by many common trackers with deep learning-based LiDAR and vision detectors. However, MaRMOT can be extended for an arbitrary detector type.
 
-Note: Make sure that you deactivate any virtual environments before installing ROS2.
+# Usage
 
-# Setup
-## Clone the repo
-```
-cd ~
-mkdir -p tracking_ws/src && cd tracking_ws/src
-git clone https://github.com/roboav8r/marmot.git
-git clone https://github.com/roboav8r/tracking_msgs.git
-cd tracking_ws
-rosdep install -i --from-path src --rosdistro iron -y
-```
-## Setting up the Conda environments
-Note: I use [`mamba`](https://github.com/conda-forge/miniforge) as a personal preference, but it is a drop-in replacement to `conda`; either `mamba` or `conda` will work for these commands.
-```
-mamba env create -f marmot_env.yml
-mamba env create -f marmot_eval.yml
-```
-
-## Building the package
-```
-cd ~/tracking_ws
-source /opt/ros/${YOUR_ROS2_DISTRO}/setup.bash
-colcon build --packages-select tracking_msgs
-source install/setup.bash
-colcon build
-```
+## Installation and Setup
+To install MaRMOT, follow the [installation instructions](INSTALL.md).
 
 ## Download nuScenes data (Optional)
 If you want to evaluate MaRMOT on nuScenes OR use the nuScenes dataset for tracking development & evaluation, follow these steps to download and extract the dataset.
