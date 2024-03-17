@@ -6,5 +6,5 @@ To add a new process model:
 - In `output.py`: Add 
 - In `tracker.py`: Update `supported_proc_models`; add a `['obs_model']['proc_model']` entry for the process model; ensure `declare_obj_params` and `set_obj_properties` have entries for the necessary parameters;
 
-# Other contributions and featuresIf 
+# Other contributions and features
 For adding other features (new similarity metrics, two-stage association, non-max
