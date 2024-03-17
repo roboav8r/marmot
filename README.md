@@ -3,7 +3,7 @@ Modular and Reconfigurable Multiple Object Tracking (MaRMOT) framework for robot
 
 MaRMOT was submitted to the 33rd IEEE International Conference on Robot and Human Interactive Communication (IEEE RO-MAN 2024).
 
-This package is under active development as part of my Ph.D. in robotics at UT Austin--if there is a feature you would like to see, please contact me or raise an issue!
+This package is under active development as part of my Ph.D. in robotics at UT Austin--if there is a feature you would like to see, please [contact me](mailto:john.a.duncan@utexas.edu) or raise an issue!
 
 ![](media/MaRMOT.png)
 
@@ -26,7 +26,7 @@ If interested in recreating the MoCap experiment results from the 2024 RO-MAN pa
 ## Running the OAK-D demo
 
 # Development
-If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md),raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu?Subject=New MaRMOT Feature).
+If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md),raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu).
 
 # Acknowledgements
 The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
