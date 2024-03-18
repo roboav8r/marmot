@@ -184,7 +184,7 @@ mocap_cam_exp_mgr_node:
                  'mocap_cam_2/rosbag2_2024_02_20-12_20_50_0.mcap',
                  'mocap_cam_3/rosbag2_2024_02_20-12_24_21_0.mcap']
     data_dir: 'tracking_ws/src/marmot/data' # relative to home directory
-    results_dir: 'tracking_ws/src/marmot/results/mocap_cam/headset' # relative to home directory
+    results_dir: 'tracking_ws/src/marmot/results/4_mocap_cam/headset' # relative to home directory
     oakd_l_det_topic: '/oak_d_left/nn/spatial_detections'
     oakd_r_det_topic: '/oak_d_right/nn/spatial_detections'
     headset_1_topic: '/vrpn_client_node/headset_1/pose'
@@ -216,11 +216,11 @@ tbd_tracker_node:
         vel_proc_var: [1., 1., 1.]
         create_method: 'conf'
         delete_method: 'conf'
-        active_thresh: .25
+        active_thresh: .75
         delete_thresh: .15
         detect_thresh: .15
         score_update_function: 'multiply'
-        score_decay: .05
+        score_decay: .10
         sim_metric: 'dist_3d'
         match_thresh: 2.0
         length: 0.25

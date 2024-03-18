@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import copy 
+
 import gtsam
 import numpy as np
 
@@ -55,7 +57,7 @@ class TBDTracker(Node):
         self.detectors = dict()
         self.subs = []
 
-        for detector_idx, detector in enumerate(detector_names):
+        for detector in detector_names:
 
             # Declare parameters for detector
             self.declare_parameter('detectors.' + detector + '.topic', rclpy.Parameter.Type.STRING)
@@ -64,43 +66,44 @@ class TBDTracker(Node):
             self.declare_parameter('detectors.' + detector + '.detection_classes', rclpy.Parameter.Type.STRING_ARRAY)
 
             # Form parameter dictionary for detector
-            detector_params = dict()
-            detector_params['topic'] = self.get_parameter('detectors.' + detector + '.topic').get_parameter_value().string_value
-            detector_params['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
-            detector_params['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
-            detector_params['detection_classes'] = self.get_parameter('detectors.' + detector + '.detection_classes').get_parameter_value().string_array_value
+            self.detectors[detector] = dict()
+            # self.detectors[detector]['name'] = detector
+            self.detectors[detector]['topic'] = self.get_parameter('detectors.' + detector + '.topic').get_parameter_value().string_value
+            self.detectors[detector]['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
+            self.detectors[detector]['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
+            self.detectors[detector]['detection_classes'] = self.get_parameter('detectors.' + detector + '.detection_classes').get_parameter_value().string_array_value
 
-            detector_params['detection_params'] = dict()
-            for det_cls in detector_params['detection_classes']:
-                detector_params['detection_params'][det_cls] = dict()
+            self.detectors[detector]['detection_params'] = dict()
+            for det_cls in self.detectors[detector]['detection_classes']:
+                self.detectors[detector]['detection_params'][det_cls] = dict()
 
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore',rclpy.Parameter.Type.BOOL)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)
                 
-                detector_params['detection_params'][det_cls]['pos_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var').get_parameter_value().double_array_value
-                detector_params['detection_params'][det_cls]['yaw_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var').get_parameter_value().double_array_value
-                detector_params['detection_params'][det_cls]['ignore'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore').get_parameter_value().bool_value
-                detector_params['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
+                self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var').get_parameter_value().double_array_value
+                self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var').get_parameter_value().double_array_value
+                self.detectors[detector]['detection_params'][det_cls]['ignore'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore').get_parameter_value().bool_value
+                self.detectors[detector]['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
 
                 # Create observation variance model based on detector type
-                if detector_params['detector_type'] == 'pos_bbox_3d':
+                if self.detectors[detector]['detector_type'] == 'pos_bbox_3d':
                     self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
-                    detector_params['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
-                    detector_params['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((detector_params['detection_params'][det_cls]['pos_obs_var'], 
-                                                                                                                                  detector_params['detection_params'][det_cls]['yaw_obs_var'], 
-                                                                                                                                  detector_params['detection_params'][det_cls]['size_obs_var'])))
-                elif detector_params['detector_type'] == 'pos_3d':
-                    detector_params['detection_params'][det_cls]['size_obs_var'] = np.array([1., 1., 1.])
-                    detector_params['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((detector_params['detection_params'][det_cls]['pos_obs_var'], 
-                                                                                                                                  detector_params['detection_params'][det_cls]['yaw_obs_var'], 
-                                                                                                                                  detector_params['detection_params'][det_cls]['size_obs_var'])))
+                    self.detectors[detector]['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
+                    self.detectors[detector]['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['size_obs_var'])))
+                elif self.detectors[detector]['detector_type'] == 'pos_3d':
+                    self.detectors[detector]['detection_params'][det_cls]['size_obs_var'] = np.array([1., 1., 1.])
+                    self.detectors[detector]['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['size_obs_var'])))
                 else:
-                    raise TypeError('No observation model for detector type: %s' % detector_params['detector_type'])
+                    raise TypeError('No observation model for detector type: %s' % self.detectors[detector]['detector_type'])
             
             # Add observation models for each process/sensor model combination
-            detector_params['obs_model'] = dict()
+            self.detectors[detector]['obs_model'] = dict()
             for proc_model in self.supported_proc_models:
 
                 if proc_model in ['cp']:
@@ -110,30 +113,24 @@ class TBDTracker(Node):
                 elif proc_model in ['cvcy', 'cvcy_obj','ctra']:
                     dim_states = 10
 
-                if detector_params['detector_type'] == 'pos_3d':
+                if self.detectors[detector]['detector_type'] == 'pos_3d':
                     dim_obs = 7
-                    detector_params['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
-                    detector_params['obs_model'][proc_model][0,0], detector_params['obs_model'][proc_model][1,1], detector_params['obs_model'][proc_model][2,2] = 1,1,1
+                    self.detectors[detector]['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
+                    self.detectors[detector]['obs_model'][proc_model][0,0], self.detectors[detector]['obs_model'][proc_model][1,1], self.detectors[detector]['obs_model'][proc_model][2,2] = 1,1,1
 
-                elif detector_params['detector_type'] == 'pos_bbox_3d':
+                elif self.detectors[detector]['detector_type'] == 'pos_bbox_3d':
                     dim_obs = 7
-                    detector_params['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
-                    detector_params['obs_model'][proc_model][0,0] = 1
-                    detector_params['obs_model'][proc_model][1,1] = 1
-                    detector_params['obs_model'][proc_model][2,2] = 1
-                    detector_params['obs_model'][proc_model][3,3] = 1
-                    detector_params['obs_model'][proc_model][4,4] = 1
-                    detector_params['obs_model'][proc_model][5,5] = 1
-                    detector_params['obs_model'][proc_model][6,6] = 1
-
-            self.detectors[detector] = detector_params # Add to tracker's detectors dictionary
+                    self.detectors[detector]['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
+                    self.detectors[detector]['obs_model'][proc_model][0,0] = 1
+                    self.detectors[detector]['obs_model'][proc_model][1,1] = 1
+                    self.detectors[detector]['obs_model'][proc_model][2,2] = 1
+                    self.detectors[detector]['obs_model'][proc_model][3,3] = 1
+                    self.detectors[detector]['obs_model'][proc_model][4,4] = 1
+                    self.detectors[detector]['obs_model'][proc_model][5,5] = 1
+                    self.detectors[detector]['obs_model'][proc_model][6,6] = 1
 
             # Create ROS2 subscription for this detector
-            self.subs.append(self.create_subscription(eval(detector_params['msg_type']),
-                    detector_params['topic'],
-                    lambda msg: self.det_callback(msg, detector), 
-                    1
-            ))
+            self.subs.append(self.create_subscription(eval(self.detectors[detector]['msg_type']),self.detectors[detector]['topic'], eval("lambda msg: self.det_callback(msg, \"" + detector + "\")",locals()), 1))
 
         # Initialize tracker Track and Detection set variables
         self.dets_msg = Detections3D()

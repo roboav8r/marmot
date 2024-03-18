@@ -205,8 +205,8 @@ class MoCapRobotExpManager(Node):
                     msg_type = get_message(typename(topic))
                     msg = deserialize_message(data, msg_type)
 
-                    if self.odom_rcvd:
-                        # Send the detection if not empty 
+                    if self.gt_1_rcvd and self.gt_2_rcvd:
+                        # Send the detection 
                         self.oakd_publisher.publish(msg)
 
                         # wait for the track response from the tracker

@@ -187,7 +187,7 @@ class MoCapCamExpManager(Node):
                     msg_type = get_message(typename(topic))
                     msg = deserialize_message(data, msg_type)
 
-                    if self.odom_rcvd:
+                    if self.gt_1_rcvd and self.gt_2_rcvd:
                         # Send the detection if not empty 
                         self.oakd_l_publisher.publish(msg)
 
@@ -198,7 +198,7 @@ class MoCapCamExpManager(Node):
 
                 elif topic in self.oakd_r_det_topic:
 
-                    if self.odom_rcvd:
+                    if self.gt_1_rcvd and self.gt_2_rcvd:
                         msg_type = get_message(typename(topic))
                         msg = deserialize_message(data, msg_type)
 
@@ -255,8 +255,6 @@ class MoCapCamExpManager(Node):
                     msg_type = get_message(typename(topic))
                     self.odom_msg = deserialize_message(data, msg_type)
                     self.odom_rcvd = True
-
-
 
 def main(args=None):
     rclpy.init(args=args)

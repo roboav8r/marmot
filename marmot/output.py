@@ -183,11 +183,6 @@ def publish_scene(tracker, pub_name):
         att_md.value = '' 
         entity_msg.metadata.append(att_md)
 
-        sample_md = KeyValuePair()
-        sample_md.key = trk.metadata[0].key
-        sample_md.value = trk.metadata[0].value
-        entity_msg.metadata.append(sample_md)
-
         trk_md = KeyValuePair()
         trk_md.key = 'track_score'
         trk_md.value = str(trk.track_conf)

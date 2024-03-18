@@ -1,4 +1,64 @@
 # PREPROCESSING PARAMETERS
+coda_preproc_node:
+  ros__parameters:
+    tracker_frame: 'world'
+    labels: ['Car', 
+             'Pedestrian', 
+             'Cyclist', 
+             'Motorcycle', 
+             'Scooter', 
+             'Tree', 
+             'TrafficSign', 
+             'Canopy', 
+             'TrafficLight',
+             'BikeRack', 
+             'Bollard', 
+             'ConstructionBarrier', 
+             'ParkingKiosk', 
+             'Mailbox', 
+             'FireHydrant',
+             'FreestandingPlant', 
+             'Pole', 
+             'InformationalSign', 
+             'Door', 
+             'Fence', 
+             'Railing', 
+             'Cone', 
+             'Chair', 
+             'Bench',
+             'Table', 
+             'TrashCan', 
+             'NewspaperDispenser', 
+             'RoomLabel', 
+             'Stanchion', 
+             'SanitizerDispenser',
+             'CondimentDispenser', 
+             'VendingMachine', 
+             'EmergencyAidKit', 
+             'FireExtinguisher', 
+             'Computer', 
+             'Television',
+             'Other', 
+             'PickupTruck', 
+             'DeliveryTruck', 
+             'ServiceVehicle', 
+             'UtilityVehicle', 
+             'FireAlarm', 
+             'ATM', 
+             'Cart',
+             'Couch', 
+             'TrafficArm', 
+             'WallSign', 
+             'FloorSign', 
+             'DoorSwitch', 
+             'EmergencyPhone', 
+             'Dumpster',
+             'VacuumCleaner', 
+             'Segway', 
+             'Bus', 
+             'Skateboard', 
+             'WaterFountain']
+
 depthai_preproc_node:
   ros__parameters:
     tracker_frame: 'world'
@@ -105,7 +165,7 @@ mocap_robot_exp_mgr_node:
                  'mocap_robot_moving_3/rosbag2_2024_02_19-12_38_59_0.mcap',
                  'mocap_robot_moving_4/rosbag2_2024_02_19-12_41_24_0.mcap']
     data_dir: 'tracking_ws/src/marmot/data' # relative to home directory
-    results_dir: 'tracking_ws/src/marmot/results/mocap_robot/headset' # relative to home directory
+    results_dir: 'tracking_ws/src/marmot/results/5_mocap_robot/headset' # relative to home directory
     oakd_det_topic: '/oak/nn/spatial_detections'
     headset_1_topic: '/vrpn_client_node/headset_1/pose'
     headset_2_topic: '/vrpn_client_node/headset_2/pose'
@@ -138,11 +198,11 @@ tbd_tracker_node:
         vel_proc_var: [1., 1., 1.]
         create_method: 'conf'
         delete_method: 'conf'
-        active_thresh: .25
+        active_thresh: .75
         delete_thresh: .15
         detect_thresh: .15
         score_update_function: 'multiply'
-        score_decay: .05
+        score_decay: .10
         sim_metric: 'dist_3d'
         match_thresh: 2.0
         length: 0.25
@@ -151,35 +211,352 @@ tbd_tracker_node:
 
     detectors:
       #Declare names of detectors upfront
-      detector_names: ['headset_1','headset_2','oakd']
+      detector_names: ['coda','oakd','headset_1','headset_2']
 
       # For each named detector, give detector model information
-      headset_1:
-        topic: 'converted_detections_headset_1'
+      coda:
+        topic: 'converted_detections_coda'
         msg_type: 'Detections3D'
-        detector_type: 'pos_3d'
-        detection_classes: ["person"]
+        detector_type: 'pos_bbox_3d'
+        detection_classes: ['Car', 'Pedestrian', 'Cyclist', 'Motorcycle', 'Scooter', 'Tree', 'TrafficSign', 'Canopy', 'TrafficLight','BikeRack', 'Bollard', 'ConstructionBarrier', 'ParkingKiosk', 'Mailbox', 'FireHydrant','FreestandingPlant', 'Pole', 'InformationalSign', 'Door', 'Fence', 'Railing', 'Cone', 'Chair', 'Bench','Table', 'TrashCan', 'NewspaperDispenser', 'RoomLabel', 'Stanchion', 'SanitizerDispenser', 'CondimentDispenser', 'VendingMachine', 'EmergencyAidKit', 'FireExtinguisher', 'Computer', 'Television','Other', 'PickupTruck', 'DeliveryTruck', 'ServiceVehicle', 'UtilityVehicle', 'FireAlarm', 'ATM', 'Cart','Couch', 'TrafficArm', 'WallSign', 'FloorSign', 'DoorSwitch', 'EmergencyPhone', 'Dumpster','VacuumCleaner', 'Segway', 'Bus', 'Skateboard', 'WaterFountain']        
         detection_properties:
-          person:
+          Car:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Pedestrian:
             pos_obs_var: [1., 1., 1.]
             yaw_obs_var: [1.]
             size_obs_var: [1., 1., 1.]
             ignore: False
             object_class: 'person'
+          Cyclist:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Motorcycle:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Scooter:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Tree:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          TrafficSign:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Canopy:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          TrafficLight:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          BikeRack:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Bollard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          ConstructionBarrier:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          ParkingKiosk:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Mailbox:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          FireHydrant:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          FreestandingPlant:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Pole:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          InformationalSign:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Door:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Fence:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Railing:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Cone:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Chair:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Bench:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Table:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          TrashCan:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          NewspaperDispenser:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          RoomLabel:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Stanchion:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          SanitizerDispenser:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          CondimentDispenser:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          VendingMachine:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          EmergencyAidKit:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          FireExtinguisher:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Computer:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Television:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Other:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          PickupTruck:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          DeliveryTruck:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          ServiceVehicle:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          UtilityVehicle:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          FireAlarm:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          ATM:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Cart:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Couch:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          TrafficArm:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          WallSign:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          FloorSign:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          DoorSwitch:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          EmergencyPhone:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Dumpster:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          VacuumCleaner:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Segway:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Bus:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          Skateboard:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
+          WaterFountain:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: True
+            object_class: ''
 
-      headset_2:
-        topic: 'converted_detections_headset_2'
-        msg_type: 'Detections3D'
-        detector_type: 'pos_3d'
-        detection_classes: ["person"]
-        detection_properties:
-          person:
-            pos_obs_var: [1., 1., 1.]
-            yaw_obs_var: [1.]
-            size_obs_var: [1., 1., 1.]
-            ignore: False
-            object_class: 'person'
-      
       oakd:
         topic: 'converted_detections_oakd'
         msg_type: 'Detections3D'
@@ -666,3 +1043,29 @@ tbd_tracker_node:
             size_obs_var: [1., 1., 1.]
             ignore: True
             object_class: ''           
+
+      headset_1:
+        topic: 'converted_detections_headset_1'
+        msg_type: 'Detections3D'
+        detector_type: 'pos_3d'
+        detection_classes: ["person"]
+        detection_properties:
+          person:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: False
+            object_class: 'person'
+
+      headset_2:
+        topic: 'converted_detections_headset_2'
+        msg_type: 'Detections3D'
+        detector_type: 'pos_3d'
+        detection_classes: ["person"]
+        detection_properties:
+          person:
+            pos_obs_var: [1., 1., 1.]
+            yaw_obs_var: [1.]
+            size_obs_var: [1., 1., 1.]
+            ignore: False
+            object_class: 'person'
