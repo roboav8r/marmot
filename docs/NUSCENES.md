@@ -1,6 +1,6 @@
-## Download nuScenes data (Optional)
 If you want to evaluate MaRMOT on nuScenes OR use the nuScenes dataset for tracking development & evaluation, follow these steps to download and extract the dataset.
 
+# Download nuScenes data 
 1) [Create an account with nuScenes at this link](https://www.nuscenes.org/sign-up).
 2) Create a directory to store the data and navigate to it:
 ```
@@ -65,9 +65,8 @@ Upon completion, the directory should have the following structure:
 ├── v1.0-trainval
 ```
 At this point, you can remove the .zip and .tgz files if you'd like.
-# Usage
 
-## Running nuScenes experiments
+# Converting the nuScenes data to ROS2 .mcap format
 If you wish to run the nuScenes experiments OR use the nuScenes dataset for tracker development, complete the following steps:
 
 1) Source the workspace. At a terminal:
@@ -87,13 +86,23 @@ python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-trainval -s train # Convert
 python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-trainval -s val # Converts the validation split from the main dataset
 python3 scripts/nuscenes/nuscenes_to_mcap.py -d v1.0-test -s test # Converts the test split from the main dataset
 ```
-
-3) Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
+# Run nuScenes experiments (general)
+Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
 ```
 ros2 launch marmot run_nuscenes_exp_minival.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
 ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set
+ros2 launch marmot run_nuscenes_exp_test.launch.py # To compute results for nuScenes' test set
 ```
+Note: To change the actual tracker configurations that are run on each split, you can edit the `config/exp_minival.yaml`, `config/exp_val.yaml`, and `config/exp_test.yaml` files' `exp_configs` lists with the config files you wish to evaluate.
 
+# Run nuScenes experiments (2024 paper)
+Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
+```
+ros2 launch marmot run_nuscenes_exp_minival_sim.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
+ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set
+ros2 launch marmot run_nuscenes_exp_test.launch.py # To compute results for nuScenes' test set
+```
+Note: To change the actual tracker configurations that are run on each split, you can edit the `config/exp_minival.yaml`, `config/exp_val.yaml`, and `config/exp_test.yaml` files' `exp_configs` lists with the config files you wish to evaluate.
 ## Evaluating nuScenes results
 Run the evaluation script, which recursively calls the nuScenes `evaluate.py` for all computed results.
 ```
