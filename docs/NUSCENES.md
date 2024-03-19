@@ -118,3 +118,12 @@ python3 scripts/nuscenes/eval_exp_results.py -r ../results/3a_param_tuning
 python3 scripts/nuscenes/eval_exp_results.py -r ../results/3b_best
 ```
 Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
+
+# Analyze the results
+To generate the plots and compute times and accuracy values used in the paper, use the included `jupyter` notebook:
+```
+cd ~/tracking_ws/src/marmot
+mamba activate marmot
+jupyter-notebook
+```
+Then, open the notebook at `scripts/analysis/nuscenes_analysis.ipynb` and run each cell to recreate the experiment results and figures.
