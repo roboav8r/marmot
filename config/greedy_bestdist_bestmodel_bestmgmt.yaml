@@ -29,7 +29,7 @@ tbd_tracker_node:
         score_update_function: 'multiply'
         score_decay: .30
         sim_metric: 'dist_3d'
-        match_thresh: 5.0
+        match_thresh: 6.0
 
       bus:
         model_type: 'cvcy'
@@ -44,7 +44,7 @@ tbd_tracker_node:
         score_update_function: 'parallel_add'
         score_decay: .05
         sim_metric: 'dist_3d'
-        match_thresh: 10.0
+        match_thresh: 8.0
 
       car:
         model_type: 'cvcy'
@@ -59,7 +59,7 @@ tbd_tracker_node:
         score_update_function: 'parallel_add'
         score_decay: .20
         sim_metric: 'dist_3d'
-        match_thresh: 10.0
+        match_thresh: 7.0
 
       motorcycle:
         model_type: 'cvcy'
@@ -74,7 +74,7 @@ tbd_tracker_node:
         score_update_function: 'parallel_add'
         score_decay: .20
         sim_metric: 'dist_3d'
-        match_thresh: 5.0
+        match_thresh: 4.0
 
       pedestrian:
         model_type: 'cvcy'
@@ -120,7 +120,7 @@ tbd_tracker_node:
         score_update_function: 'parallel_add'
         score_decay: .25
         sim_metric: 'dist_3d'
-        match_thresh: 5.0
+        match_thresh: 8.0
 
     detectors:
       detector_names: ['megvii']
