@@ -1,7 +1,9 @@
 nusc_exp_mgr_node:
   ros__parameters:
-    exp_configs: ['config/greedy_dist5_bestmodel_conf_padd_15_yc.yaml',
-                  'config/greedy_giou_bestmodel_conf_padd_15_yc.yaml']
+    exp_configs: ['config/greedy_dist2_bestmodel_bestmgmt.yaml',
+                  'config/greedy_dist5_bestmodel_bestmgmt.yaml',
+                  'config/greedy_dist10_bestmodel_bestmgmt.yaml',
+                  'config/greedy_bestdist_bestmodel_bestmgmt.yaml']
 
     val_dataset: 'v1.0-test'
     val_split: 'test'
