@@ -1,4 +1,0 @@
-exp_config,split,amota,bicycle_amota,bus_amota,car_amota,moto_amota,ped_amota,trailer_amota,truck_amota
-greedy_iou_bestmodel_conf_padd_15_yc_results,val,0.421,0.241,0.294,0.684,0.387,0.472,0.349,0.518
-greedy_dist5_bestmodel_conf_padd_15_yc_results,val,0.484,0.301,0.400,0.682,0.407,0.700,0.388,0.511
-greedy_giou_bestmodel_conf_padd_15_yc_results,val,0.455,0.314,0.289,0.702,0.300,0.687,0.373,0.519
