@@ -100,8 +100,8 @@ Launch the nuScenes experiment manager node to compute tracking results. At a pr
 ```
 ros2 launch marmot run_nuscenes_exp_minival_sim.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
 ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set on best method, matching, and models (51 configs)
-ros2 launch marmot run_nuscenes_exp_bestval.launch.py # To compute results for nuScenes' full validation set on best model, best management method (4 configs)
-ros2 launch marmot run_nuscenes_exp_besttest.launch.py # To compute results for nuScenes' test set
+ros2 launch marmot run_nuscenes_exp_bestval.launch.py # To compute results for nuScenes' full validation set on best model, best management method, and multiple similarity metrics (6 configs)
+ros2 launch marmot run_nuscenes_exp_besttest.launch.py # To compute results for nuScenes' test set for the best overall set of parameters (1 config)
 ```
 Note: To change the actual tracker configurations that are run on each split, you can edit the `config/exp_minival.yaml`, `config/exp_val.yaml`, and `config/exp_test.yaml` files' `exp_configs` lists with the config files you wish to evaluate.
 
