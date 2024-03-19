@@ -1,7 +1,6 @@
 nusc_exp_mgr_node:
   ros__parameters:
-    exp_configs: ['config/greedy_dist2_bestmodel_count_noyc.yaml',
-                  'config/greedy_dist2_bestmodel_conf_padd_05_noyc.yaml',
+    exp_configs: ['config/greedy_dist2_bestmodel_conf_padd_05_noyc.yaml',
                   'config/greedy_dist2_bestmodel_conf_padd_10_noyc.yaml',
                   'config/greedy_dist2_bestmodel_conf_padd_15_noyc.yaml',
                   'config/greedy_dist2_bestmodel_conf_padd_20_noyc.yaml',
@@ -17,7 +16,6 @@ nusc_exp_mgr_node:
                   'config/greedy_dist2_bestmodel_conf_mult_30_noyc.yaml',
                   'config/greedy_dist2_bestmodel_conf_mult_40_noyc.yaml',
                   'config/greedy_dist2_bestmodel_conf_mult_50_noyc.yaml',
-                  'config/greedy_dist5_bestmodel_count_noyc.yaml',
                   'config/greedy_dist5_bestmodel_conf_padd_05_noyc.yaml',
                   'config/greedy_dist5_bestmodel_conf_padd_10_noyc.yaml',
                   'config/greedy_dist5_bestmodel_conf_padd_15_noyc.yaml',
@@ -34,7 +32,6 @@ nusc_exp_mgr_node:
                   'config/greedy_dist5_bestmodel_conf_mult_30_noyc.yaml',
                   'config/greedy_dist5_bestmodel_conf_mult_40_noyc.yaml',
                   'config/greedy_dist5_bestmodel_conf_mult_50_noyc.yaml',
-                  'config/greedy_dist10_bestmodel_count_noyc.yaml',
                   'config/greedy_dist10_bestmodel_conf_padd_05_noyc.yaml',
                   'config/greedy_dist10_bestmodel_conf_padd_10_noyc.yaml',
                   'config/greedy_dist10_bestmodel_conf_padd_15_noyc.yaml',
