@@ -67,7 +67,6 @@ class TBDTracker(Node):
 
             # Form parameter dictionary for detector
             self.detectors[detector] = dict()
-            # self.detectors[detector]['name'] = detector
             self.detectors[detector]['topic'] = self.get_parameter('detectors.' + detector + '.topic').get_parameter_value().string_value
             self.detectors[detector]['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
             self.detectors[detector]['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
@@ -140,8 +139,6 @@ class TBDTracker(Node):
 
         # Assignment variables
         self.cost_matrix = np.empty(0)
-        # self.det_asgn_idx = [] 
-        # self.trk_asgn_idx = []
 
         # Create publisher objects and empty messages
         self.trks_msg = Tracks3D()
@@ -294,9 +291,6 @@ class TBDTracker(Node):
             trk.predict(self, self.dets_msg.header.stamp)
 
     def update_tracks(self):
-        # for det_idx, trk_idx in zip(self.det_asgn_idx, self.trk_asgn_idx):
-        #    self.trks[trk_idx].update(self.dets[det_idx],self)
-
         for match in self.matches:
             self.trks[match[1]].update(self.dets[match[0]],self)
 
