@@ -7,17 +7,17 @@ This assumes you are using:
 Note: Make sure that you deactivate any virtual environments before installing ROS2!
 
 # Setup
-## Clone the repo
+## Create workspace and clone the repo
 ```
 cd ~
 mkdir -p tracking_ws/src && cd tracking_ws/src
-git clone https://github.com/roboav8r/coda-models.git
+git clone https://github.com/roboav8r/coda-models.git -b ros2
+git clone https://github.com/roboav8r/tracking_msgs.git -b ros2
 git clone https://github.com/roboav8r/marmot.git
-git clone https://github.com/roboav8r/tracking_msgs.git
 cd tracking_ws
 rosdep install -i --from-path src --rosdistro iron -y
 ```
-## Setting up the Conda environments
+## Set up virtual environments
 Note: either `mamba` or `conda` will work for these commands.
 ```
 cd ~/tracking_ws/src/marmot
