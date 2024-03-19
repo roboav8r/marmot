@@ -99,15 +99,20 @@ Note: To change the actual tracker configurations that are run on each split, yo
 Launch the nuScenes experiment manager node to compute tracking results. At a properly sourced workspace:
 ```
 ros2 launch marmot run_nuscenes_exp_minival_sim.launch.py # To compute results for nuScenes' mini validation set (ideal for quick development), or
-ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set
-ros2 launch marmot run_nuscenes_exp_test.launch.py # To compute results for nuScenes' test set
+ros2 launch marmot run_nuscenes_exp_val.launch.py # To compute results for nuScenes' full validation set on best method, matching, and models (51 configs)
+ros2 launch marmot run_nuscenes_exp_bestval.launch.py # To compute results for nuScenes' full validation set on best model, best management method (4 configs)
+ros2 launch marmot run_nuscenes_exp_besttest.launch.py # To compute results for nuScenes' test set
 ```
 Note: To change the actual tracker configurations that are run on each split, you can edit the `config/exp_minival.yaml`, `config/exp_val.yaml`, and `config/exp_test.yaml` files' `exp_configs` lists with the config files you wish to evaluate.
-## Evaluating nuScenes results
+
+# Evaluating nuScenes results
 Run the evaluation script, which recursively calls the nuScenes `evaluate.py` for all computed results.
 ```
 cd ~/tracking_ws/src/marmot
 mamba activate marmot_eval
-python3 scripts/nuscenes/eval_exp_results.py
+python3 scripts/nuscenes/eval_exp_results.py -r ../results/1_sim_metrics
+python3 scripts/nuscenes/eval_exp_results.py -r ../results/2_match_yc_model
+python3 scripts/nuscenes/eval_exp_results.py -r ../results/3a_param_tuning
+python3 scripts/nuscenes/eval_exp_results.py -r ../results/3b_best
 ```
 Now, examine `results/evaluated_results.txt` to see nuScenes results for all the test cases!
