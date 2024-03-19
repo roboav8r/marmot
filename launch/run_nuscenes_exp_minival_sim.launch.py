@@ -10,7 +10,7 @@ def generate_launch_description():
     exp_config = os.path.join(
         get_package_share_directory('marmot'),
         'config',
-        'exp_bestval.yaml'
+        'exp_minival_sim.yaml'
         )
     def_config = os.path.join(
         get_package_share_directory('marmot'),
