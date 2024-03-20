@@ -41,8 +41,13 @@ marmot
     - metadata.yaml
     - rosbag2_2024_02_19-12_32_15_0.mcap
 ```
-# Run the experiments
-Navigate to the project ROS2 workspace and run each experiment file.
+# Launch the detector container and run the experiments
+First, launch the 3D LiDAR detector container:
+```
+cd ~/tracking_ws/src/coda-models
+docker compose up
+```
+In a separate window, navigate to the project ROS2 workspace and run each experiment file.
 ```
 cd ~/tracking_ws
 source /opt/ros/iron/setup.bash
@@ -54,7 +59,6 @@ ros2 launch marmot run_mocap_robot_noheadset_exp.launch.py
 ros2 launch marmot run_mocap_robot_headset_exp.launch.py
 
 ```
-# Analyze the results
 # Analyze the results
 To generate the plots, compute times and accuracy values used in the paper, use the included `jupyter` notebook:
 ```
