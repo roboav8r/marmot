@@ -35,6 +35,18 @@ If interested in using nuScenes for tracker development, see the [nuScenes instr
 If interested in recreating the MoCap experiment results from the 2024 paper, see the [MoCap instructions](docs/MOCAP.md).
 
 ## Running the OAK-D demo
+After completing the [installation instructions](docs/INSTALL.md), if you have a Luxonis OAK-D camera you can use the included files to run MaRMOT with an OAK-D detector.
+```
+cd ~/tracking_ws
+conda activate marmot
+source install/setup.bash
+ros2 launch marmot oakd_demo.launch.py
+```
+Now in a separate window, open up `foxglove-studio` to visualize.
+```
+foxglove-studio
+```
+Then, connect to the default connection at `ws://localhost:8765` to view live tracker data.
 
 # Development
 If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md),raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu).
