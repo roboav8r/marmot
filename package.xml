@@ -21,6 +21,8 @@
   <depend> rclpy </depend>
   <depend> rosbag2_py </depend>
   <depend> foxglove_msgs </depend>
+  <depend> rosidl_runtime_py </depend>
+  <depend> rosbag2_storage_mcap </depend>
 
   <exec_depend>ros2launch</exec_depend>
 
