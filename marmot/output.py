@@ -145,16 +145,6 @@ def publish_scene(tracker, pub_name):
         cube.color.a = 0.1
         entity_msg.cubes.append(cube)
 
-        # Add velocity information to message
-        vel_arrow_x = ArrowPrimitive()
-        vel_arrow_x.pose = cube.pose
-        vel_arrow_x.shaft_length = trk.spatial_state.mean()[3]
-        vel_arrow_x.shaft_diameter = .1
-        vel_arrow_x.head_length = .2
-        vel_arrow_x.shaft_diameter = .1
-        vel_arrow_x.color.a = 0.5
-        entity_msg.arrows.append(vel_arrow_x)
-
         # Add semantic information to message
         text = TextPrimitive()
         text.billboard = True
