@@ -47,9 +47,10 @@ Now in a separate window, open up `foxglove-studio` to visualize.
 foxglove-studio
 ```
 Then, connect to the default connection at `ws://localhost:8765` to view live tracker data.
+![](media/oakd_demo.png)
 
 # Development
-If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md),raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu).
+If interested in adding a new model, method, or feature (or if the existing code could be better modified for your purposes) please see the [development instructions](docs/DEVEL.md), raise an issue, or [contact me](mailto:john.a.duncan@utexas.edu).
 
 # Acknowledgements
 The nuScenes `.mcap` conversion script is a modified version of the original from Foxglove, available [here](https://github.com/foxglove/nuscenes2mcap). While the original Foxglove version uses protobuf serialization, the [included file](scripts/nuscenes/nuscenes_to_mcap.py) uses Foxglove's ROS2 serialization, with the same datatypes. 
