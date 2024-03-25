@@ -1,0 +1,13 @@
+exp_config,split,amota,bicycle_amota,bus_amota,car_amota,moto_amota,ped_amota,trailer_amota,truck_amota
+greedy_dist2_bestmodel_bestmgmt_results,val,0.483,0.279,0.507,0.605,0.439,0.701,0.404,0.447
+greedy_iou3d_bestmodel_bestmgmt_results,val,0.493,0.272,0.741,0.673,0.427,0.47,0.353,0.514
+greedy_dist8_bestmodel_bestmgmt_results,val,0.547,0.33,0.741,0.691,0.493,0.693,0.368,0.516
+greedy_dist3_bestmodel_bestmgmt_results,val,0.507,0.298,0.584,0.627,0.468,0.701,0.397,0.476
+greedy_dist5_bestmodel_bestmgmt_results,val,0.549,0.331,0.721,0.683,0.502,0.696,0.395,0.512
+greedy_dist10_bestmodel_bestmgmt_results,val,0.539,0.32,0.739,0.685,0.491,0.685,0.355,0.501
+greedy_dist4_bestmodel_bestmgmt_results,val,0.538,0.322,0.688,0.665,0.505,0.699,0.388,0.499
+greedy_dist6_bestmodel_bestmgmt_results,val,0.55,0.334,0.74,0.686,0.502,0.695,0.378,0.515
+greedy_bestdist_bestmodel_bestmgmt_results,val,0.556,0.334,0.741,0.693,0.505,0.701,0.404,0.516
+greedy_dist7_bestmodel_bestmgmt_results,val,0.55,0.333,0.741,0.693,0.502,0.694,0.375,0.513
+greedy_dist9_bestmodel_bestmgmt_results,val,0.543,0.327,0.739,0.689,0.496,0.689,0.355,0.507
+greedy_giou3d_bestmodel_bestmgmt_results,val,0.543,0.328,0.713,0.702,0.508,0.701,0.328,0.519

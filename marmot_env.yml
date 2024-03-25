@@ -1,0 +1,21 @@
+name: marmot
+channels:
+  - conda-forge
+  - pytorch3d
+  - pytorch
+  - nvidia
+dependencies:
+- python==3.10
+- pyyaml
+- pip
+- lark
+- pytorch=1.13.0=py3.10_cuda11.7_cudnn8.5.0_0
+- cudatoolkit=11.7.1
+- pytorch3d
+- pip:
+    - pyquaternion==0.9.9
+    - nuscenes-devkit==1.1.11
+    - empy==3.3.4
+    - catkin_pkg
+    - gtsam==4.2.0
+    - numba
