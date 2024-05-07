@@ -28,18 +28,18 @@ class TfPreProc : public rclcpp::Node
       this->publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections_headset", 10);
 
       this->declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
-      this->declare_parameter("source_frame",rclcpp::ParameterType::PARAMETER_STRING);
+      this->declare_parameter("detector_frame",rclcpp::ParameterType::PARAMETER_STRING);
       this->declare_parameter("labels",rclcpp::ParameterType::PARAMETER_STRING_ARRAY);
       
       this->tracker_frame_ = this->get_parameter("tracker_frame").as_string();
-      this->source_frame_ = this->get_parameter("source_frame").as_string();
+      this->detector_frame_ = this->get_parameter("detector_frame").as_string();
       this->labels_ = this->get_parameter("labels").as_string_array();
 
       this->tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock(),500ms);
       this->tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
       // Block until transform becomes available
-      this->tf_buffer_->canTransform(this->source_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
+      this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
       this->det_msg_ = tracking_msgs::msg::Detection3D();
       this->dets_msg_ = tracking_msgs::msg::Detections3D();
       this->dets_msg_.detections.reserve(this->max_dets_);
@@ -53,13 +53,13 @@ class TfPreProc : public rclcpp::Node
         this->dets_msg_.header.frame_id = this->tracker_frame_;
 
         pose_in.header.stamp = this->dets_msg_.header.stamp;
-        pose_in.header.frame_id = this->source_frame_;
+        pose_in.header.frame_id = this->detector_frame_;
 
         this->det_msg_ = tracking_msgs::msg::Detection3D();
         
 
         // Convert spatial information
-        tf_buffer_->transform(pose_in,pose_out,this->tracker_frame_,tf2::TimePointZero,this->source_frame_,200ms);
+        tf_buffer_->transform(pose_in,pose_out,this->tracker_frame_,tf2::TimePointZero,this->detector_frame_,200ms);
         this->det_msg_.pose = pose_out.pose;
         this->det_msg_.bbox.center.position = pose_out.pose.position;
         this->det_msg_.bbox.center.orientation = pose_out.pose.orientation;
@@ -76,7 +76,7 @@ class TfPreProc : public rclcpp::Node
     }
 
     std::string tracker_frame_;
-    std::string source_frame_;
+    std::string detector_frame_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     geometry_msgs::msg::PoseStamped pose_in;

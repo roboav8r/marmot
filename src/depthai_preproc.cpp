@@ -1,3 +1,4 @@
+#include <chrono>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
@@ -13,6 +14,7 @@
 #include "diagnostic_msgs/msg/key_value.hpp"
 
 using std::placeholders::_1;
+using namespace std::chrono_literals;
 
 class DepthAIPreProc : public rclcpp::Node
 {
@@ -24,15 +26,19 @@ class DepthAIPreProc : public rclcpp::Node
       "depthai_detections", 10, std::bind(&DepthAIPreProc::topic_callback, this, _1));
       this->publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
 
+      this->declare_parameter("detector_frame",rclcpp::ParameterType::PARAMETER_STRING);
       this->declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
       this->declare_parameter("labels",rclcpp::ParameterType::PARAMETER_STRING_ARRAY);
       
+      this->detector_frame_ = this->get_parameter("detector_frame").as_string();
       this->tracker_frame_ = this->get_parameter("tracker_frame").as_string();
       this->labels_ = this->get_parameter("labels").as_string_array();
 
-      this->tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock());
+      this->tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock(),500ms);
       this->tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
+      // Block until transform becomes available
+      this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
       this->det_msg_ = tracking_msgs::msg::Detection3D();
       this->dets_msg_ = tracking_msgs::msg::Detections3D();
       this->dets_msg_.detections.reserve(this->max_dets_);
@@ -61,13 +67,13 @@ class DepthAIPreProc : public rclcpp::Node
             this->det_msg_ = tracking_msgs::msg::Detection3D();
 
             // Convert spatial information
-            this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
-            this->obj_pose_det_frame_.header = msg->header;
-            this->obj_pose_det_frame_.header.stamp = rclcpp::Time(0);
-            this->obj_pose_det_frame_.pose = it->results[0].pose.pose;
-            this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
-            this->det_msg_.pose = obj_pose_trk_frame_.pose;
-            this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
+            this->pose_det_ = geometry_msgs::msg::PoseStamped();
+            this->pose_det_.header = msg->header;
+            this->pose_det_.pose = it->results[0].pose.pose;
+            this->pose_det_.pose.position.y *= -1; // Fix OAK-D y-axis inversion / lefthand coord frame
+            this->tf_buffer_->transform(this->pose_det_,this->pose_tracker_,this->tracker_frame_,tf2::TimePointZero,this->detector_frame_,200ms);
+            this->det_msg_.pose = this->pose_tracker_.pose;
+            this->det_msg_.bbox.center = this->pose_tracker_.pose;
             this->det_msg_.bbox.size.x = 0;
             this->det_msg_.bbox.size.y = 0;
             this->det_msg_.bbox.size.z = 0;
@@ -83,11 +89,14 @@ class DepthAIPreProc : public rclcpp::Node
            
     }
 
+    std::string detector_frame_;
     std::string tracker_frame_;
+    geometry_msgs::msg::PoseStamped pose_det_;
+    geometry_msgs::msg::PoseStamped pose_tracker_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
-    geometry_msgs::msg::PoseStamped obj_pose_det_frame_;
-    geometry_msgs::msg::PoseStamped obj_pose_trk_frame_;
+    // geometry_msgs::msg::PoseStamped obj_pose_det_frame_;
+    // geometry_msgs::msg::PoseStamped obj_pose_trk_frame_;
 
     rclcpp::Subscription<vision_msgs::msg::Detection3DArray>::SharedPtr subscription_;
     rclcpp::Publisher<tracking_msgs::msg::Detections3D>::SharedPtr publisher_;
