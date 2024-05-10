@@ -17,6 +17,11 @@ find_package(foxglove_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(OpenCV REQUIRED)
 
 # Install launch and config files
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
@@ -25,6 +30,8 @@ install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 # Add and install CPP targets
 add_executable(depthai_preproc src/depthai_preproc.cpp)
 ament_target_dependencies(depthai_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
+add_executable(depthai_clip_preproc src/depthai_clip_preproc.cpp)
+ament_target_dependencies(depthai_clip_preproc rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 add_executable(pose_preproc src/pose_preproc.cpp)
 ament_target_dependencies(pose_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 add_executable(nuscenes_preproc src/nuscenes_preproc.cpp)
@@ -34,6 +41,7 @@ ament_target_dependencies(coda_preproc rclcpp vision_msgs geometry_msgs tracking
 
 install(TARGETS 
   depthai_preproc
+  depthai_clip_preproc
   nuscenes_preproc
   pose_preproc
   coda_preproc
