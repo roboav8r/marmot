@@ -1,17 +1,23 @@
 #include <chrono>
 #include <memory>
+#include <cv_bridge/cv_bridge.h> // cv_bridge converts between ROS 2 image messages and OpenCV image representations.
+#include <image_transport/image_transport.hpp> // Using image_transport allows us to publish and subscribe to compressed image streams in ROS2
+#include <opencv2/opencv.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/buffer.h"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "vision_msgs/msg/detection3_d_array.hpp"
 #include "tracking_msgs/msg/detections3_d.hpp"
 #include "tracking_msgs/msg/detection3_d.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "diagnostic_msgs/msg/key_value.hpp"
+#include "sensor_msgs/msg/image.hpp"
+#include "std_msgs/msg/header.hpp"
+
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -20,22 +26,27 @@ class DepthAIPreProc : public rclcpp::Node
 {
   public:
     DepthAIPreProc()
-    : Node("depthai_preproc_node")
+    : Node("depthai_preproc_node"), 
+    nh_(std::shared_ptr<DepthAIPreProc>(this, [](auto *) {})),
+    image_transport_(nh_)
     {
-      this->subscription_ = this->create_subscription<vision_msgs::msg::Detection3DArray>(
-      "depthai_detections", 10, std::bind(&DepthAIPreProc::topic_callback, this, _1));
-      this->publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
+      subscription_ = this->create_subscription<vision_msgs::msg::Detection3DArray>(
+      "depthai_detections", 10, std::bind(&DepthAIPreProc::detection_callback, this, _1));
+      image_sub_ = image_transport_.subscribe("depthai_img", 10, std::bind(&DepthAIPreProc::image_callback, this, std::placeholders::_1));
+      publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
 
-      this->declare_parameter("detector_frame",rclcpp::ParameterType::PARAMETER_STRING);
-      this->declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
-      this->declare_parameter("labels",rclcpp::ParameterType::PARAMETER_STRING_ARRAY);
+      declare_parameter("detector_frame",rclcpp::ParameterType::PARAMETER_STRING);
+      declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
+      declare_parameter("labels",rclcpp::ParameterType::PARAMETER_STRING_ARRAY);
+      declare_parameter("nn_img_size", rclcpp::ParameterType::PARAMETER_INTEGER);
       
-      this->detector_frame_ = this->get_parameter("detector_frame").as_string();
-      this->tracker_frame_ = this->get_parameter("tracker_frame").as_string();
-      this->labels_ = this->get_parameter("labels").as_string_array();
+      detector_frame_ = get_parameter("detector_frame").as_string();
+      tracker_frame_ = get_parameter("tracker_frame").as_string();
+      labels_ = get_parameter("labels").as_string_array();
+      nn_img_size = get_parameter("nn_img_size").as_int();
 
-      this->tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock(),500ms);
-      this->tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+      tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock(),500ms);
+      tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
       // Block until transform becomes available
       this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
@@ -45,7 +56,15 @@ class DepthAIPreProc : public rclcpp::Node
     }
 
   private:
-    void topic_callback(const vision_msgs::msg::Detection3DArray::SharedPtr msg)
+    void image_callback(const sensor_msgs::msg::Image::ConstSharedPtr& msg)
+    {
+        this->img_rcvd_ = true;
+
+        // TODO - generate mask around central square
+        cv_in_ = cv_bridge::toCvShare(msg, "bgr8");
+    }
+    
+    void detection_callback(const vision_msgs::msg::Detection3DArray::SharedPtr msg)
     {
       rclcpp::Time time_det_rcvd = this->get_clock()->now();
       diagnostic_msgs::msg::KeyValue kv;     
@@ -82,6 +101,36 @@ class DepthAIPreProc : public rclcpp::Node
             this->det_msg_.class_string = this->labels_[std::stoi(it->results[0].hypothesis.class_id)];
             this->det_msg_.class_confidence = it->results[0].hypothesis.score;
 
+            // Add image data
+            if (img_rcvd_) {
+
+                // Generate mask, mask cv_in and publish
+                // Compute mask pixel locations
+                float scale = (float)std::min(cv_in_->image.rows, cv_in_->image.cols)/(float)nn_img_size;
+                int x_off = (cv_in_->image.cols - std::min(cv_in_->image.rows, cv_in_->image.cols))/2;
+                int y_off = (cv_in_->image.rows - std::min(cv_in_->image.rows, cv_in_->image.cols))/2;
+
+                int xmin = x_off + std::max(0, (int)(scale*(it->bbox.center.position.x - (it->bbox.size.x)/2)));
+                int ymin = y_off + std::max(0, (int)(scale*(it->bbox.center.position.y - (it->bbox.size.y)/2)));
+                int xmax = x_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.x + (it->bbox.size.x)/2)));
+                int ymax = y_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.y + (it->bbox.size.y)/2)));
+                int width = (int)(xmax - xmin);
+                int height = (int)(ymax - ymin);
+                // RCLCPP_INFO(get_logger(), "%d, %d, %d, %d", xmin, ymin, width, height);
+
+                cv::Rect objRect(xmin, ymin, width, height);
+                cv::Mat mask = cv::Mat::zeros(cv_in_->image.size(), CV_8U);
+                cv::Mat cv_out = cv::Mat::zeros(cv_in_->image.size(), cv_in_->image.type());
+                mask(objRect) = cv::Scalar(255);
+
+                cv_in_->image.copyTo(cv_out,mask);
+                cv::imwrite("test_img_from_cv.jpg", cv_out);
+
+                img_out_ = cv_in_->toImageMsg();
+                det_msg_.image = *img_out_;
+            }
+
+            // Add detection message to detections message
             this->dets_msg_.detections.emplace_back(this->det_msg_);
       }
 
@@ -95,8 +144,6 @@ class DepthAIPreProc : public rclcpp::Node
     geometry_msgs::msg::PoseStamped pose_tracker_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
-    // geometry_msgs::msg::PoseStamped obj_pose_det_frame_;
-    // geometry_msgs::msg::PoseStamped obj_pose_trk_frame_;
 
     rclcpp::Subscription<vision_msgs::msg::Detection3DArray>::SharedPtr subscription_;
     rclcpp::Publisher<tracking_msgs::msg::Detections3D>::SharedPtr publisher_;
@@ -105,6 +152,15 @@ class DepthAIPreProc : public rclcpp::Node
     int max_dets_{250}; 
 
     std::vector<std::string> labels_;
+
+    // OpenCV / vision processing
+    int nn_img_size;
+    rclcpp::Node::SharedPtr nh_;
+    bool img_rcvd_{false};
+    image_transport::ImageTransport image_transport_;
+    image_transport::Subscriber image_sub_;
+    cv_bridge::CvImageConstPtr cv_in_; // Received from camera ROS msg, converted to CV pointer
+    sensor_msgs::msg::Image::SharedPtr img_out_; // ROS image output pointer
 };
 
 int main(int argc, char * argv[])
