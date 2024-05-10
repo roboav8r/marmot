@@ -25,6 +25,8 @@ install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 # Add and install CPP targets
 add_executable(depthai_preproc src/depthai_preproc.cpp)
 ament_target_dependencies(depthai_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
+add_executable(depthai_img_preproc src/depthai_img_preproc.cpp)
+ament_target_dependencies(depthai_img_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 add_executable(pose_preproc src/pose_preproc.cpp)
 ament_target_dependencies(pose_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 add_executable(nuscenes_preproc src/nuscenes_preproc.cpp)
@@ -36,6 +38,7 @@ ament_target_dependencies(tf_preproc rclcpp geometry_msgs tracking_msgs foxglove
 
 install(TARGETS 
   depthai_preproc
+  depthai_img_preproc
   nuscenes_preproc
   pose_preproc
   coda_preproc

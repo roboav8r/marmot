@@ -15,6 +15,7 @@
 
 depthai_preproc_node:
   ros__parameters:
+    detector_frame: 'oak_rgb_camera_optical_frame'
     tracker_frame: 'map'
     labels: ["person",
             "bicycle",
