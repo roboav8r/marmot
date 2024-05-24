@@ -123,11 +123,15 @@ class DepthAIPreProc : public rclcpp::Node
                 cv::Mat cv_out = cv::Mat::zeros(cv_in_->image.size(), cv_in_->image.type());
                 mask(objRect) = cv::Scalar(255);
 
+                cv_out_ = *cv_in_;
                 cv_in_->image.copyTo(cv_out,mask);
-                cv::imwrite("test_img_from_cv.jpg", cv_out);
+                cv::imwrite("test_img_from_cv_full.jpg", cv_in_->image);
+                cv_out_.image = cv_out;
+                cv::imwrite("test_img_from_cv_crop.jpg", cv_out_.image);
 
-                img_out_ = cv_in_->toImageMsg();
+                img_out_ = cv_out_.toImageMsg();
                 det_msg_.image = *img_out_;
+                det_msg_.image_available = true;
             }
 
             // Add detection message to detections message
@@ -160,6 +164,7 @@ class DepthAIPreProc : public rclcpp::Node
     image_transport::ImageTransport image_transport_;
     image_transport::Subscriber image_sub_;
     cv_bridge::CvImageConstPtr cv_in_; // Received from camera ROS msg, converted to CV pointer
+    cv_bridge::CvImage cv_out_; // CV pointer, to be output as a ROS image
     sensor_msgs::msg::Image::SharedPtr img_out_; // ROS image output pointer
 };
 
