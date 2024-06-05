@@ -1,11 +1,15 @@
 # MaRMOT
 Modular and Reconfigurable Multiple Object Tracking (MaRMOT) framework for robots and intelligent systems in ROS2. MaRMOT is designed to be fast and accurate enough for real-time applications, modular, reconfigurable, and capable of running on embedded hardware.
 
-MaRMOT was submitted to the 33rd IEEE International Conference on Robot and Human Interactive Communication (IEEE RO-MAN 2024).
-
 This package is under active development as part of my Ph.D. in robotics at UT Austin--if there is a feature you would like to see, please [contact me](mailto:john.a.duncan@utexas.edu) or raise an issue!
 
-![](media/MaRMOT.png)
+<img src="media/MaRMOT.png" width="400" height="400">
+
+<!-- ![](media/MaRMOT.png) -->
+
+## Updates
+- 26 May 2024: our MaRMOT paper was accepted to the 33rd IEEE International Conference on Robot and Human Interactive Communication (IEEE RO-MAN 2024)! To reproduce the results of the paper, check out the [RO-MAN 2024 release](https://github.com/roboav8r/marmot/releases/tag/v0.1.0-roman2024).
+
 
 # About
 ![](media/marmot_flow.png)
@@ -26,13 +30,13 @@ Supporting file types include:
 ## Installation and Setup
 To install MaRMOT, follow the [installation instructions](docs/INSTALL.md).
 
+## Recreating IEEE RO-MAN 2024 results
+If interested in recreating the nuScenes and Motion Capture/MoCap experimental results from our 2024 MaRMOT paper, check out the [RO-MAN 2024 release](https://github.com/roboav8r/marmot/releases/tag/v0.1.0-roman2024) and follow the usage instructions.
+
 ## Running nuScenes experiments
 During development, we used the nuScenes tracking development kit for tuning and evaluation. The results are reported in our 2024 paper.
 
-If interested in using nuScenes for tracker development, see the [nuScenes instructions](docs/NUSCENES.md).
-
-## Running MoCap experiments
-If interested in recreating the MoCap experiment results from the 2024 paper, see the [MoCap instructions](docs/MOCAP.md).
+If interested in using the nuScenes dev kit for tracker development, see the [nuScenes instructions](docs/NUSCENES.md).
 
 ## Running the OAK-D demo
 After completing the [installation instructions](docs/INSTALL.md), if you have a Luxonis OAK-D camera you can use the included files to run MaRMOT with an OAK-D detector.
