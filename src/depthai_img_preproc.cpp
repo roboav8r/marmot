@@ -114,17 +114,9 @@ class DepthAIPreProc : public rclcpp::Node
                 int ymin = y_off + std::max(0, (int)(scale*(it->bbox.center.position.y - (it->bbox.size.y)/2)));
                 int xmax = x_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.x + (it->bbox.size.x)/2)));
                 int ymax = y_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.y + (it->bbox.size.y)/2)));
-                int width = (int)(xmax - xmin);
-                int height = (int)(ymax - ymin);
-                // RCLCPP_INFO(get_logger(), "%d, %d, %d, %d", xmin, ymin, width, height);
 
-                cv::Rect objRect(xmin, ymin, width, height);
-                cv::Mat mask = cv::Mat::zeros(cv_in_->image.size(), CV_8U);
-                cv::Mat cv_out = cv::Mat::zeros(cv_in_->image.size(), cv_in_->image.type());
-                mask(objRect) = cv::Scalar(255);
+                cv::Mat cv_out = cv_in_->image(cv::Range(ymin, ymax),cv::Range(xmin, xmax));
 
-                cv_out_ = *cv_in_;
-                cv_in_->image.copyTo(cv_out,mask);
                 cv::imwrite("test_img_from_cv_full.jpg", cv_in_->image);
                 cv_out_.image = cv_out;
                 cv::imwrite("test_img_from_cv_crop.jpg", cv_out_.image);
