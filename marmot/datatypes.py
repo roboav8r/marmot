@@ -31,6 +31,13 @@ class Detection():
             self.size = np.array([[trkr.obj_props[self.obj_class_str]['length']], 
                                   [trkr.obj_props[self.obj_class_str]['width']], 
                                   [trkr.obj_props[self.obj_class_str]['height']]],dtype=np.float64)
+            
+        # Visual information, if available
+        if det_msg.image_available:
+            self.image_available = True
+            self.image = det_msg.image
+        else:
+            self.image_available = False
 
 class Track():
     def __init__(self, trkr, det):
@@ -53,6 +60,14 @@ class Track():
         self.pos = det.pos
         self.yaw = det.yaw
         self.size = det.size
+
+        # Visual
+        if det.image_available:
+            self.image_available = True
+            self.image = det.image
+        else:
+            self.image_available = False
+            self.image = None
 
         # Initialize state and process model
         if trkr.obj_props[self.obj_class_str]['model_type'] in ['cp']:
