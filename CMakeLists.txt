@@ -30,21 +30,29 @@ install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 # Add and install CPP targets
 add_executable(depthai_preproc src/depthai_preproc.cpp)
 ament_target_dependencies(depthai_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
-add_executable(depthai_clip_preproc src/depthai_clip_preproc.cpp)
-ament_target_dependencies(depthai_clip_preproc rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
+
+add_executable(depthai_img_preproc src/depthai_img_preproc.cpp)
+ament_target_dependencies(depthai_img_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs std_msgs sensor_msgs cv_bridge image_transport OpenCV)
+
 add_executable(pose_preproc src/pose_preproc.cpp)
 ament_target_dependencies(pose_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
+
 add_executable(nuscenes_preproc src/nuscenes_preproc.cpp)
 ament_target_dependencies(nuscenes_preproc rclcpp vision_msgs geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
+
 add_executable(coda_preproc src/coda_preproc.cpp)
 ament_target_dependencies(coda_preproc rclcpp vision_msgs geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
 
+add_executable(tf_preproc src/tf_preproc.cpp)
+ament_target_dependencies(tf_preproc rclcpp geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
+
 install(TARGETS 
   depthai_preproc
-  depthai_clip_preproc
+  depthai_img_preproc
   nuscenes_preproc
   pose_preproc
   coda_preproc
+  tf_preproc
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -52,9 +60,6 @@ install(TARGETS
 ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/tbd_node.py
-  scripts/nuscenes/nuscenes_exp_mgr.py
-  scripts/mocap/mocap_cam_exp_mgr.py
-  scripts/mocap/mocap_robot_exp_mgr.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

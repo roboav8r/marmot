@@ -2,6 +2,7 @@ import numpy as np
 
 from diagnostic_msgs.msg import KeyValue
 from tracking_msgs.msg import Track3D, Tracks3D
+from visualization_msgs.msg import Marker, MarkerArray
 from foxglove_msgs.msg import SceneEntity, SceneUpdate, ArrowPrimitive, CubePrimitive, TextPrimitive, KeyValuePair
 
 def publish_tracks(tracker, pub_name):
@@ -182,3 +183,94 @@ def publish_scene(tracker, pub_name):
     
     # Publish scene message
     exec('tracker.%s.publish(tracker.scene_msg)' % pub_name)
+
+def publish_markers(tracker, pub_name):
+
+    # Create scene message
+    tracker.marker_array_msg = MarkerArray()
+
+    for trk in tracker.trks:
+
+        # Check if tracklet meets track creation criteria
+        if tracker.obj_props[trk.obj_class_str]['create_method']=="count":
+            if trk.n_cons_matches < tracker.obj_props[trk.obj_class_str]['n_create_min']:
+                continue
+        elif tracker.obj_props[trk.obj_class_str]['create_method']=="conf":
+            if trk.track_conf < tracker.obj_props[trk.obj_class_str]['active_thresh']:        
+                continue
+        else:
+            raise TypeError('Invalid track creation method: %s' % tracker.obj_props[trk.obj_class_str]['create_method'])
+
+        # Create track message
+        marker_msg = Marker()
+        txt_marker_msg = Marker()
+
+        # Add track information to message
+        marker_msg.header = tracker.dets_msg.header
+        marker_msg.id = trk.trk_id
+        marker_msg.action = 0 # add/modify
+        marker_msg.frame_locked = True
+        marker_msg.lifetime.nanosec = 500000000
+        marker_msg.type = 1 # cube
+
+        txt_marker_msg.header = tracker.dets_msg.header
+        txt_marker_msg.id = trk.trk_id*100 + 101 # arbitrarily deconflict marker id and track id
+        txt_marker_msg.action = 0 # add/modify
+        txt_marker_msg.frame_locked = True
+        txt_marker_msg.lifetime.nanosec = 500000000
+        txt_marker_msg.type = 9 # text, view-facing
+
+        marker_msg.pose.position.x = trk.spatial_state.mean()[0]
+        marker_msg.pose.position.y = trk.spatial_state.mean()[1]
+        marker_msg.pose.position.z = trk.spatial_state.mean()[2]
+
+        cr = 1.
+        sr = 0.
+        cp = 1.
+        sp = 0.
+        cy = np.cos(trk.spatial_state.mean()[3])
+        sy = np.sin(trk.spatial_state.mean()[3])
+        marker_msg.pose.orientation.w = cr*cp*cy + sr*sp*sy
+        marker_msg.pose.orientation.x = sr*cp*cy - cr*sp*sy
+        marker_msg.pose.orientation.y = cr*sp*cy + sr*cp*sy
+        marker_msg.pose.orientation.z = cr*cp*sy - sr*sp*cy
+        marker_msg.scale.x = trk.spatial_state.mean()[4]
+        marker_msg.scale.y = trk.spatial_state.mean()[5]
+        marker_msg.scale.z = trk.spatial_state.mean()[6]
+        marker_msg.color.g = 1.0
+        marker_msg.color.a = .25
+
+        # Add semantic information to message
+        txt_marker_msg.scale.z = .06
+        txt_marker_msg.color.a = 1.0
+        txt_marker_msg.pose.position.x = trk.spatial_state.mean()[0]
+        txt_marker_msg.pose.position.y = trk.spatial_state.mean()[1]
+        txt_marker_msg.pose.position.z = trk.spatial_state.mean()[2]
+        txt_marker_msg.text = "%s-%.0f: %.0f %%" % (trk.obj_class_str, trk.trk_id, trk.class_conf*100)
+
+        # # Add metadata
+        # name_md = KeyValuePair()
+        # name_md.key = 'class_name'
+        # name_md.value = trk.obj_class_str
+        # entity_msg.metadata.append(name_md)
+
+        # score_md = KeyValuePair()
+        # score_md.key = 'class_score'
+        # score_md.value = str(trk.class_conf)
+        # entity_msg.metadata.append(score_md)
+
+        # att_md = KeyValuePair()
+        # att_md.key = 'attribute'
+        # att_md.value = '' 
+        # entity_msg.metadata.append(att_md)
+
+        # trk_md = KeyValuePair()
+        # trk_md.key = 'track_score'
+        # trk_md.value = str(trk.track_conf)
+        # entity_msg.metadata.append(trk_md)
+
+        tracker.marker_array_msg.markers.append(marker_msg)
+        tracker.marker_array_msg.markers.append(txt_marker_msg)
+    
+    # Publish scene message
+    exec('tracker.%s.publish(tracker.marker_array_msg)' % pub_name)

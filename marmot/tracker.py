@@ -10,12 +10,13 @@ from rclpy.node import Node
 
 from foxglove_msgs.msg import SceneUpdate, SceneEntity
 from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D
+from visualization_msgs.msg import Marker, MarkerArray
 from std_srvs.srv import Empty
 
 from marmot.management import create_tracks, delete_tracks
 from marmot.datatypes import Detection
 from marmot.assignment import compute_assignment
-from marmot.output import publish_tracks, publish_scene
+from marmot.output import publish_tracks, publish_scene, publish_markers
 
 class TBDTracker(Node):
     def __init__(self):
@@ -143,6 +144,7 @@ class TBDTracker(Node):
         # Create publisher objects and empty messages
         self.trks_msg = Tracks3D()
         self.scene_msg = SceneUpdate()
+        self.marker_msg = MarkerArray()
 
         # Declare services
         self.reset_srv = self.create_service(Empty, 'reset_tracker', self.reset_tracker)
