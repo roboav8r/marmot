@@ -11,8 +11,8 @@
 
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "vision_msgs/msg/detection3_d_array.hpp"
-#include "tracking_msgs/msg/detections3_d.hpp"
-#include "tracking_msgs/msg/detection3_d.hpp"
+#include "tracking_msgs/msg/detection_with_img3_d.hpp"
+#include "tracking_msgs/msg/detections_with_img3_d.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "diagnostic_msgs/msg/key_value.hpp"
 #include "sensor_msgs/msg/image.hpp"
@@ -33,7 +33,7 @@ class DepthAIPreProc : public rclcpp::Node
       subscription_ = this->create_subscription<vision_msgs::msg::Detection3DArray>(
       "depthai_detections", 10, std::bind(&DepthAIPreProc::detection_callback, this, _1));
       image_sub_ = image_transport_.subscribe("depthai_img", 10, std::bind(&DepthAIPreProc::image_callback, this, std::placeholders::_1));
-      publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
+      publisher_ = this->create_publisher<tracking_msgs::msg::DetectionsWithImg3D>("converted_detections", 10);
 
       declare_parameter("detector_frame",rclcpp::ParameterType::PARAMETER_STRING);
       declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
@@ -50,8 +50,8 @@ class DepthAIPreProc : public rclcpp::Node
 
       // Block until transform becomes available
       this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
-      this->det_msg_ = tracking_msgs::msg::Detection3D();
-      this->dets_msg_ = tracking_msgs::msg::Detections3D();
+      this->det_msg_ = tracking_msgs::msg::DetectionWithImg3D();
+      this->dets_msg_ = tracking_msgs::msg::DetectionsWithImg3D();
       this->dets_msg_.detections.reserve(this->max_dets_);
     }
 
@@ -69,7 +69,7 @@ class DepthAIPreProc : public rclcpp::Node
       rclcpp::Time time_det_rcvd = this->get_clock()->now();
       diagnostic_msgs::msg::KeyValue kv;     
 
-      this->dets_msg_ = tracking_msgs::msg::Detections3D();
+      this->dets_msg_ = tracking_msgs::msg::DetectionsWithImg3D();
       this->dets_msg_.header.stamp = msg->header.stamp;     
       this->dets_msg_.header.frame_id = this->tracker_frame_;
 
@@ -83,7 +83,7 @@ class DepthAIPreProc : public rclcpp::Node
 
       for (auto it = msg->detections.begin(); it != msg->detections.end(); it++)
       {
-            this->det_msg_ = tracking_msgs::msg::Detection3D();
+            this->det_msg_ = tracking_msgs::msg::DetectionWithImg3D();
 
             // Convert spatial information
             this->pose_det_ = geometry_msgs::msg::PoseStamped();
@@ -91,15 +91,15 @@ class DepthAIPreProc : public rclcpp::Node
             this->pose_det_.pose = it->results[0].pose.pose;
             this->pose_det_.pose.position.y *= -1; // Fix OAK-D y-axis inversion / lefthand coord frame
             this->tf_buffer_->transform(this->pose_det_,this->pose_tracker_,this->tracker_frame_,tf2::TimePointZero,this->detector_frame_,200ms);
-            this->det_msg_.pose = this->pose_tracker_.pose;
-            this->det_msg_.bbox.center = this->pose_tracker_.pose;
-            this->det_msg_.bbox.size.x = 0;
-            this->det_msg_.bbox.size.y = 0;
-            this->det_msg_.bbox.size.z = 0;
+            this->det_msg_.detection.pose = this->pose_tracker_.pose;
+            this->det_msg_.detection.bbox.center = this->pose_tracker_.pose;
+            this->det_msg_.detection.bbox.size.x = 0;
+            this->det_msg_.detection.bbox.size.y = 0;
+            this->det_msg_.detection.bbox.size.z = 0;
 
             // Add semantic information
-            this->det_msg_.class_string = this->labels_[std::stoi(it->results[0].hypothesis.class_id)];
-            this->det_msg_.class_confidence = it->results[0].hypothesis.score;
+            this->det_msg_.detection.class_string = this->labels_[std::stoi(it->results[0].hypothesis.class_id)];
+            this->det_msg_.detection.class_confidence = it->results[0].hypothesis.score;
 
             // Add image data
             if (img_rcvd_) {
@@ -114,17 +114,9 @@ class DepthAIPreProc : public rclcpp::Node
                 int ymin = y_off + std::max(0, (int)(scale*(it->bbox.center.position.y - (it->bbox.size.y)/2)));
                 int xmax = x_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.x + (it->bbox.size.x)/2)));
                 int ymax = y_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.y + (it->bbox.size.y)/2)));
-                int width = (int)(xmax - xmin);
-                int height = (int)(ymax - ymin);
-                // RCLCPP_INFO(get_logger(), "%d, %d, %d, %d", xmin, ymin, width, height);
 
-                cv::Rect objRect(xmin, ymin, width, height);
-                cv::Mat mask = cv::Mat::zeros(cv_in_->image.size(), CV_8U);
-                cv::Mat cv_out = cv::Mat::zeros(cv_in_->image.size(), cv_in_->image.type());
-                mask(objRect) = cv::Scalar(255);
+                cv::Mat cv_out = cv_in_->image(cv::Range(ymin, ymax),cv::Range(xmin, xmax));
 
-                cv_out_ = *cv_in_;
-                cv_in_->image.copyTo(cv_out,mask);
                 cv::imwrite("test_img_from_cv_full.jpg", cv_in_->image);
                 cv_out_.image = cv_out;
                 cv::imwrite("test_img_from_cv_crop.jpg", cv_out_.image);
@@ -150,9 +142,9 @@ class DepthAIPreProc : public rclcpp::Node
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
 
     rclcpp::Subscription<vision_msgs::msg::Detection3DArray>::SharedPtr subscription_;
-    rclcpp::Publisher<tracking_msgs::msg::Detections3D>::SharedPtr publisher_;
-    tracking_msgs::msg::Detections3D dets_msg_;
-    tracking_msgs::msg::Detection3D det_msg_;
+    rclcpp::Publisher<tracking_msgs::msg::DetectionsWithImg3D>::SharedPtr publisher_;
+    tracking_msgs::msg::DetectionsWithImg3D dets_msg_;
+    tracking_msgs::msg::DetectionWithImg3D det_msg_;
     int max_dets_{250}; 
 
     std::vector<std::string> labels_;

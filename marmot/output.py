@@ -90,13 +90,6 @@ def publish_tracks(tracker, pub_name):
         trk_msg.class_confidence = float(trk.class_conf)
         trk_msg.class_string = trk.obj_class_str
 
-        # Add visual information to message, if available
-        if trk.image_available:
-            trk_msg.image = trk.image
-            trk_msg.image_available = True
-        else:
-            trk_msg.image_available = False
-
         tracker.trks_msg.tracks.append(trk_msg)
 
     tracker.trks_msg.metadata.append(KeyValue(key='time_tracks_published', value=str(tracker.get_clock().now().nanoseconds)))
