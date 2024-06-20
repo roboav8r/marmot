@@ -9,7 +9,7 @@ import rclpy
 from rclpy.node import Node
 
 from foxglove_msgs.msg import SceneUpdate, SceneEntity
-from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D
+from tracking_msgs.msg import Tracks3D, Track3D, Detections3D, Detection3D, TracksWithImg3D, TrackWithImg3D, DetectionsWithImg3D, DetectionWithImg3D
 from visualization_msgs.msg import Marker, MarkerArray
 from std_srvs.srv import Empty
 

@@ -31,6 +31,14 @@ class Detection():
             self.size = np.array([[trkr.obj_props[self.obj_class_str]['length']], 
                                   [trkr.obj_props[self.obj_class_str]['width']], 
                                   [trkr.obj_props[self.obj_class_str]['height']]],dtype=np.float64)
+            
+        # Visual properties
+        if det_msg.image_available:
+            self.image_available = True
+            self.image = det_msg.image
+        else:
+            self.image_available = False
+            self.image = None
 
 class Track():
     def __init__(self, trkr, det):
@@ -53,6 +61,10 @@ class Track():
         self.pos = det.pos
         self.yaw = det.yaw
         self.size = det.size
+
+        # Visual
+        self.image_available = det.image_available
+        self.image = det.image
 
         # Initialize state and process model
         if trkr.obj_props[self.obj_class_str]['model_type'] in ['cp']:
@@ -78,8 +90,7 @@ class Track():
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'])))**2
-            # trkr.get_logger().info(str(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]])))))
-            # trkr.get_logger().info(self.cov)
+
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
 
             # Build initial process model and noise
