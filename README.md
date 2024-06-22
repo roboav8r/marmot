@@ -40,6 +40,13 @@ If interested in using the nuScenes dev kit for tracker development, see the [nu
 
 ## Running the OAK-D demo
 After completing the [installation instructions](docs/INSTALL.md), if you have a Luxonis OAK-D camera you can use the included files to run MaRMOT with an OAK-D detector.
+
+If using OAK-D for the first time, set up udev rules for the device:
+```
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
+``` 
+Then:
 ```
 cd ~/tracking_ws
 conda activate marmot
