@@ -60,7 +60,6 @@ class DepthAIPreProc : public rclcpp::Node
     {
         this->img_rcvd_ = true;
 
-        // TODO - generate mask around central square
         cv_in_ = cv_bridge::toCvShare(msg, "bgr8");
     }
     
@@ -115,10 +114,12 @@ class DepthAIPreProc : public rclcpp::Node
                 int xmax = x_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.x + (it->bbox.size.x)/2)));
                 int ymax = y_off + std::min(std::min(cv_in_->image.rows, cv_in_->image.cols), (int)(scale*(it->bbox.center.position.y + (it->bbox.size.y)/2)));
 
-                cv::Mat cv_out = cv_in_->image(cv::Range(ymin, ymax),cv::Range(xmin, xmax));
+                cv::Mat cv_out_mat = cv_in_->image(cv::Range(ymin, ymax),cv::Range(xmin, xmax));
 
                 cv::imwrite("test_img_from_cv_full.jpg", cv_in_->image);
-                cv_out_.image = cv_out;
+                cv_out_.header = cv_in_->header;
+                cv_out_.encoding = cv_in_->encoding;
+                cv_out_.image = cv_out_mat;
                 cv::imwrite("test_img_from_cv_crop.jpg", cv_out_.image);
 
                 img_out_ = cv_out_.toImageMsg();

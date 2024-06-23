@@ -29,6 +29,8 @@ def publish_tracks(tracker, pub_name):
         # Add track information to message
         trk_msg.track_id = trk.trk_id
         trk_msg.track_confidence = trk.track_conf
+        trk_msg.time_created = trk.time_created.to_msg()
+        trk_msg.time_updated = trk.time_updated.to_msg()
 
         # Populate track message for publication
         trk_msg.pose.pose.position.x = trk.spatial_state.mean()[0]
@@ -89,6 +91,11 @@ def publish_tracks(tracker, pub_name):
         trk_msg.track_confidence = float(trk.track_conf)
         trk_msg.class_confidence = float(trk.class_conf)
         trk_msg.class_string = trk.obj_class_str
+
+        # Add visual information to message if available
+        if trk.image_available:
+            trk_msg.image_available = True
+            trk_msg.image = trk.image
 
         tracker.trks_msg.tracks.append(trk_msg)
 

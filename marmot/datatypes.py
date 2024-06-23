@@ -49,6 +49,8 @@ class Track():
         self.n_cons_matches = 1
         self.n_cons_misses = 0
         self.metadata = det.metadata
+        self.time_created = det.timestamp
+        self.time_updated = det.timestamp
 
         # Semantic
         self.det_class_str = det.det_class_str # TODO - remove this if it isn't needed later on
@@ -187,6 +189,7 @@ class Track():
         self.metadata = det.metadata
         self.n_cons_misses = 0
         self.n_cons_matches += 1
+        self.time_updated = det.timestamp
 
         # Update spatial state
         rot = gtsam.Rot3(det.pose.orientation.w,det.pose.orientation.x, det.pose.orientation.y, det.pose.orientation.z)
@@ -221,3 +224,7 @@ class Track():
                 self.track_conf = 1 - ((1 - det.class_conf)*(1 - self.track_conf))/((1 - det.class_conf)+(1 - self.track_conf))
             else:
                 raise AttributeError('Invalid score update function.')
+
+        # Visual
+        self.image_available = det.image_available
+        self.image = det.image
