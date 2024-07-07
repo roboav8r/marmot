@@ -116,11 +116,9 @@ class DepthAIPreProc : public rclcpp::Node
 
                 cv::Mat cv_out_mat = cv_in_->image(cv::Range(ymin, ymax),cv::Range(xmin, xmax));
 
-                cv::imwrite("test_img_from_cv_full.jpg", cv_in_->image);
                 cv_out_.header = cv_in_->header;
                 cv_out_.encoding = cv_in_->encoding;
                 cv_out_.image = cv_out_mat;
-                cv::imwrite("test_img_from_cv_crop.jpg", cv_out_.image);
 
                 img_out_ = cv_out_.toImageMsg();
                 det_msg_.image = *img_out_;
