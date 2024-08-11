@@ -50,7 +50,7 @@ class TBDTracker(Node):
             pub_dict['queue_size'] = self.get_parameter('tracker.publishers.' + pub + '.queue_size').get_parameter_value().integer_value
         
             self.pubs[pub] = (pub_dict)
-            exec('self.%s  = self.create_publisher(%s,\'%s\',%s)' % (pub, pub_dict['msg_type'], pub_dict['topic'], pub_dict['queue_size']))
+            exec('self.%s  = self.create_publisher(%s,\'~/%s\',%s)' % (pub, pub_dict['msg_type'], pub_dict['topic'], pub_dict['queue_size']))
 
         # Generate detector models from .yaml
         self.declare_parameter('detectors.detector_names', rclpy.Parameter.Type.STRING_ARRAY)
@@ -147,8 +147,8 @@ class TBDTracker(Node):
         self.marker_msg = MarkerArray()
 
         # Declare services
-        self.reset_srv = self.create_service(Empty, 'reset_tracker', self.reset_tracker)
-        self.reconfigure_srv = self.create_service(Empty, 'reconfigure_tracker', self.reconfigure_tracker)
+        self.reset_srv = self.create_service(Empty, '~/reset_tracker', self.reset_tracker)
+        self.reconfigure_srv = self.create_service(Empty, '~/reconfigure_tracker', self.reconfigure_tracker)
 
     def declare_tracker_params(self):
         # Configure tracker params from .yaml
