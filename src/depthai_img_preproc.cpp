@@ -30,8 +30,7 @@ class DepthAIPreProc : public rclcpp::Node
     nh_(std::shared_ptr<DepthAIPreProc>(this, [](auto *) {})),
     image_transport_(nh_)
     {
-      subscription_ = this->create_subscription<vision_msgs::msg::Detection3DArray>(
-      "depthai_detections", 10, std::bind(&DepthAIPreProc::detection_callback, this, _1));
+      subscription_ = this->create_subscription<vision_msgs::msg::Detection3DArray>("depthai_detections", 10, std::bind(&DepthAIPreProc::detection_callback, this, _1));
       image_sub_ = image_transport_.subscribe("depthai_img", 10, std::bind(&DepthAIPreProc::image_callback, this, std::placeholders::_1));
       publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
 
@@ -49,7 +48,7 @@ class DepthAIPreProc : public rclcpp::Node
       tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
       // Block until transform becomes available
-      this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero,10s);
+      this->tf_buffer_->canTransform(this->detector_frame_,this->tracker_frame_,tf2::TimePointZero, 30s);
       this->det_msg_ = tracking_msgs::msg::Detection3D();
       this->dets_msg_ = tracking_msgs::msg::Detections3D();
       this->dets_msg_.detections.reserve(this->max_dets_);
