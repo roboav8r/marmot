@@ -31,6 +31,14 @@ class Detection():
             self.size = np.array([[trkr.obj_props[self.obj_class_str]['length']], 
                                   [trkr.obj_props[self.obj_class_str]['width']], 
                                   [trkr.obj_props[self.obj_class_str]['height']]],dtype=np.float64)
+            
+        # Visual properties
+        if det_msg.image_available:
+            self.image_available = True
+            self.image = det_msg.image
+        else:
+            self.image_available = False
+            self.image = None
 
 class Track():
     def __init__(self, trkr, det):
@@ -41,6 +49,8 @@ class Track():
         self.n_cons_matches = 1
         self.n_cons_misses = 0
         self.metadata = det.metadata
+        self.time_created = det.timestamp
+        self.time_updated = det.timestamp
 
         # Semantic
         self.det_class_str = det.det_class_str # TODO - remove this if it isn't needed later on
@@ -53,6 +63,10 @@ class Track():
         self.pos = det.pos
         self.yaw = det.yaw
         self.size = det.size
+
+        # Visual
+        self.image_available = det.image_available
+        self.image = det.image
 
         # Initialize state and process model
         if trkr.obj_props[self.obj_class_str]['model_type'] in ['cp']:
@@ -78,8 +92,7 @@ class Track():
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
                                                trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'])))**2
-            # trkr.get_logger().info(str(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]])))))
-            # trkr.get_logger().info(self.cov)
+
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
 
             # Build initial process model and noise
@@ -176,6 +189,7 @@ class Track():
         self.metadata = det.metadata
         self.n_cons_misses = 0
         self.n_cons_matches += 1
+        self.time_updated = det.timestamp
 
         # Update spatial state
         rot = gtsam.Rot3(det.pose.orientation.w,det.pose.orientation.x, det.pose.orientation.y, det.pose.orientation.z)
@@ -210,3 +224,7 @@ class Track():
                 self.track_conf = 1 - ((1 - det.class_conf)*(1 - self.track_conf))/((1 - det.class_conf)+(1 - self.track_conf))
             else:
                 raise AttributeError('Invalid score update function.')
+
+        # Visual
+        self.image_available = det.image_available
+        self.image = det.image
