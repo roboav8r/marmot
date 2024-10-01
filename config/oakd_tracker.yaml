@@ -30,11 +30,11 @@ tbd_tracker_node:
           height: 0.5
           create_method: 'conf'
           delete_method: 'conf'
-          active_thresh: .75
+          active_thresh: .25
           delete_thresh: .15
           detect_thresh: .15
           score_update_function: 'parallel_add'
-          score_decay: .01
+          score_decay: .001
           sim_metric: 'dist_3d'
           match_thresh: 2.0
       bicycle:
@@ -725,9 +725,9 @@ tbd_tracker_node:
           size_proc_var: [1., 1., 1.]
           vel_proc_var: [1., .5, .5]
           
-          length: 0.25
-          width: 0.25
-          height: 0.5
+          length: 0.05
+          width: 0.05
+          height: 0.1
           create_method: 'conf'
           delete_method: 'conf'
           active_thresh: .75
