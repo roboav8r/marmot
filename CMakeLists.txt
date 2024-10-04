@@ -40,6 +40,9 @@ ament_target_dependencies(pose_preproc rclcpp geometry_msgs tracking_msgs tf2 tf
 add_executable(pose_array_preproc src/pose_array_preproc.cpp)
 ament_target_dependencies(pose_array_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 
+add_executable(lidar_2d_preproc src/lidar_2d_preproc.cpp)
+ament_target_dependencies(lidar_2d_preproc rclcpp geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs sensor_msgs)
+
 add_executable(nuscenes_preproc src/nuscenes_preproc.cpp)
 ament_target_dependencies(nuscenes_preproc rclcpp vision_msgs geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
 
@@ -55,6 +58,7 @@ install(TARGETS
   nuscenes_preproc
   pose_preproc
   pose_array_preproc
+  lidar_2d_preproc
   coda_preproc
   tf_preproc
   DESTINATION lib/${PROJECT_NAME}
