@@ -23,6 +23,7 @@
   <depend> foxglove_msgs </depend>
   <depend> rosidl_runtime_py </depend>
   <depend> rosbag2_storage_mcap </depend>
+  <depend> realsense2_camera </depend>
 
   <exec_depend>ros2launch</exec_depend>
 

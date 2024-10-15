@@ -30,28 +30,15 @@ Supporting file types include:
 ## Installation and Setup
 To install MaRMOT, follow the [installation instructions](docs/INSTALL.md).
 
-## Recreating IEEE RO-MAN 2024 results
-If interested in recreating the nuScenes and Motion Capture/MoCap experimental results from our 2024 MaRMOT paper, check out the [RO-MAN 2024 release](https://github.com/roboav8r/marmot/releases/tag/v0.1.0-roman2024) and follow the usage instructions.
+## Running the SSTI demo
+After completing the [installation instructions](docs/INSTALL.md), if you have a USB webcam you can use the included files to run MaRMOT to detect fiducials (AR tags).
 
-## Running nuScenes experiments
-During development, we used the nuScenes tracking development kit for tuning and evaluation. The results are reported in our 2024 paper.
-
-If interested in using the nuScenes dev kit for tracker development, see the [nuScenes instructions](docs/NUSCENES.md).
-
-## Running the OAK-D demo
-After completing the [installation instructions](docs/INSTALL.md), if you have a Luxonis OAK-D camera you can use the included files to run MaRMOT with an OAK-D detector.
-
-If using OAK-D for the first time, set up udev rules for the device:
-```
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
-sudo udevadm control --reload-rules && sudo udevadm trigger
-``` 
-Then:
+At a console:
 ```
 cd ~/tracking_ws
 conda activate marmot
 source install/setup.bash
-ros2 launch marmot oakd_demo.launch.py
+ros2 launch marmot ssti_artag_demo.launch.py
 ```
 Now in a separate window, open up `foxglove-studio` to visualize.
 ```

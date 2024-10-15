@@ -1,0 +1,56 @@
+
+services:
+
+  # Bridge ROS1->ROS2 messages
+  experiment_bridge_srv:
+
+    image: experiment_bridge_img
+    container_name: experiment_bridge_cont
+    
+    build:
+      # set the build context to the directory containing build files
+      context: .
+      dockerfile: bridge.Dockerfile
+
+    security_opt:
+    # this is set bc of errors with RViz being denied dbus comm w/ host
+      - apparmor:unconfined
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+    # give the container access to the host's network
+    network_mode: host
+    pid: host
+    stdin_open: true
+    tty: true
+    entrypoint: /experiment_bridge_entrypoint.sh
+
+  # Launch ar_track_alvar in ros1 environment
+  ros1_ar_srv:
+
+    image: ros1_ar_img
+    container_name: ros1_ar_cont
+    
+    build:
+      # set the build context to the directory containing build files
+      context: .
+      dockerfile: ros1.Dockerfile
+
+    environment:
+      - MARKER_SIZE=20.0
+      - AR_CAM_TOPIC=/camera/camera/color/image_raw
+      - AR_INFO_TOPIC=/camera/camera/color/camera_info
+      - OUTPUT_FRAME=camera_color_optical_frame
+
+    security_opt:
+    # this is set bc of errors with RViz being denied dbus comm w/ host
+      - apparmor:unconfined
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+    # give the container access to the host's network
+    network_mode: host
+    pid: host
+    stdin_open: true
+    tty: true
+    entrypoint: /ros1_ar_entrypoint.sh

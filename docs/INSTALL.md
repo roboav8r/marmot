@@ -11,8 +11,9 @@ Note: Make sure that you deactivate any virtual environments before installing R
 ```
 cd ~
 mkdir -p tracking_ws/src && cd tracking_ws/src
+git clone https://github.com/roboav8r/ar_track_alvar_msgs.git -b ros2
 git clone https://github.com/roboav8r/tracking_msgs.git -b ros2
-git clone --depth 1 https://github.com/roboav8r/marmot.git -b main
+git clone --depth 1 https://github.com/roboav8r/marmot.git -b ssti
 cd ~/tracking_ws
 rosdep install -i --from-path src --rosdistro humble -y 
 ## Set up virtual environments

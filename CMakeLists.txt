@@ -14,6 +14,7 @@ find_package(vision_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tracking_msgs REQUIRED)
 find_package(foxglove_msgs REQUIRED)
+find_package(ar_track_alvar_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
@@ -28,6 +29,9 @@ install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/)
 
 # Add and install CPP targets
+add_executable(ar_preproc src/ar_preproc.cpp)
+ament_target_dependencies(ar_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs ar_track_alvar_msgs)
+
 add_executable(depthai_preproc src/depthai_preproc.cpp)
 ament_target_dependencies(depthai_preproc rclcpp vision_msgs geometry_msgs tracking_msgs tf2 tf2_ros tf2_geometry_msgs)
 
@@ -47,6 +51,7 @@ add_executable(tf_preproc src/tf_preproc.cpp)
 ament_target_dependencies(tf_preproc rclcpp geometry_msgs tracking_msgs foxglove_msgs tf2 tf2_ros tf2_geometry_msgs)
 
 install(TARGETS 
+  ar_preproc
   depthai_preproc
   depthai_img_preproc
   nuscenes_preproc
