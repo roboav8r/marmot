@@ -76,9 +76,9 @@ class ARPreProc : public rclcpp::Node
             this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
             this->det_msg_.pose = obj_pose_trk_frame_.pose;
             this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
-            this->det_msg_.bbox.size.x = 0;
-            this->det_msg_.bbox.size.y = 0;
-            this->det_msg_.bbox.size.z = 0;
+            this->det_msg_.bbox.size.x = 0.7;
+            this->det_msg_.bbox.size.y = 0.7;
+            this->det_msg_.bbox.size.z = 0.5;
 
             // Add semantic information
             this->det_msg_.class_string = this->labels_[idx];
