@@ -93,8 +93,14 @@ class TBDTracker(Node):
                     self.detectors[detector]['detection_params'][det_cls]['size_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.size_obs_var').get_parameter_value().double_array_value
                     self.detectors[detector]['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'], 
                                                                                                                                   self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'], 
+                   
                                                                                                                                   self.detectors[detector]['detection_params'][det_cls]['size_obs_var'])))
                 elif self.detectors[detector]['detector_type'] == 'pos_3d':
+                    self.detectors[detector]['detection_params'][det_cls]['size_obs_var'] = np.array([1., 1., 1.])
+                    self.detectors[detector]['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'], 
+                                                                                                                                  self.detectors[detector]['detection_params'][det_cls]['size_obs_var'])))
+                elif self.detectors[detector]['detector_type'] == 'pos_2d_xy':
                     self.detectors[detector]['detection_params'][det_cls]['size_obs_var'] = np.array([1., 1., 1.])
                     self.detectors[detector]['detection_params'][det_cls]['obs_var'] = gtsam.noiseModel.Diagonal.Variances(np.concatenate((self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'], 
                                                                                                                                   self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'], 
@@ -117,6 +123,11 @@ class TBDTracker(Node):
                     dim_obs = 7
                     self.detectors[detector]['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
                     self.detectors[detector]['obs_model'][proc_model][0,0], self.detectors[detector]['obs_model'][proc_model][1,1], self.detectors[detector]['obs_model'][proc_model][2,2] = 1,1,1
+
+                elif self.detectors[detector]['detector_type'] == 'pos_2d_xy':
+                    dim_obs = 7
+                    self.detectors[detector]['obs_model'][proc_model] = np.zeros((dim_obs, dim_states))
+                    self.detectors[detector]['obs_model'][proc_model][0,0], self.detectors[detector]['obs_model'][proc_model][1,1] = 1,1
 
                 elif self.detectors[detector]['detector_type'] == 'pos_bbox_3d':
                     dim_obs = 7

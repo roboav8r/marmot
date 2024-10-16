@@ -25,10 +25,12 @@ class PoseArrayPreProc : public rclcpp::Node
       this->publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
 
       this->declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
-      this->declare_parameter("labels",rclcpp::ParameterType::PARAMETER_STRING_ARRAY);
+      this->declare_parameter("label",rclcpp::ParameterType::PARAMETER_STRING);
+      this->declare_parameter("confidence",rclcpp::ParameterType::PARAMETER_DOUBLE);
       
       this->tracker_frame_ = this->get_parameter("tracker_frame").as_string();
-      this->labels_ = this->get_parameter("labels").as_string_array();
+      this->label_ = this->get_parameter("label").as_string();
+      this->confidence_ = this->get_parameter("confidence").as_double();
 
       this->tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock());
       this->tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
@@ -58,24 +60,26 @@ class PoseArrayPreProc : public rclcpp::Node
         kv.key = "num_dets_rcvd";
         kv.value = std::to_string(1);
         this->dets_msg_.metadata.emplace_back(kv);
+        
+        for (auto pose : msg->poses)
+        {
+          // Convert and add spatial information
+          this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
+          this->obj_pose_det_frame_.header = msg->header;
+          this->obj_pose_det_frame_.pose = pose;
+          this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
+          this->det_msg_.pose = obj_pose_trk_frame_.pose;
+          this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
 
-        // Convert spatial information
-        // TODO
-        // this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
-        // this->obj_pose_det_frame_.header = msg->header;
-        // this->obj_pose_det_frame_.pose = msg->pose;
-        // this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
-        // this->det_msg_.pose = obj_pose_trk_frame_.pose;
-        // this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
-        // this->det_msg_.bbox.size.x = 0;
-        // this->det_msg_.bbox.size.y = 0;
-        // this->det_msg_.bbox.size.z = 0;
+          this->det_msg_.bbox.size.x = 0;
+          this->det_msg_.bbox.size.y = 0;
+          this->det_msg_.bbox.size.z = 0;
 
-        // Add semantic information
-        // TODO
-        // this->det_msg_.class_string = this->labels_[0];
-        // this->det_msg_.class_confidence = 1.;
-        this->dets_msg_.detections.emplace_back(this->det_msg_);
+          // Add semantic information
+          this->det_msg_.class_string = this->label_;
+          this->det_msg_.class_confidence = this->confidence_;
+          this->dets_msg_.detections.emplace_back(this->det_msg_);
+        }
 
         this->publisher_->publish(this->dets_msg_);
            
@@ -92,9 +96,11 @@ class PoseArrayPreProc : public rclcpp::Node
     rclcpp::Publisher<tracking_msgs::msg::Detections3D>::SharedPtr publisher_;
     tracking_msgs::msg::Detections3D dets_msg_;
     tracking_msgs::msg::Detection3D det_msg_;
-    int max_dets_{250}; 
+    int max_dets_{250};
 
-    std::vector<std::string> labels_;
+    double confidence_;
+
+    std::string label_;
 };
 
 int main(int argc, char * argv[])
