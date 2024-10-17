@@ -25,19 +25,15 @@ class Lidar2dPreProc : public rclcpp::Node
       this->subscription_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
       "pose_array_detections", 10, std::bind(&Lidar2dPreProc::topic_callback, this, _1));
 
-      this->scan_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-      "scan", 10, std::bind(&Lidar2dPreProc::scan_callback, this, _1));
-
-      this->pc_subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-      "point_cloud", 10, std::bind(&Lidar2dPreProc::pc_callback, this, _1));
-
       this->publisher_ = this->create_publisher<tracking_msgs::msg::Detections3D>("converted_detections", 10);
 
       this->declare_parameter("tracker_frame",rclcpp::ParameterType::PARAMETER_STRING);
       this->declare_parameter("label",rclcpp::ParameterType::PARAMETER_STRING);
+      this->declare_parameter("confidence",rclcpp::ParameterType::PARAMETER_DOUBLE);
       
       this->tracker_frame_ = this->get_parameter("tracker_frame").as_string();
       this->label_ = this->get_parameter("label").as_string();
+      this->confidence_ = this->get_parameter("confidence").as_double();
 
       this->tf_buffer_ =std::make_unique<tf2_ros::Buffer>(this->get_clock());
       this->tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
@@ -48,11 +44,6 @@ class Lidar2dPreProc : public rclcpp::Node
     }
 
   private:
-    void scan_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
-    {}
-
-    void pc_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
-    {}
 
     void topic_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
     {
@@ -74,23 +65,25 @@ class Lidar2dPreProc : public rclcpp::Node
         kv.value = std::to_string(1);
         this->dets_msg_.metadata.emplace_back(kv);
 
-        // Convert spatial information
-        // TODO
-        // this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
-        // this->obj_pose_det_frame_.header = msg->header;
-        // this->obj_pose_det_frame_.pose = msg->pose;
-        // this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
-        // this->det_msg_.pose = obj_pose_trk_frame_.pose;
-        // this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
-        // this->det_msg_.bbox.size.x = 0;
-        // this->det_msg_.bbox.size.y = 0;
-        // this->det_msg_.bbox.size.z = 0;
+        for (auto pose : msg->poses)
+        {
+          // Convert and add spatial information
+          this->obj_pose_det_frame_ = geometry_msgs::msg::PoseStamped();
+          this->obj_pose_det_frame_.header = msg->header;
+          this->obj_pose_det_frame_.pose = pose;
+          this->obj_pose_trk_frame_ = this->tf_buffer_->transform(this->obj_pose_det_frame_,this->tracker_frame_);
+          this->det_msg_.pose = obj_pose_trk_frame_.pose;
+          this->det_msg_.bbox.center = obj_pose_trk_frame_.pose;
 
-        // Add semantic information
-        // TODO
-        // this->det_msg_.class_string = this->labels_[0];
-        // this->det_msg_.class_confidence = 1.;
-        this->dets_msg_.detections.emplace_back(this->det_msg_);
+          this->det_msg_.bbox.size.x = 0;
+          this->det_msg_.bbox.size.y = 0;
+          this->det_msg_.bbox.size.z = 0;
+
+          // Add semantic information
+          this->det_msg_.class_string = this->label_;
+          this->det_msg_.class_confidence = this->confidence_;
+          this->dets_msg_.detections.emplace_back(this->det_msg_);
+        }
 
         this->publisher_->publish(this->dets_msg_);
            
@@ -109,8 +102,9 @@ class Lidar2dPreProc : public rclcpp::Node
     rclcpp::Publisher<tracking_msgs::msg::Detections3D>::SharedPtr publisher_;
     tracking_msgs::msg::Detections3D dets_msg_;
     tracking_msgs::msg::Detection3D det_msg_;
+    
     int max_dets_{250}; 
-
+    double confidence_;
     std::string label_;
 };
 
