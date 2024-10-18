@@ -15,7 +15,8 @@ git clone https://github.com/roboav8r/ar_track_alvar_msgs.git -b ros2
 git clone https://github.com/roboav8r/tracking_msgs.git -b ros2
 git clone --depth 1 https://github.com/roboav8r/marmot.git -b ssti
 cd ~/tracking_ws
-rosdep install -i --from-path src --rosdistro humble -y 
+rosdep install -i --from-path src --rosdistro humble -y
+```
 ## Set up virtual environments
 Note: either `mamba` or `conda` will work for these commands.
 ```
