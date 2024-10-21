@@ -8,15 +8,15 @@ from rclpy.time import Time
 from marmot.utils import roty
 
 class Detection():
-    def __init__(self, trkr, dets_msg, det_msg, det_name):
+    def __init__(self, trkr, dets_msg, det_msg, detector_name):
         # Admin
         self.timestamp = Time.from_msg(dets_msg.header.stamp)
-        self.det_name = det_name
+        self.detector_name = detector_name
 
         # Semantic Properties
         self.metadata = det_msg.metadata
         self.det_class_str = det_msg.class_string
-        self.obj_class_str = trkr.detectors[det_name]['detection_params'][self.det_class_str]['obj_class']
+        self.obj_class_str = trkr.detectors[detector_name]['detection_params'][self.det_class_str]['obj_class']
         self.class_conf = det_msg.class_confidence
        
         # Spatial properties
@@ -25,7 +25,7 @@ class Detection():
         self.yaw = np.array([[np.arctan2(2*det_msg.pose.orientation.w*det_msg.pose.orientation.z, 1-2*det_msg.pose.orientation.z**2)]],dtype=np.float64)
 
         # If bbox info available, use it. Otherwise use default values from yaml
-        if trkr.detectors[det_name]['detector_type'] in ['pos_bbox_3d']:
+        if trkr.detectors[detector_name]['detector_type'] in ['pos_bbox_3d']:
             self.size = np.array([[det_msg.bbox.size.x], [det_msg.bbox.size.y], [det_msg.bbox.size.z]],dtype=np.float64)
         else:           
             self.size = np.array([[trkr.obj_props[self.obj_class_str]['length']], 
@@ -46,17 +46,26 @@ class Track():
         # Admin
         self.timestamp = det.timestamp
         self.trk_id = trkr.trk_id_count
-        self.n_cons_matches = 1
-        self.n_cons_misses = 0
         self.metadata = det.metadata
         self.time_created = det.timestamp
         self.time_updated = det.timestamp
+
+        # Track management
+        self.track_conf = det.class_conf
+        self.track_counts = {}
+        for detector in trkr.detector_names:
+            self.track_counts[detector] = {}
+            if detector == det.detector_name:
+                self.track_counts[detector]['n_cons_matches'] = 1
+                self.track_counts[detector]['n_cons_misses'] = 0
+            else:
+                self.track_counts[detector]['n_cons_matches'] = 0
+                self.track_counts[detector]['n_cons_misses'] = 0                
 
         # Semantic
         self.det_class_str = det.det_class_str # TODO - remove this if it isn't needed later on
         self.obj_class_str = det.obj_class_str
         self.class_conf = det.class_conf
-        self.track_conf = det.class_conf
 
         # Spatial
         self.pose = det.pose
@@ -73,9 +82,9 @@ class Track():
 
             # Kalman filter & state
             self.kf = gtsam.KalmanFilter(7) # pos_x, pos_y, pos_z, yaw, length, width, height
-            self.cov = np.diag(np.concatenate((trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'])))**2 
+            self.cov = np.diag(np.concatenate((trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['size_obs_var'])))**2 
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size)), self.cov)
 
             # Build initial process model and noise
@@ -88,9 +97,9 @@ class Track():
 
             # Kalman filter & state
             self.kf = gtsam.KalmanFilter(10) # pos_x, pos_y, pos_z, yaw, length, width, height, vel_x, vel_y, vel_z
-            self.cov = np.diag(np.concatenate((trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
+            self.cov = np.diag(np.concatenate((trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'])))**2
 
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0], [0]]))), self.cov)
@@ -108,7 +117,7 @@ class Track():
             self.kf = gtsam.KalmanFilter(10) # pos_x, pos_y, pos_z, yaw, length, width, height, vel_x, acc_x, omega
             self.cov = np.diag(np.concatenate(([0.,0.,0.], 
                                                [0.], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                [0.],
                                                trkr.obj_props[self.obj_class_str]['acc_proc_var'],
                                                trkr.obj_props[self.obj_class_str]['omega_proc_var'])))**2
@@ -127,9 +136,9 @@ class Track():
 
             # Kalman filter & state
             self.kf = gtsam.KalmanFilter(9) # pos_x, pos_y, pos_z, yaw, length, width, height, vel_x, vel_y, vel_z
-            self.cov = np.diag(np.concatenate((trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
-                                               trkr.detectors[det.det_name]['detection_params'][self.det_class_str]['size_obs_var'],
+            self.cov = np.diag(np.concatenate((trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['pos_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['yaw_obs_var'], 
+                                               trkr.detectors[det.detector_name]['detection_params'][self.det_class_str]['size_obs_var'],
                                                trkr.obj_props[self.obj_class_str]['vel_proc_var'],
                                                trkr.obj_props[self.obj_class_str]['curv_proc_var'])))**2
             self.spatial_state = self.kf.init(np.vstack((self.pos, self.yaw, self.size, np.array([[0], [0]]))), self.cov)
@@ -209,9 +218,9 @@ class Track():
                 self.spatial_state.mean()[3] += np.pi*2*np.sign(det_yaw)
 
         self.spatial_state = self.kf.update(self.spatial_state, # current state
-                                            trkr.detectors[det.det_name]['obs_model'][trkr.obj_props[self.obj_class_str]['model_type']], # observation model for this object type
+                                            trkr.detectors[det.detector_name]['obs_model'][trkr.obj_props[self.obj_class_str]['model_type']], # observation model for this object type
                                             np.vstack((det.pos, det_yaw, det.size)), # stacked detection vector
-                                            trkr.detectors[det.det_name]['detection_params'][det.det_class_str]['obs_var']) # detector variance for this detection type
+                                            trkr.detectors[det.detector_name]['detection_params'][det.det_class_str]['obs_var']) # detector variance for this detection type
 
         # Update semantic state
         # self.class_conf = det.class_conf*self.class_conf / (det.class_conf*self.class_conf + (1 - det.class_conf)*(1 - self.class_conf))

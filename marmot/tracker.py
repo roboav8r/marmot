@@ -54,11 +54,11 @@ class TBDTracker(Node):
 
         # Generate detector models from .yaml
         self.declare_parameter('detectors.detector_names', rclpy.Parameter.Type.STRING_ARRAY)
-        detector_names = self.get_parameter('detectors.detector_names').get_parameter_value().string_array_value
+        self.detector_names = self.get_parameter('detectors.detector_names').get_parameter_value().string_array_value
         self.detectors = dict()
         self.subs = []
 
-        for detector in detector_names:
+        for detector in self.detector_names:
 
             # Declare parameters for detector
             self.declare_parameter('detectors.' + detector + '.topic', rclpy.Parameter.Type.STRING)
