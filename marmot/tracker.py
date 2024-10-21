@@ -65,6 +65,7 @@ class TBDTracker(Node):
             self.declare_parameter('detectors.' + detector + '.msg_type', rclpy.Parameter.Type.STRING)
             self.declare_parameter('detectors.' + detector + '.detector_type',rclpy.Parameter.Type.STRING)
             self.declare_parameter('detectors.' + detector + '.detection_classes', rclpy.Parameter.Type.STRING_ARRAY)
+            self.declare_parameter('detectors.' + detector + '.detection_classes_ignore', rclpy.Parameter.Type.STRING_ARRAY)
 
             # Form parameter dictionary for detector
             self.detectors[detector] = dict()
@@ -72,20 +73,62 @@ class TBDTracker(Node):
             self.detectors[detector]['msg_type'] = self.get_parameter('detectors.' + detector + '.msg_type').get_parameter_value().string_value
             self.detectors[detector]['detector_type'] = self.get_parameter('detectors.' + detector + '.detector_type').get_parameter_value().string_value
             self.detectors[detector]['detection_classes'] = self.get_parameter('detectors.' + detector + '.detection_classes').get_parameter_value().string_array_value
+            self.detectors[detector]['detection_classes_ignore'] = self.get_parameter('detectors.' + detector + '.detection_classes_ignore').get_parameter_value().string_array_value
 
             self.detectors[detector]['detection_params'] = dict()
+
             for det_cls in self.detectors[detector]['detection_classes']:
+
+                if det_cls in self.detectors[detector]['detection_classes_ignore']:
+                    continue
+
                 self.detectors[detector]['detection_params'][det_cls] = dict()
+
+
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.sim_metric', rclpy.Parameter.Type.STRING)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
+    
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.create_method', rclpy.Parameter.Type.STRING)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.active_thresh', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.detect_thresh', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.score_decay', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.score_update_function', rclpy.Parameter.Type.STRING)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.n_create_min', rclpy.Parameter.Type.INTEGER)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_method', rclpy.Parameter.Type.STRING)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_thresh', rclpy.Parameter.Type.DOUBLE)
+                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
 
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
-                self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore',rclpy.Parameter.Type.BOOL)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)
                 
                 self.detectors[detector]['detection_params'][det_cls]['pos_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var').get_parameter_value().double_array_value
                 self.detectors[detector]['detection_params'][det_cls]['yaw_obs_var'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var').get_parameter_value().double_array_value
-                self.detectors[detector]['detection_params'][det_cls]['ignore'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.ignore').get_parameter_value().bool_value
                 self.detectors[detector]['detection_params'][det_cls]['obj_class'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class').get_parameter_value().string_value
+
+                # Create management 
+                self.detectors[detector]['detection_params'][det_cls]['sim_metric'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.sim_metric').get_parameter_value().string_value
+                self.detectors[detector]['detection_params'][det_cls]['match_thresh'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.match_thresh').get_parameter_value().double_value
+
+                # Set management-specific parameters
+                self.detectors[detector]['detection_params'][det_cls]['create_method'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.create_method').get_parameter_value().string_value
+                if self.detectors[detector]['detection_params'][det_cls]['create_method'] == 'conf':
+                    self.detectors[detector]['detection_params'][det_cls]['active_thresh'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.active_thresh').get_parameter_value().double_value
+                    self.detectors[detector]['detection_params'][det_cls]['detect_thresh'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.detect_thresh').get_parameter_value().double_value
+                    self.detectors[detector]['detection_params'][det_cls]['score_decay'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.score_decay').get_parameter_value().double_value
+                    self.detectors[detector]['detection_params'][det_cls]['score_update_function'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.score_update_function').get_parameter_value().string_value
+                elif self.detectors[detector]['detection_params'][det_cls]['create_method'] == 'count':
+                    self.detectors[detector]['detection_params'][det_cls]['n_create_min'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.n_create_min').get_parameter_value().integer_value
+                else:
+                    raise TypeError('No track creation method: %s' % self.detectors[detector]['detection_params'][det_cls]['create_method'])
+
+                self.detectors[detector]['detection_params'][det_cls]['delete_method'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_method').get_parameter_value().string_value
+                if self.detectors[detector]['detection_params'][det_cls]['delete_method'] == 'conf':
+                    self.detectors[detector]['detection_params'][det_cls]['delete_thresh'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_thresh').get_parameter_value().double_value
+                elif self.detectors[detector]['detection_params'][det_cls]['delete_method'] == 'count':
+                    self.detectors[detector]['detection_params'][det_cls]['n_delete_max'] = self.get_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.n_delete_max').get_parameter_value().integer_value
+                else:
+                    raise TypeError('No track deletion method: %s' % self.detectors[detector]['detection_params'][det_cls]['delete_method'] )
 
                 # Create observation variance model based on detector type
                 if self.detectors[detector]['detector_type'] == 'pos_bbox_3d':
@@ -184,18 +227,6 @@ class TBDTracker(Node):
             self.declare_parameter('object_properties.' + obj_name + '.length', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.width', rclpy.Parameter.Type.DOUBLE)
             self.declare_parameter('object_properties.' + obj_name + '.height', rclpy.Parameter.Type.DOUBLE)       
-            self.declare_parameter('object_properties.' + obj_name + '.sim_metric', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
-            
-            self.declare_parameter('object_properties.' + obj_name + '.create_method', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.active_thresh', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.detect_thresh', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.score_decay', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.score_update_function', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.n_create_min', rclpy.Parameter.Type.INTEGER)
-            self.declare_parameter('object_properties.' + obj_name + '.delete_method', rclpy.Parameter.Type.STRING)
-            self.declare_parameter('object_properties.' + obj_name + '.delete_thresh', rclpy.Parameter.Type.DOUBLE)
-            self.declare_parameter('object_properties.' + obj_name + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
 
             self.declare_parameter('object_properties.' + obj_name + '.model_type', rclpy.Parameter.Type.STRING)
             self.declare_parameter('object_properties.' + obj_name + '.yaw_proc_var', rclpy.Parameter.Type.DOUBLE_ARRAY)
@@ -219,29 +250,6 @@ class TBDTracker(Node):
             temp_dict['length'] = self.get_parameter('object_properties.' + obj_name + '.length').get_parameter_value().double_value
             temp_dict['width'] = self.get_parameter('object_properties.' + obj_name + '.width').get_parameter_value().double_value
             temp_dict['height'] = self.get_parameter('object_properties.' + obj_name + '.height').get_parameter_value().double_value
-            temp_dict['sim_metric'] = self.get_parameter('object_properties.' + obj_name + '.sim_metric').get_parameter_value().string_value
-            temp_dict['match_thresh'] = self.get_parameter('object_properties.' + obj_name + '.match_thresh').get_parameter_value().double_value
-
-            # Set management-specific parameters
-            temp_dict['create_method'] = self.get_parameter('object_properties.' + obj_name + '.create_method').get_parameter_value().string_value
-            if temp_dict['create_method'] == 'conf':
-                temp_dict['active_thresh'] = self.get_parameter('object_properties.' + obj_name + '.active_thresh').get_parameter_value().double_value
-                temp_dict['detect_thresh'] = self.get_parameter('object_properties.' + obj_name + '.detect_thresh').get_parameter_value().double_value
-                temp_dict['score_decay'] = self.get_parameter('object_properties.' + obj_name + '.score_decay').get_parameter_value().double_value
-                temp_dict['score_update_function'] = self.get_parameter('object_properties.' + obj_name + '.score_update_function').get_parameter_value().string_value
-            elif temp_dict['create_method'] == 'count':
-                temp_dict['n_create_min'] = self.get_parameter('object_properties.' + obj_name + '.n_create_min').get_parameter_value().integer_value
-            else:
-                raise TypeError('No track creation method: %s' % temp_dict['create_method'])
-
-            temp_dict['delete_method'] = self.get_parameter('object_properties.' + obj_name + '.delete_method').get_parameter_value().string_value
-            if temp_dict['delete_method'] == 'conf':
-                temp_dict['delete_thresh'] = self.get_parameter('object_properties.' + obj_name + '.delete_thresh').get_parameter_value().double_value
-            elif temp_dict['delete_method'] == 'count':
-                temp_dict['n_delete_max'] = self.get_parameter('object_properties.' + obj_name + '.n_delete_max').get_parameter_value().integer_value
-            else:
-                raise TypeError('No track deletion method: %s' % temp_dict['delete_method'] )
-
 
             # Add process model-specific parameters
             if temp_dict['model_type'] in ['cp']:
