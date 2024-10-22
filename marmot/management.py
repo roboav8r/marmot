@@ -4,8 +4,6 @@ from marmot.datatypes import Track
 
 def keep_track(trk, trkr):
 
-    keep_this_track = True
-
     for detector in trkr.detectors.keys():
 
         if (trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_method']=='count' and trk.track_management[detector]['n_cons_misses'] >= trkr.detectors[detector]['detection_params'][trk.obj_class_str]['n_delete_max']):
