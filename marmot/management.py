@@ -2,14 +2,21 @@
 
 from marmot.datatypes import Track
 
-def valid_track(trk, trkr):
+def keep_track(trk, trkr):
 
-    if (trkr.obj_props[trk.obj_class_str]['delete_method']=='count' and trk.n_cons_misses >= trkr.obj_props[trk.obj_class_str]['n_delete_max']):
-        return False
-    elif (trkr.obj_props[trk.obj_class_str]['delete_method']=='conf' and trk.track_conf <= trkr.obj_props[trk.obj_class_str]['delete_thresh']):
-        return False
-    else:
-        return True
+    keep_this_track = True
+
+    for detector in trkr.detectors.keys():
+
+        if (trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_method']=='count' and trk.track_management[detector]['n_cons_misses'] >= trkr.detectors[detector]['detection_params'][trk.obj_class_str]['n_delete_max']):
+            keep_this_track = False
+        elif (trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_method']=='conf' and trk.track_management[detector]['track_conf'] <= trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_thresh']):
+            keep_this_track = False
+        else:
+            keep_this_track = True
+            break
+
+    return keep_this_track
 
 def create_tracks(trkr, det_name):
 
@@ -24,11 +31,11 @@ def create_tracks(trkr, det_name):
         else:
 
             # Ignore tracks as appropriate
-            if trkr.detectors[det.det_name]['detection_params'][det.det_class_str]['ignore']:
+            if trkr.detectors[det.det_name]['detection_params'][det.det_class_str] in trkr.detectors[det_name]['detection_classes_ignore']:
                 continue
             
             # If using confidence based method, do not create tracks with confidence below threshold
-            elif trkr.obj_props[det.obj_class_str]['create_method']=='conf' and det.class_conf < trkr.obj_props[det.obj_class_str]['detect_thresh']:
+            elif trkr.detectors[det_name]['detection_params'][det.det_class_str]['create_method']=='conf' and det.class_conf < trkr.detectors[det_name]['detection_params'][det.det_class_str]['detect_thresh']:
                 continue
             
             else:
@@ -37,4 +44,4 @@ def create_tracks(trkr, det_name):
                 trkr.trk_id_count += 1
 
 def delete_tracks(trkr):
-    trkr.trks = [track for track in trkr.trks if valid_track(track, trkr)]
+    trkr.trks = [track for track in trkr.trks if keep_track(track, trkr)]

@@ -203,12 +203,12 @@ class Track():
         self.track_management[det.detector_name]['n_cons_misses'] = 0
 
         if trkr.detectors[det.detector_name]['detection_params'][det.det_class_string]['create_method']=='count':
-            self.track_management[det.detector_name]['n_cons_misses']['track_conf'] = det.class_conf
+            self.track_management[det.detector_name]['track_conf'] = det.class_conf
         elif trkr.detectors[det.detector_name]['detection_params'][det.det_class_string]['create_method']=='conf':
             if trkr.detectors[det.detector_name]['detection_params'][det.det_class_string]['score_update_function']=='multiply':
-                self.track_management[det.detector_name]['n_cons_misses']['track_conf'] = 1 - ((1 - det.class_conf)*(1 - self.track_conf))
+                self.track_management[det.detector_name]['track_conf'] = 1 - ((1 - det.class_conf)*(1 - self.track_management[det.detector_name]['track_conf']))
             elif trkr.detectors[det.detector_name]['detection_params'][det.det_class_string]['score_update_function']=='parallel_add':
-                self.track_management[det.detector_name]['n_cons_misses']['track_conf'] = 1 - ((1 - det.class_conf)*(1 - self.track_conf))/((1 - det.class_conf)+(1 - self.track_conf))
+                self.track_management[det.detector_name]['track_conf'] = 1 - ((1 - det.class_conf)*(1 - self.track_management[det.detector_name]['track_conf']))/((1 - det.class_conf)+(1 - self.track_management[det.detector_name]['track_conf']))
             else:
                 raise AttributeError('Invalid score update function.')
 
