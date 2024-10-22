@@ -26,7 +26,7 @@ class TBDTracker(Node):
 
         # Declare known process/observation models
         self.supported_proc_models = ['cp','cvcy','cvcy_obj','ctra','ack']
-        self.supported_obs_models = ['pos_3d','pos_bbox_3d']
+        self.supported_obs_models = ['pos_2d_xy','pos_3d','pos_bbox_3d']
 
         # Declare and set params
         self.declare_tracker_params()
@@ -84,10 +84,8 @@ class TBDTracker(Node):
 
                 self.detectors[detector]['detection_params'][det_cls] = dict()
 
-
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.sim_metric', rclpy.Parameter.Type.STRING)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.match_thresh', rclpy.Parameter.Type.DOUBLE)
-    
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.create_method', rclpy.Parameter.Type.STRING)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.active_thresh', rclpy.Parameter.Type.DOUBLE)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.detect_thresh', rclpy.Parameter.Type.DOUBLE)
@@ -97,7 +95,6 @@ class TBDTracker(Node):
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_method', rclpy.Parameter.Type.STRING)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.delete_thresh', rclpy.Parameter.Type.DOUBLE)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.n_delete_max', rclpy.Parameter.Type.INTEGER)
-
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.pos_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.yaw_obs_var',rclpy.Parameter.Type.DOUBLE_ARRAY)
                 self.declare_parameter('detectors.' + detector + '.detection_properties.' + det_cls + '.object_class',rclpy.Parameter.Type.STRING)

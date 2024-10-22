@@ -356,6 +356,8 @@ tbd_tracker_node:
                 object_class: 'person'
                 create_method: 'count'
                 delete_method: 'count'
+                n_create_min: 10
+                n_delete_max: 10
                 sim_metric: 'dist_3d'
                 match_thresh: 1.0
 
