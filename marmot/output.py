@@ -9,6 +9,9 @@ def is_track_active(tracker, track):
 
     for detector in tracker.detectors.keys():
 
+        if track.obj_class_str not in tracker.detectors[detector]['detection_classes']:
+            continue
+
         if (tracker.detectors[detector]['detection_params'][track.obj_class_str]['create_method']=='count' and 
             track.track_management[detector]['n_cons_matches'] < tracker.detectors[detector]['detection_params'][track.obj_class_str]['n_create_min']):
             track_is_active = False
@@ -38,7 +41,7 @@ def publish_tracks(tracker, pub_name):
 
         # Add track information to message
         trk_msg.track_id = trk.trk_id
-        trk_msg.track_confidence = trk.track_conf
+        # trk_msg.track_confidence = trk.track_conf
         trk_msg.time_created = trk.time_created.to_msg()
         trk_msg.time_updated = trk.time_updated.to_msg()
 
@@ -98,7 +101,7 @@ def publish_tracks(tracker, pub_name):
             raise AttributeError('Invalid process model type.')
     
         # Add semantic information to message
-        trk_msg.track_confidence = float(trk.track_conf)
+        # trk_msg.track_confidence = float(trk.track_conf) # TODO - this is only used for track management, remove from output?
         trk_msg.class_confidence = float(trk.class_conf)
         trk_msg.class_string = trk.obj_class_str
 
@@ -185,10 +188,11 @@ def publish_scene(tracker, pub_name):
         att_md.value = '' 
         entity_msg.metadata.append(att_md)
 
-        trk_md = KeyValuePair()
-        trk_md.key = 'track_score'
-        trk_md.value = str(trk.track_conf)
-        entity_msg.metadata.append(trk_md)
+        # TODO - this is only used for track management, remove from output?
+        # trk_md = KeyValuePair()
+        # trk_md.key = 'track_score'
+        # trk_md.value = str(trk.track_conf)
+        # entity_msg.metadata.append(trk_md)
 
         tracker.scene_msg.entities.append(entity_msg)
     
@@ -203,14 +207,8 @@ def publish_markers(tracker, pub_name):
     for trk in tracker.trks:
 
         # Check if tracklet meets track creation criteria
-        if tracker.obj_props[trk.obj_class_str]['create_method']=="count":
-            if trk.n_cons_matches < tracker.obj_props[trk.obj_class_str]['n_create_min']:
-                continue
-        elif tracker.obj_props[trk.obj_class_str]['create_method']=="conf":
-            if trk.track_conf < tracker.obj_props[trk.obj_class_str]['active_thresh']:        
-                continue
-        else:
-            raise TypeError('Invalid track creation method: %s' % tracker.obj_props[trk.obj_class_str]['create_method'])
+        if is_track_active(tracker, trk)==False:
+            continue
 
         # Create track message
         marker_msg = Marker()

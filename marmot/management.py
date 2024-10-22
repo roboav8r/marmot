@@ -4,15 +4,17 @@ from marmot.datatypes import Track
 
 def keep_track(trk, trkr):
 
+    keep_this_track = True
+
     for detector in trkr.detectors.keys():
 
+        if trk.obj_class_str not in trkr.detectors[detector]['detection_classes']:
+            continue
+        
         if (trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_method']=='count' and trk.track_management[detector]['n_cons_misses'] >= trkr.detectors[detector]['detection_params'][trk.obj_class_str]['n_delete_max']):
             keep_this_track = False
         elif (trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_method']=='conf' and trk.track_management[detector]['track_conf'] <= trkr.detectors[detector]['detection_params'][trk.obj_class_str]['delete_thresh']):
             keep_this_track = False
-        else:
-            keep_this_track = True
-            break
 
     return keep_this_track
 
@@ -29,7 +31,7 @@ def create_tracks(trkr, det_name):
         else:
 
             # Ignore tracks as appropriate
-            if trkr.detectors[det.det_name]['detection_params'][det.det_class_str] in trkr.detectors[det_name]['detection_classes_ignore']:
+            if trkr.detectors[det_name]['detection_params'][det.det_class_str] in trkr.detectors[det_name]['detection_classes_ignore']:
                 continue
             
             # If using confidence based method, do not create tracks with confidence below threshold

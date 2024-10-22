@@ -318,7 +318,7 @@ class TBDTracker(Node):
         self.dets_msg = det_array_msg
         self.dets = []
         for det in self.dets_msg.detections:
-            if self.detectors[detector_name]['detection_params'][det.class_string]['ignore']:
+            if det.class_string in self.detectors[detector_name]['detection_classes_ignore']:
                 continue
             self.dets.append(Detection(self, self.dets_msg, det, detector_name))
 
@@ -326,23 +326,28 @@ class TBDTracker(Node):
         self.predict_tracks()
 
         # ASSIGN detections to tracks
-        compute_assignment(self)
+        compute_assignment(self, detector_name)
 
         # UPDATE tracks with assigned detections
         self.update_tracks()
 
         # UPDATE unmatched tracks (missed detections)
         for i, trk in enumerate(self.trks):
-            # if i not in self.trk_asgn_idx: # If track is unmatched, handle it as a missed detection   
-            if i not in self.matches[:,1]: # If track is unmatched, handle it as a missed detection   
+
+            # Disregard if the object is not capable of being detected by the detector
+            if trk.det_class_str not in self.detectors[detector_name]['detection_classes']:
+                continue
+
+            if i not in self.matches[:,1]: # If track is unmatched, handle it as a missed detection
+
                 trk.metadata = det_array_msg.metadata
-                if self.detectors[detector_name]['detection_params'][trk.det_class_string]['create_method'] == 'count':
+                if self.detectors[detector_name]['detection_params'][trk.det_class_str]['create_method'] == 'count':
                     trk.track_management[detector_name]['n_cons_misses'] += 1
                     trk.track_management[detector_name]['n_cons_matches'] = 0
-                elif self.detectors[detector_name]['detection_params'][trk.det_class_string]['create_method'] == 'conf':
-                    trk.track_management[detector_name]['track_conf'] -= self.detectors[detector_name]['detection_params'][trk.det_class_string]['score_decay']
+                elif self.detectors[detector_name]['detection_params'][trk.det_class_str]['create_method'] == 'conf':
+                    trk.track_management[detector_name]['track_conf'] -= self.detectors[detector_name]['detection_params'][trk.det_class_str]['score_decay']
                 else:
-                    raise TypeError('Invalid track creation method: %s' % self.detectors[detector_name]['detection_params'][trk.det_class_string]['create_method'])                    
+                    raise TypeError('Invalid track creation method: %s' % self.detectors[detector_name]['detection_params'][trk.det_class_str]['create_method'])                    
 
         # Manage unmatched tracks and detections
         delete_tracks(self)
